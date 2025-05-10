@@ -1,126 +1,88 @@
-///@file textfield_theme.dart
-///@date 2023-10-01
-///@version 1.0.0
-///@description creates a singleton class for the textfield theme
-///@description supports light and dark themes
-///@note this is just a template for the textfield theme
-///@note modify the properties as needed
-///@note you can remove the final keyword when editing to show current changes instantly
-
 import 'package:flutter/material.dart';
+import 'package:mobile_app_template/core/constants/colors.dart';
 
-class TTextfieldTheme{
+class TTextfieldTheme {
   TTextfieldTheme._();
 
+  // Light Mode - Combined Filled and Outlined TextField Styles
   static InputDecorationTheme light = InputDecorationTheme(
     errorMaxLines: 3,
-    prefixIconColor: Colors.grey,
-    suffixIconColor: Colors.grey,
-
-    labelStyle: const TextStyle().copyWith(
-      color: Colors.black,
+    prefixIconColor: TColors.textMuted,
+    suffixIconColor: TColors.textMuted,
+    labelStyle: const TextStyle(
+      color: TColors.textDark,
       fontSize: 14,
     ),
-    hintStyle: const TextStyle().copyWith(
-      color: Colors.grey,
+    hintStyle: const TextStyle(
+      color: TColors.textMuted,
       fontSize: 14,
     ),
-    errorStyle: const TextStyle().copyWith(
-      fontStyle: FontStyle.normal,
+    errorStyle: const TextStyle(fontStyle: FontStyle.normal),
+    floatingLabelStyle: TextStyle(
+      color: TColors.textDark.withAlpha((255 * 0.8).toInt()),
     ),
-    floatingLabelStyle: const TextStyle().copyWith(
-      color: Colors.black.withAlpha((255 * 0.8).toInt())
-    ),
-    border: const OutlineInputBorder().copyWith(
+    filled: true,
+    fillColor: TColors.backgroundLight, // Light background for filled text fields
+    border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
-      borderSide: const BorderSide().copyWith( 
-        width: 1,
-        color: Colors.grey
-      )
+      borderSide: const BorderSide(width: 1, color: TColors.borderLight), // Outlined border
     ),
-    enabledBorder: const OutlineInputBorder().copyWith(
+    enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
-      borderSide: const BorderSide().copyWith( 
-        width: 1,
-        color: Colors.grey
-      )
+      borderSide: const BorderSide(width: 1, color: TColors.borderLight), // Outlined border
     ),
-    focusedBorder: const OutlineInputBorder().copyWith(
+    focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
-      borderSide: const BorderSide().copyWith( 
-        width: 1,
-        color: Colors.black12
-      )
+      borderSide: const BorderSide(width: 1, color: TColors.primary), // Focused border color
     ),
-    errorBorder: const OutlineInputBorder().copyWith(
+    errorBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
-      borderSide: const BorderSide().copyWith( 
-        width: 1,
-        color: Colors.red
-      )
+      borderSide: const BorderSide(width: 1, color: TColors.error),
     ),
-    focusedErrorBorder: const OutlineInputBorder().copyWith(
+    focusedErrorBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
-      borderSide: const BorderSide().copyWith( 
-        width: 1,
-        color: Colors.orange
-      )
+      borderSide: const BorderSide(width: 1, color: TColors.warning),
     ),
   );
 
+  // Dark Mode - Combined Filled and Outlined TextField Styles
   static InputDecorationTheme dark = InputDecorationTheme(
     errorMaxLines: 3,
-    prefixIconColor: Colors.grey,
-    suffixIconColor: Colors.grey,
-
-    labelStyle: const TextStyle().copyWith(
-      color: Colors.white,
+    prefixIconColor: TColors.textMuted,
+    suffixIconColor: TColors.textMuted,
+    labelStyle: const TextStyle(
+      color: TColors.textLight,
       fontSize: 14,
     ),
-    hintStyle: const TextStyle().copyWith(
-      color: Colors.grey,
+    hintStyle: const  TextStyle(
+      color: TColors.textMuted,
       fontSize: 14,
     ),
-    errorStyle: const TextStyle().copyWith(
-      fontStyle: FontStyle.normal,
+    errorStyle: const  TextStyle(fontStyle: FontStyle.normal),
+    floatingLabelStyle: TextStyle(
+      color: TColors.textLight.withAlpha((255 * 0.8).toInt()),
     ),
-    floatingLabelStyle: const TextStyle().copyWith(
-      color: Colors.white.withAlpha((255 * 0.8).toInt())
-    ),
-    border: const OutlineInputBorder().copyWith(
+    filled: true,
+    fillColor: TColors.backgroundDark, // Dark background for filled text fields
+    border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
-      borderSide: const BorderSide().copyWith( 
-        width: 1,
-        color: Colors.grey
-      )
+      borderSide: const  BorderSide(width: 1, color: TColors.borderDark), // Outlined border
     ),
-    enabledBorder: const OutlineInputBorder().copyWith(
+    enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
-      borderSide: const BorderSide().copyWith( 
-        width: 1,
-        color: Colors.grey
-      )
+      borderSide: const BorderSide(width: 1, color: TColors.borderDark), // Outlined border
     ),
-    focusedBorder: const OutlineInputBorder().copyWith(
+    focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
-      borderSide: const BorderSide().copyWith( 
-        width: 1,
-        color: Colors.white
-      )
+      borderSide: const BorderSide(width: 1, color: TColors.primary), // Focused border color
     ),
-    errorBorder: const OutlineInputBorder().copyWith(
+    errorBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
-      borderSide: const BorderSide().copyWith( 
-        width: 1,
-        color: Colors.red
-      )
+      borderSide: const BorderSide(width: 1, color: TColors.error),
     ),
-    focusedErrorBorder: const OutlineInputBorder().copyWith(
+    focusedErrorBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
-      borderSide: const BorderSide().copyWith( 
-        width: 1,
-        color: Colors.orange
-      )
+      borderSide: const BorderSide(width: 1, color: TColors.warning),
     ),
   );
 }

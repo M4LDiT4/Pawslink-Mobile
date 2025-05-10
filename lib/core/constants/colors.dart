@@ -1,37 +1,55 @@
 import 'dart:ui';
 
-///@file: colors.dart
-///@date: 2023-10-01
-///@version: 1.0.0
-///@description: contains colors used in the app
-///
-///@format: static const Color varName = Color value;
-class TColors{
+/// @file: colors.dart
+/// @date: 2023-10-01
+/// @version: 1.3.0
+/// @description: Contains application-wide color definitions with light & dark mode support.
+
+class TColors {
   TColors._();
 
-  ///@description: app basic colors
-  static const Color primaryColor = Color(0xFF6200EE);
-  static const Color secondaryColor = Color(0xFF03DAC6);
-  static const Color accentColor = Color(0xFFBB86FC);
+  // Branding Colors
+  static const Color primary = Color(0xFFE2598B); // Pink - Primary
+  static const Color secondary = Color(0xFFFDD043); // Yellow
+  static const Color tertiary = Color(0xFF7F4782); // Purple
 
-  ///@description: app text colors
-  static const Color textPrimary = Color(0xFF000000);
-  static const Color textSecondary = Color(0xFF757575);
-  static const Color textWhite = Color(0xFFFFFFFF);
+  // Text Colors
+  static const Color textDark = Color(0xFF000000); // Black
+  static const Color textLight = Color(0xFFFFFFFF); // White
+  static const Color textMuted = Color(0xFF9E9E9E); // Grey
 
-  ///@description: app background colors
-  static const Color light = Color(0xFFFAFAFA);
-  static const Color dark = Color(0xFF121212);
-  static const Color primaryBackground = Color(0xFFFFFFFF);
+  // Additional Font Roles
+  static const Color titleDark = Color(0xFF1B1B1B);     // Darker for headings
+  static const Color titleLight = Color(0xFFF5F5F5);    // Lighter title on dark background
+  static const Color subtitleDark = Color(0xFF424242);  // Less emphasis than title
+  static const Color subtitleLight = Color(0xFFDDDDDD); // Subtitle on dark
+  static const Color bodyTextDark = Color(0xFF212121);  // Standard dark mode body
+  static const Color bodyTextLight = Color(0xFFEAEAEA); // Body text on dark bg
+  static const Color caption = Color(0xFF757575);        // Small labels, hints
+  static const Color onPrimary = Color(0xFFFFFFFF);       // Text on top of pink button
 
-  ///@description: Error and validation colors
+  // Light Mode Backgrounds
+  static const Color backgroundLight = Color(0xFFFFF8F8); // Light pinkish white
+  static const Color surfaceLight = Color(0xFFFFFFFF);    // White cards
+  static const Color appBarLight = Color(0xFFFFFFFF);
+  static const Color borderLight = Color(0xFFE0E0E0);
+
+  // Dark Mode Backgrounds
+  static const Color backgroundDark = Color(0xFF121212);  // Very dark gray
+  static const Color surfaceDark = Color(0xFF1E1E1E);      // Card surface in dark mode
+  static const Color appBarDark = Color(0xFF1C1C1C);
+  static const Color borderDark = Color(0xFF2C2C2C);
+
+  // Feedback Colors
   static const Color error = Color(0xFFD32F2F);
-  static const Color success = Color(0xff388e3c);
-  static const Color warning = Color(0xfff57c00);
-  static const Color info = Color(0xff1976d2);
-  static const Color disabled = Color(0xff9e9e9e);
+  static const Color success = Color(0xFF388E3C);
+  static const Color warning = Color(0xFFF57C00);
+  static const Color info = Color(0xFF1976D2);
 
-  //Todo: Add more colors as needed
+  // States
+  static const Color disabled = Color(0xFFBDBDBD);
+  static const Color overlay = Color(0x66000000); // Black with 40% opacity for modals
 
-   
+  // Shadows
+  static const Color shadow = Color(0x33000000); // 20% Black for elevation
 }
