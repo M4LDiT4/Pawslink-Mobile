@@ -1,54 +1,44 @@
-///@file elevated_button.dart
-///@date 2023-10-01
-///@version 1.0.0
-///@description creates a singleton class for the elevated button theme of the app
-///@note this is just a template
-///@note modify the properties as needed
-
-
 import 'package:flutter/material.dart';
+import 'package:mobile_app_template/core/constants/colors.dart';
 
 class TElevatedButtonTheme {
-
   TElevatedButtonTheme._();
 
   static final light = ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom( 
       elevation: 0,
-      foregroundColor: Colors.white,
-      backgroundColor: Colors.blue,
-      disabledForegroundColor: Colors.grey,
-      disabledBackgroundColor: Colors.grey,
-      side: const BorderSide( color: Colors.blue),
+      foregroundColor: TColors.textLight,  // White text color
+      backgroundColor: TColors.primary,   // Pink background for the button
+      disabledForegroundColor: TColors.disabled, // Disabled button text color
+      disabledBackgroundColor: TColors.disabled, // Disabled button background color
+      side: BorderSide(color: TColors.primary), // Border color matching the button
       padding: const EdgeInsets.symmetric(vertical: 18),
-      textStyle:  const TextStyle( 
+      textStyle: const TextStyle(
         fontSize: 16,
-        color: Colors.white,
-        fontWeight: FontWeight.w600
+        fontWeight: FontWeight.w600,
       ),
-      shape: RoundedRectangleBorder( 
-        borderRadius: BorderRadius.circular(12)
-      )
-    )
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+    ),
   );
 
   static final dark = ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom( 
       elevation: 0,
-      foregroundColor: Colors.white,
-      backgroundColor: Colors.blue,
-      disabledForegroundColor: Colors.grey,
-      disabledBackgroundColor: Colors.grey,
-      side: const BorderSide( color: Colors.blue),
+      foregroundColor: TColors.textLight,  // White text color
+      backgroundColor: TColors.primary,   // Pink background for the button
+      disabledForegroundColor: TColors.disabled, // Disabled button text color
+      disabledBackgroundColor: TColors.disabled, // Disabled button background color
+      side: BorderSide(color: TColors.primary), // Border color matching the button
       padding: const EdgeInsets.symmetric(vertical: 18),
-      textStyle:  const TextStyle( 
+      textStyle: const TextStyle(
         fontSize: 16,
-        color: Colors.white,
-        fontWeight: FontWeight.w600
+        fontWeight: FontWeight.w600,
       ),
-      shape: RoundedRectangleBorder( 
-        borderRadius: BorderRadius.circular(12)
-      )
-    )
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+    ),
   );
 }

@@ -1,22 +1,21 @@
 ///@file  bottom_sheet.dart
 ///@date 2023-10-01
-///@version 1.0.0
-///@description creates a singleton class for the bottom sheet theme
-///@description supports light and dark themes
-///@note this is just a template for the bottom sheet theme
-///@note modify the properties as needed
-///@note you can remove the final keyword when editing to show current changes instantly
+///@version 1.1.0
+///@description BottomSheet theme using TColors for light and dark modes.
+///@note Integrated with app-wide design system.
+
 import 'package:flutter/material.dart';
+import 'package:mobile_app_template/core/constants/colors.dart';
 
 class TBottomSheetTheme {
   TBottomSheetTheme._();
 
-  static const BottomSheetThemeData light =  BottomSheetThemeData(
+  static const BottomSheetThemeData light = BottomSheetThemeData(
     showDragHandle: true,
-    backgroundColor: Colors.white,
-    modalBackgroundColor: Colors.white,
+    backgroundColor: TColors.surfaceLight,
+    modalBackgroundColor: TColors.backgroundLight,
     constraints: BoxConstraints(
-      minWidth: double.infinity
+      minWidth: double.infinity,
     ),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
@@ -25,12 +24,12 @@ class TBottomSheetTheme {
     ),
   );
 
-  static const BottomSheetThemeData dark =  BottomSheetThemeData(
+  static const BottomSheetThemeData dark = BottomSheetThemeData(
     showDragHandle: true,
-    backgroundColor: Colors.black,
-    modalBackgroundColor: Colors.black,
+    backgroundColor: TColors.surfaceDark,
+    modalBackgroundColor: TColors.backgroundDark,
     constraints: BoxConstraints(
-      minWidth: double.infinity
+      minWidth: double.infinity,
     ),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(

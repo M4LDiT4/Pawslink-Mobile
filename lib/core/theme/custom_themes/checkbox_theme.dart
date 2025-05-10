@@ -1,11 +1,10 @@
 ///@file checkbox_theme.dart
 ///@date 2023-10-01
-///@version 1.0.0
-///@description creates a singleton class for the checkbox theme
-///@note this is just a template for the checkbox theme
-///@note modify the properties as needed
-///@note you can remove the final keyword when editing to show current changes instantly
+///@version 1.1.0
+///@description Checkbox theme styled using TColors for light and dark modes.
+
 import 'package:flutter/material.dart';
+import 'package:mobile_app_template/core/constants/colors.dart';
 
 class TCheckboxTheme {
   TCheckboxTheme._();
@@ -14,19 +13,16 @@ class TCheckboxTheme {
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(4),
     ),
-    checkColor: WidgetStateProperty.resolveWith((state){
-      if(state.contains(WidgetState.selected)){
-        return Colors.white;
-      }else{
-        return Colors.black;
-      }
+    checkColor: WidgetStateProperty.resolveWith((states) {
+      return TColors.textLight;
     }),
-    fillColor: WidgetStateProperty.resolveWith((state){
-      if(state.contains(WidgetState.selected)){
-        return Colors.blue;
-      }else{
-        return Colors.transparent;
+    fillColor: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
+        return TColors.primary;
+      } else if (states.contains(WidgetState.disabled)) {
+        return TColors.disabled;
       }
+      return TColors.borderLight;
     }),
   );
 
@@ -34,19 +30,16 @@ class TCheckboxTheme {
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(4),
     ),
-    checkColor: WidgetStateProperty.resolveWith((state){
-      if(state.contains(WidgetState.selected)){
-        return Colors.white;
-      }else{
-        return Colors.black;
-      }
+    checkColor: WidgetStateProperty.resolveWith((states) {
+      return TColors.textDark;
     }),
-    fillColor: WidgetStateProperty.resolveWith((state){
-      if(state.contains(WidgetState.selected)){
-        return Colors.blue;
-      }else{
-        return Colors.transparent;
+    fillColor: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
+        return TColors.primary;
+      } else if (states.contains(WidgetState.disabled)) {
+        return TColors.disabled;
       }
+      return TColors.borderDark;
     }),
   );
 }
