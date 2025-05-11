@@ -3,6 +3,7 @@
 ///@note: adding pages here requires adding of new names for routes in ./app_routes.dart
 
 import 'package:get/get.dart';
+import 'package:mobile_app_template/features/authentication/presentation/sign_in.dart';
 import 'package:mobile_app_template/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:mobile_app_template/features/sample_feature/presentation/screens/sample_screen.dart';
 import 'package:mobile_app_template/navigation/admin_navigation/admin_home_navigation.dart';
@@ -23,6 +24,10 @@ class TAppPages {
     GetPage(
       name: TAppRoutes.onboarding, 
       page: () => const OnboardingScreen()
+    ),
+    GetPage(
+      name: TAppRoutes.login, 
+      page: () => SignInScreen()
     )
   ];
 }
