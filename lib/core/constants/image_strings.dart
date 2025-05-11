@@ -11,5 +11,14 @@
 class TImages{
   TImages._();
 
-  static const String sample = ""; // "" should be a valid path
+  static const String sample = ""; 
+  static const String logoPahinungod = "assets/logos/pahinungod.png";
+  static const String logoPawradiseRound = "assets/logos/pawradise_round.png";
+  static const String logoPawslinkBNW = "assets/logos/pawslink_bnw.png";
+  static const String logoPawslinkColored = "assets/logos/pawslink_colored.png";
+  static const String logoPawslinkRoundBNW = "assets/logos/pawslink_round_bnw.png";
+  static const String logoPawslinkRoundColored = "assets/logos/pawslink_round_colored.png";
+  static const String logoUpRound = "assets/logos/up_round.png";
+
+  static const String womanWithUmbrella = "assets/images/girl_with_umbrella.png";
 }

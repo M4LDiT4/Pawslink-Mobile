@@ -6,5 +6,6 @@ abstract class TAppRoutes {
   static const profile = '/profile';
   static const settings = '/settings';
   static const login = '/login';
+  static const onboarding = "/onboarding";
   // Add more routes as needed
 }

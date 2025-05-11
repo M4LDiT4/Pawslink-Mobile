@@ -3,6 +3,7 @@
 ///@note: adding pages here requires adding of new names for routes in ./app_routes.dart
 
 import 'package:get/get.dart';
+import 'package:mobile_app_template/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:mobile_app_template/features/sample_feature/presentation/screens/sample_screen.dart';
 
 import 'app_routes.dart';
@@ -18,5 +19,9 @@ class TAppPages {
       page: () => const PlaceholderScreen(),
       //optional: provide bindings for screen
     ),
+    GetPage(
+      name: TAppRoutes.onboarding, 
+      page: () => const OnboardingScreen()
+    )
   ];
 }
