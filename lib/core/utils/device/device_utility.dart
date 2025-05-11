@@ -124,7 +124,12 @@ class TDeviceUtils {
   static bool isDarkMode(){
     return Theme.of(Get.context!).brightness == Brightness.dark;
   }
+
+  static double getScreenBodyHeight(){
+    return getScreenHeight() - getAppBarHeight() - getBottomNavigationBarHeight();
+  }
 }
+
 
 
   
