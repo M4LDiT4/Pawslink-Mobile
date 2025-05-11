@@ -13,6 +13,7 @@ class TSizes {
   static const double paddinglg = 16.0; 
   static const double paddingxl = 24.0;
   static const double paddingxxl = 32.0;
+  static const double defaultScreenPadding = 20;
 
 
   ///@description: app margin sizes

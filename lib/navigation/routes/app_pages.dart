@@ -5,6 +5,7 @@
 import 'package:get/get.dart';
 import 'package:mobile_app_template/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:mobile_app_template/features/sample_feature/presentation/screens/sample_screen.dart';
+import 'package:mobile_app_template/navigation/admin_navigation/admin_home_navigation.dart';
 
 import 'app_routes.dart';
 
@@ -12,7 +13,7 @@ class TAppPages {
   static final routes = [
     GetPage(
       name: TAppRoutes.home,
-      page: () => const PlaceholderScreen(),
+      page: () => AdminHomeNavigation(),
     ),
     GetPage(
       name: TAppRoutes.profile,

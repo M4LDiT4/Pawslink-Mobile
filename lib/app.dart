@@ -8,8 +8,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_template/core/theme/theme.dart';
 import 'package:get/get.dart';
-import 'package:mobile_app_template/routes/app_pages.dart';
-import 'package:mobile_app_template/routes/app_routes.dart';
+import 'package:mobile_app_template/navigation/routes/app_pages.dart';
+import 'package:mobile_app_template/navigation/routes/app_routes.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -22,7 +22,7 @@ class App extends StatelessWidget {
       theme: TAppTheme.lightTheme,
       darkTheme: TAppTheme.darkTheme,
       getPages: TAppPages.routes,
-      initialRoute: TAppRoutes.onboarding,
+      initialRoute: TAppRoutes.home,
     );
   }
 }

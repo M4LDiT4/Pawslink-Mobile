@@ -13,6 +13,11 @@ class TColors {
   static const Color secondary = Color(0xFFFDD043); // Yellow
   static const Color tertiary = Color(0xFF7F4782); // Purple
 
+  // Dark Theme Counterparts
+  static const Color primaryDark = Color(0xFFB03E6A);   // Deeper pink
+  static const Color secondaryDark = Color(0xFFD1AD2F); // Muted gold
+  static const Color tertiaryDark = Color(0xFF5E3460);  // Deep purple
+
   // Text Colors
   static const Color textDark = Color(0xFF000000); // Black
   static const Color textLight = Color(0xFFFFFFFF); // White
