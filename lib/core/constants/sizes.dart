@@ -50,4 +50,9 @@ class TSizes {
   static const double borderRadiuslg = 16.0;
   static const double borderRadiusxl = 24.0;
   static const double borderRadiusxxl = 32.0;
+
+  ///@description : spacing sizes between titles and content
+  static const double spaceFromTitlesm = 16;
+  static const double spaceFromTitlemid = 20;
+  static const double spaceFromTitlelg = 24;
 }

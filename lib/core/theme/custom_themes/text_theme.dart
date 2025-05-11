@@ -1,164 +1,160 @@
-/// @file: text_theme.dart
-/// @date: 2023-10-01
-/// @version: 1.2.0
-/// @description: Text theme singleton with TColors for light and dark modes.
-
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_app_template/core/constants/colors.dart';
 
 class TTextTheme {
   TTextTheme._();
 
-  static TextTheme light = const TextTheme(
-    headlineLarge: TextStyle(
+  static TextTheme light = TextTheme(
+    headlineLarge: GoogleFonts.poppins(
       fontSize: 32,
       fontWeight: FontWeight.bold,
       color: TColors.titleDark,
     ),
-    headlineMedium: TextStyle(
+    headlineMedium: GoogleFonts.poppins(
       fontSize: 24,
       fontWeight: FontWeight.bold,
       color: TColors.titleDark,
     ),
-    headlineSmall: TextStyle(
+    headlineSmall: GoogleFonts.poppins(
       fontSize: 20,
       fontWeight: FontWeight.bold,
       color: TColors.titleDark,
     ),
-    titleLarge: TextStyle(
+    titleLarge: GoogleFonts.poppins(
       fontSize: 18,
       fontWeight: FontWeight.w700,
       color: TColors.titleDark,
     ),
-    titleMedium: TextStyle(
+    titleMedium: GoogleFonts.poppins(
       fontSize: 16,
       fontWeight: FontWeight.w600,
       color: TColors.titleDark,
     ),
-    titleSmall: TextStyle(
+    titleSmall: GoogleFonts.quicksand(
       fontSize: 14,
       fontWeight: FontWeight.w600,
       color: TColors.textDark,
     ),
-    bodyLarge: TextStyle(
+    bodyLarge: GoogleFonts.quicksand(
       fontSize: 16,
       fontWeight: FontWeight.normal,
       color: TColors.textDark,
     ),
-    bodyMedium: TextStyle(
+    bodyMedium: GoogleFonts.quicksand(
       fontSize: 14,
       fontWeight: FontWeight.normal,
       color: TColors.textDark,
     ),
-    bodySmall: TextStyle(
+    bodySmall: GoogleFonts.quicksand(
       fontSize: 12,
       fontWeight: FontWeight.normal,
       color: TColors.textMuted,
     ),
-    labelLarge: TextStyle(
+    labelLarge: GoogleFonts.quicksand(
       fontSize: 16,
       fontWeight: FontWeight.normal,
       color: TColors.textDark,
     ),
-    labelMedium: TextStyle(
+    labelMedium: GoogleFonts.quicksand(
       fontSize: 14,
       fontWeight: FontWeight.normal,
       color: TColors.textMuted,
     ),
-    labelSmall: TextStyle(
+    labelSmall: GoogleFonts.quicksand(
       fontSize: 12,
       fontWeight: FontWeight.normal,
       color: TColors.textMuted,
     ),
-    displayLarge: TextStyle(
+    displayLarge: GoogleFonts.poppins(
       fontSize: 32,
       fontWeight: FontWeight.bold,
       color: TColors.titleDark,
     ),
-    displayMedium: TextStyle(
+    displayMedium: GoogleFonts.poppins(
       fontSize: 24,
       fontWeight: FontWeight.bold,
       color: TColors.titleDark,
     ),
-    displaySmall: TextStyle(
+    displaySmall: GoogleFonts.poppins(
       fontSize: 20,
       fontWeight: FontWeight.bold,
       color: TColors.titleDark,
     ),
   );
 
-  static TextTheme dark = const TextTheme(
-    headlineLarge: TextStyle(
+  static TextTheme dark = TextTheme(
+    headlineLarge: GoogleFonts.poppins(
       fontSize: 32,
       fontWeight: FontWeight.bold,
       color: TColors.titleLight,
     ),
-    headlineMedium: TextStyle(
+    headlineMedium: GoogleFonts.poppins(
       fontSize: 24,
       fontWeight: FontWeight.bold,
       color: TColors.titleLight,
     ),
-    headlineSmall: TextStyle(
+    headlineSmall: GoogleFonts.poppins(
       fontSize: 20,
       fontWeight: FontWeight.bold,
       color: TColors.titleLight,
     ),
-    titleLarge: TextStyle(
+    titleLarge: GoogleFonts.poppins(
       fontSize: 18,
       fontWeight: FontWeight.w700,
       color: TColors.titleLight,
     ),
-    titleMedium: TextStyle(
+    titleMedium: GoogleFonts.poppins(
       fontSize: 16,
       fontWeight: FontWeight.w600,
       color: TColors.titleLight,
     ),
-    titleSmall: TextStyle(
+    titleSmall: GoogleFonts.quicksand(
       fontSize: 14,
       fontWeight: FontWeight.w600,
       color: TColors.textLight,
     ),
-    bodyLarge: TextStyle(
+    bodyLarge: GoogleFonts.quicksand(
       fontSize: 16,
       fontWeight: FontWeight.normal,
       color: TColors.textLight,
     ),
-    bodyMedium: TextStyle(
+    bodyMedium: GoogleFonts.quicksand(
       fontSize: 14,
       fontWeight: FontWeight.normal,
       color: TColors.textLight,
     ),
-    bodySmall: TextStyle(
+    bodySmall: GoogleFonts.quicksand(
       fontSize: 12,
       fontWeight: FontWeight.normal,
       color: TColors.textMuted,
     ),
-    labelLarge: TextStyle(
+    labelLarge: GoogleFonts.quicksand(
       fontSize: 16,
       fontWeight: FontWeight.normal,
       color: TColors.textLight,
     ),
-    labelMedium: TextStyle(
+    labelMedium: GoogleFonts.quicksand(
       fontSize: 14,
       fontWeight: FontWeight.normal,
       color: TColors.textMuted,
     ),
-    labelSmall: TextStyle(
+    labelSmall: GoogleFonts.quicksand(
       fontSize: 12,
       fontWeight: FontWeight.normal,
       color: TColors.textMuted,
     ),
-    displayLarge: TextStyle(
+    displayLarge: GoogleFonts.poppins(
       fontSize: 32,
       fontWeight: FontWeight.bold,
       color: TColors.titleLight,
     ),
-    displayMedium: TextStyle(
+    displayMedium: GoogleFonts.poppins(
       fontSize: 24,
       fontWeight: FontWeight.bold,
       color: TColors.titleLight,
     ),
-    displaySmall: TextStyle(
+    displaySmall: GoogleFonts.poppins(
       fontSize: 20,
       fontWeight: FontWeight.bold,
       color: TColors.titleLight,

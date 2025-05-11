@@ -11,8 +11,8 @@ class TElevatedButtonTheme {
       backgroundColor: TColors.primary,   // Pink background for the button
       disabledForegroundColor: TColors.disabled, // Disabled button text color
       disabledBackgroundColor: TColors.disabled, // Disabled button background color
-      side: BorderSide(color: TColors.primary), // Border color matching the button
-      padding: const EdgeInsets.symmetric(vertical: 18),
+      side: const BorderSide(color: TColors.primary), // Border color matching the button
+      padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 8),
       textStyle: const TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.w600,
@@ -30,8 +30,8 @@ class TElevatedButtonTheme {
       backgroundColor: TColors.primary,   // Pink background for the button
       disabledForegroundColor: TColors.disabled, // Disabled button text color
       disabledBackgroundColor: TColors.disabled, // Disabled button background color
-      side: BorderSide(color: TColors.primary), // Border color matching the button
-      padding: const EdgeInsets.symmetric(vertical: 18),
+      side: const BorderSide(color: TColors.primary), // Border color matching the button
+      padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 8),
       textStyle: const TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.w600,

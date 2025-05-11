@@ -5,12 +5,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:mobile_app_template/core/constants/colors.dart';
+import 'package:mobile_app_template/core/utils/helpers/number_helpers.dart';
 
 class TChipTheme {
   TChipTheme._();
 
   static final ChipThemeData light = ChipThemeData(
-    disabledColor: TColors.disabled.withOpacity(0.4),
+    disabledColor: TColors.disabled.withAlpha(TNumberHelper.getAlphaWithOpacity(0.4)),
     labelStyle: const TextStyle(
       color: TColors.textDark,
       fontWeight: FontWeight.w500,
@@ -29,7 +30,7 @@ class TChipTheme {
   );
 
   static final ChipThemeData dark = ChipThemeData(
-    disabledColor: TColors.disabled.withOpacity(0.3),
+    disabledColor: TColors.disabled.withAlpha(TNumberHelper.getAlphaWithOpacity(0.3)),
     labelStyle: const TextStyle(
       color: TColors.textLight,
       fontWeight: FontWeight.w500,

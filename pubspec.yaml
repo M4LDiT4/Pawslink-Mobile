@@ -24,6 +24,8 @@ dependencies:
   # state management
   get: ^4.7.2
   get_storage: ^2.1.1
+  # splash screen
+  flutter_native_splash: ^2.4.6
 
 dev_dependencies:
   flutter_test:
@@ -33,3 +35,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets: 
+    - assets/icons/
+    - assets/logos/
+    - assets/images/

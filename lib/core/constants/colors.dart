@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:flutter/material.dart';
 
 /// @file: colors.dart
 /// @date: 2023-10-01
@@ -52,4 +52,17 @@ class TColors {
 
   // Shadows
   static const Color shadow = Color(0x33000000); // 20% Black for elevation
+
+  //gradients
+
+  // [LINEAR GRADIENT]  
+  static const LinearGradient onboardingBackground = LinearGradient(
+    begin: Alignment.topCenter, // Gradient starts at the top
+    end: Alignment.bottomCenter, // Gradient ends at the bottom
+    colors: [
+      Color(0xFF7F4782), // #7F4782 color (a shade of purple)
+      Color(0xFFCB5B83), // #CB5B83 color (a shade of pink)
+    ],
+    stops: [0.0, 1.0], // Gradient stops (from top to bottom)
+  );
 }

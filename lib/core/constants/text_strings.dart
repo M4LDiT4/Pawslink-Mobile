@@ -11,4 +11,6 @@ class TText{
   TText._();
 
   static const String sampleText = "sample text";
+  static const String onboardingWelcomeText = "Welcome to PawsLink, an app that intends to improve the welfare of stray dogs and cats by facilitating efficient identification, tracking, and adoption processes through technology.";
+  static const String getStartedText = "Get Started";
 }
