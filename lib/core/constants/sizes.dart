@@ -43,6 +43,7 @@ class TSizes {
   static const double defaultSpacer = 24;
   static const double spaceBetweenItems = 16; 
   static const double spaceBetweenSections = 32;
+  
 
   ///@description: border radius sizes
   static const double borderRadiusxs = 4.0;
@@ -51,9 +52,15 @@ class TSizes {
   static const double borderRadiuslg = 16.0;
   static const double borderRadiusxl = 24.0;
   static const double borderRadiusxxl = 32.0;
+  static const double roundedTextFieldBorderRadius = 50;
 
   ///@description : spacing sizes between titles and content
   static const double spaceFromTitlesm = 16;
   static const double spaceFromTitlemid = 20;
   static const double spaceFromTitlelg = 24;
+
+  ///@description : font size
+  static const double bodySm = 12;
+  static const double bodyMid = 14;
+  static const double bodyLg = 16;
 }

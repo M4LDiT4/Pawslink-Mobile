@@ -13,4 +13,15 @@ class TText{
   static const String sampleText = "sample text";
   static const String onboardingWelcomeText = "Welcome to PawsLink, an app that intends to improve the welfare of stray dogs and cats by facilitating efficient identification, tracking, and adoption processes through technology.";
   static const String getStartedText = "Get Started";
+  static const String welomeBack = "Welcome Back";
+  static const String email = "Email";
+  static const String username = "Username";
+  static const String confirmPass = "Confirm Password";
+  static const String password = 'Password';
+  static const String login = "Log In";
+  static const String forgotPassword = "forgot password";
+  static const String signUpString = "Don't have an account? Sign up";
+  static const String partnerShip = "in partnership with";
+  static const String signInString = "Already have an account? Login";
+  static const String createAccount = "Create Account";
 }
