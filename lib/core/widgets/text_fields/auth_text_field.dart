@@ -13,6 +13,8 @@ class AuthTextField extends StatefulWidget {
   final FormFieldValidator<String>? validator;
   final bool isRequired;
   final String? errMessage;
+  final bool enableAutoCorrect;
+  final TextInputType keyboardType;
 
   const AuthTextField({
     super.key,
@@ -23,6 +25,8 @@ class AuthTextField extends StatefulWidget {
     this.validator,
     this.isRequired = false,
     this.errMessage,
+    this.enableAutoCorrect = false,
+    this.keyboardType = TextInputType.text,
   });
 
   @override
@@ -49,22 +53,30 @@ class _AuthTextFieldState extends State<AuthTextField> {
       showPassword = !showPassword;
     });
   }
-String generateErrorMssg(){
-  if(widget.errMessage != null){
-    return widget.errMessage!;
-  }
-  return 'This field is required';
-}
-String? validationFunction(String? value) {
-  if (widget.isRequired) {
-    if (widget.validator != null) {
-      return widget.validator!(value); // use ! to call a nullable function safely
-    } else if (value == null || value.isEmpty) {
-      return generateErrorMssg();
+  String generateErrorMssg(){
+    if(widget.errMessage != null){
+      return widget.errMessage!;
     }
+    return 'This field is required';
   }
-  return null; // Make sure to return something for all paths
-}
+  String? validationFunction(String? value) {
+    if (widget.isRequired) {
+      if (widget.validator != null) {
+        return widget.validator!(value); // use ! to call a nullable function safely
+      } else if (value == null || value.isEmpty) {
+        return generateErrorMssg();
+      }
+    }
+    return null; // Make sure to return something for all paths
+  }
+
+  bool showText () {
+    if(!widget.isPassword){
+      return true;
+    }
+    return showPassword;
+  }
+
 
 
   @override
@@ -83,8 +95,12 @@ String? validationFunction(String? value) {
         TextFormField(
           focusNode: _focusNode,
           controller: widget.controller,
-          obscureText: !showPassword,
-          validator: widget.validator,
+          obscureText: !showText(),
+          autocorrect: widget.enableAutoCorrect,
+          validator: validationFunction,
+          enableSuggestions: false,
+          textCapitalization: TextCapitalization.none,
+          keyboardType: widget.keyboardType,
           decoration: InputDecoration(
             label: Text(
               style: TextStyle(color: _isFocused? isDarkMode? TColors.primaryDark : TColors.primary: TColors.textMuted),

@@ -28,4 +28,25 @@ class TValidator{
     return null;
   }
 
+  static String? validateUsername(String? username) {
+    final pattern = RegExp(r'^(?!.*[._]{2})(?![._])(?!.*[._]$)[a-zA-Z0-9._]{3,20}$');
+
+    if (username == null || username.trim().isEmpty) {
+      return 'Username is required';
+    }
+
+    if (!pattern.hasMatch(username)) {
+      return 'Username must be 3-20 characters, use letters, numbers, ".", "_", and avoid special characters at the start, end, or consecutively.';
+    }
+
+    return null; // Valid
+  }
+
+  static String? validateConfirmPass(String? password, String confirmPass){
+    if(password != confirmPass || password == null || confirmPass.isEmpty){
+      return "Passwords do not match";
+    }
+    return null;
+  }
+
 }

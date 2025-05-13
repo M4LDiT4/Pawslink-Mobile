@@ -15,6 +15,13 @@ class TText{
   static const String getStartedText = "Get Started";
   static const String welomeBack = "Welcome Back";
   static const String email = "Email";
-  static const String password = 'password';
+  static const String username = "Username";
+  static const String confirmPass = "Confirm Password";
+  static const String password = 'Password';
   static const String login = "Log In";
+  static const String forgotPassword = "forgot password";
+  static const String signUpString = "Don't have an account? Sign up";
+  static const String partnerShip = "in partnership with";
+  static const String signInString = "Already have an account? Login";
+  static const String createAccount = "Create Account";
 }

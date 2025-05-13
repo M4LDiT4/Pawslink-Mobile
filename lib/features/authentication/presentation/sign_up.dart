@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/instance_manager.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:mobile_app_template/core/constants/colors.dart';
 import 'package:mobile_app_template/core/constants/image_strings.dart';
@@ -10,29 +10,27 @@ import 'package:mobile_app_template/core/utils/validation/validator.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/auth_text_field.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/keyboard_safe_scrollview.dart';
-import 'package:mobile_app_template/features/authentication/controllers/sign_in_controller.dart';
+import 'package:mobile_app_template/features/authentication/controllers/sign_up_controiller.dart';
 import 'package:mobile_app_template/navigation/routes/app_routes.dart';
 import 'package:mobile_app_template/services/navigation_service.dart';
 
-class SignInScreen extends StatelessWidget {
-  const SignInScreen({super.key});
+class SignUpScreen extends StatelessWidget {
+  const SignUpScreen({super.key});
+
+  void navigateToSignIn() {
+    TNavigationService.offAllNamed(TAppRoutes.login);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(SignInController());
+    final controller = Get.put(SignUpControiller());
     final screenHeight = TDeviceUtils.getScreenHeight();
-    final screenWidth = TDeviceUtils.getScreenWidth();
-    final logoTopContainerSize = screenHeight * 0.3;
-    final bodyMinSize = screenHeight - logoTopContainerSize - 120;
+    final logoTopContainerSize = screenHeight * 0.15;
+    final bodyMinSize = screenHeight - logoTopContainerSize - 125;
     final isDarkMode = TDeviceUtils.isDarkMode();
-
-    void navigateToSignUp(){
-      TNavigationService.offAllNamed(TAppRoutes.signup);
-    }
     return Scaffold(
       body: KeyboardSafeScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(
               height: logoTopContainerSize,
@@ -40,12 +38,13 @@ class SignInScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Image.asset(
-                    width: 136,
-                    TImages.logoPawslinkRoundColored
+                    height: 74,
+                    TImages.logoPawslinkColored
                   ),
                 ],
               )
             ),
+            const FixedSeparator(space: TSizes.spaceBetweenItems),
             ConstrainedBox(
               constraints: BoxConstraints(minHeight: bodyMinSize),
               child: Padding(
@@ -56,28 +55,43 @@ class SignInScreen extends StatelessWidget {
                       style: Theme.of(context).textTheme.headlineLarge!.copyWith(
                         color: isDarkMode? TColors.tertiaryDark : TColors.tertiary,
                       ),
-                      TText.welomeBack
+                      TText.createAccount
                     ),
                     const FixedSeparator(space: TSizes.spaceBetweenItems),
                     Form(
-                      key: controller.formkey,
-                      child: const Column(
-                          children: [
-                            AuthTextField(
-                              label: TText.email,
-                              leadingIcon: Iconsax.sms,
-                              validator: TValidator.validateEmail,
-                              isRequired: true,
-                            ),
-                            AuthTextField(
-                              label: TText.password,
-                              leadingIcon: Iconsax.password_check,
-                              isPassword: true,
-                              validator: TValidator.validatePassword,
-                              isRequired: true,
-                            )
-                          ],
-                        ),
+                      key: controller.formKey,
+                      child: Column(
+                        children: [
+                          const AuthTextField(
+                            label: TText.username,
+                            leadingIcon: Iconsax.user,
+                            validator: TValidator.validateUsername,
+                            isRequired: true,
+                          ),
+                          const AuthTextField(
+                            label:TText.email,
+                            leadingIcon: Iconsax.sms,
+                            validator: TValidator.validateEmail,
+                            keyboardType: TextInputType.emailAddress,
+                            isRequired: true,
+                          ),
+                          AuthTextField(
+                            label: TText.password,
+                            leadingIcon: Iconsax.password_check,
+                            validator: TValidator.validatePassword,
+                            controller: controller.passController,
+                            isRequired: true,
+                            isPassword: true,
+                          ),
+                          AuthTextField(
+                            label: TText.confirmPass,
+                            leadingIcon: Iconsax.password_check4,
+                            validator: controller.validateConfirmPass,
+                            isRequired: true,
+                            isPassword: true,
+                          ),
+                        ],
+                      )
                     ),
                     SizedBox(
                       height: 54,
@@ -89,7 +103,7 @@ class SignInScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(TSizes.borderRadiusxxl)
                           )
                         ),
-                        onPressed: controller.submit, 
+                        onPressed: controller.validate, 
                         child: const Text(TText.login)
                       )
                     ),
@@ -103,9 +117,9 @@ class SignInScreen extends StatelessWidget {
                       )
                     ),
                     TextButton(
-                      onPressed: navigateToSignUp, 
+                      onPressed: navigateToSignIn, 
                       child: Text(
-                        TText.signUpString,
+                        TText.signInString,
                         style: TextStyle(
                           color: isDarkMode? TColors.textLight: TColors.textDark,
                           decoration: TextDecoration.underline,
@@ -117,41 +131,6 @@ class SignInScreen extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
-              width: screenWidth,
-              child: Padding(
-                padding: const EdgeInsets.only(),
-                child: Column(
-                  children: [
-                    Text(
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                        fontStyle: FontStyle.italic,
-                        color: isDarkMode? TColors.tertiaryDark: TColors.tertiary
-                      ),
-                      TText.partnerShip
-                    ),
-                    const FixedSeparator(space: TSizes.spaceBetweenItems),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Image.asset(
-                          height: 75,
-                          TImages.logoUpRound
-                        ),
-                        Image.asset(
-                          height: 75,
-                          TImages.logoPahinungod
-                        ),
-                        Image.asset(
-                          height: 75,
-                          TImages.logoPawradiseRound
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            )
           ],
         ),
       ),

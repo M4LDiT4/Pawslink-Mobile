@@ -4,6 +4,7 @@
 
 import 'package:get/get.dart';
 import 'package:mobile_app_template/features/authentication/presentation/sign_in.dart';
+import 'package:mobile_app_template/features/authentication/presentation/sign_up.dart';
 import 'package:mobile_app_template/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:mobile_app_template/features/sample_feature/presentation/screens/sample_screen.dart';
 import 'package:mobile_app_template/navigation/admin_navigation/admin_home_navigation.dart';
@@ -27,7 +28,15 @@ class TAppPages {
     ),
     GetPage(
       name: TAppRoutes.login, 
-      page: () => SignInScreen()
+      page: () =>const SignInScreen(),
+        transition: Transition.leftToRight, // or slide, zoom, etc.
+        transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: TAppRoutes.signup, 
+      page: () => const SignUpScreen(),
+        transition: Transition.leftToRight, // or slide, zoom, etc.
+        transitionDuration: const Duration(milliseconds: 500),
     )
   ];
 }

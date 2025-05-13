@@ -58,4 +58,9 @@ class TSizes {
   static const double spaceFromTitlesm = 16;
   static const double spaceFromTitlemid = 20;
   static const double spaceFromTitlelg = 24;
+
+  ///@description : font size
+  static const double bodySm = 12;
+  static const double bodyMid = 14;
+  static const double bodyLg = 16;
 }
