@@ -27,8 +27,8 @@ dependencies:
   # splash screen
   flutter_native_splash: ^2.4.6
 
-  # camera
-  camera: ^0.11.1
+  # image picker 
+  image_picker: ^1.1.2
   path_provider: ^2.1.5
 
 dev_dependencies:
