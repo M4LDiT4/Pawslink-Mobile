@@ -44,6 +44,6 @@ class TAppPages {
       page: () => const AddAnimalScreeen(),
       transition: Transition.rightToLeft, // or slide, zoom, etc.
       transitionDuration: const Duration(milliseconds: 500),
-    )
+    ),
   ];
 }
