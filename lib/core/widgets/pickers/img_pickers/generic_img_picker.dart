@@ -4,6 +4,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobile_app_template/core/constants/colors.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
+import 'package:mobile_app_template/core/constants/text_strings.dart';
 import 'package:mobile_app_template/core/utils/device/device_utility.dart';
 import 'package:mobile_app_template/core/widgets/pickers/img_pickers/img_picker_src_selection_button.dart';
 
@@ -84,7 +85,7 @@ class _GenericImagePickerState extends State<GenericImagePicker> {
                       : TColors.primary,
                   Iconsax.gallery,
                 ),
-                const Text("No image selected")
+                const Text(TText.noImgSelected)
               ]
             ],
           ),
@@ -105,7 +106,7 @@ class _GenericImagePickerState extends State<GenericImagePicker> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Text("Give your friend a Profile Picture"),
+              const Text(TText.imgPickerText1),
               _renderPickerContent(isDarkMode),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

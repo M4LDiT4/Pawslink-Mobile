@@ -24,4 +24,6 @@ class TText{
   static const String partnerShip = "in partnership with";
   static const String signInString = "Already have an account? Login";
   static const String createAccount = "Create Account";
+  static const String noImgSelected = "No image selected";
+  static const String imgPickerText1 = "Give your friend a Profile Picture";
 }
