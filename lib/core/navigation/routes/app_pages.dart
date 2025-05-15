@@ -3,7 +3,8 @@
 ///@note: adding pages here requires adding of new names for routes in ./app_routes.dart
 
 import 'package:get/get.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/add_animal.dart';
+import 'package:mobile_app_template/core/bindings/controllers/add_animal.dart';
+import 'package:mobile_app_template/features/animal_database/presentation/screens/add_animal/add_animal.dart';
 import 'package:mobile_app_template/features/authentication/presentation/sign_in.dart';
 import 'package:mobile_app_template/features/authentication/presentation/sign_up.dart';
 import 'package:mobile_app_template/features/onboarding/presentation/onboarding_screen.dart';
@@ -44,6 +45,7 @@ class TAppPages {
       page: () => const AddAnimalScreeen(),
       transition: Transition.rightToLeft, // or slide, zoom, etc.
       transitionDuration: const Duration(milliseconds: 500),
+      binding: AddAnimalControllerBinding()
     ),
   ];
 }

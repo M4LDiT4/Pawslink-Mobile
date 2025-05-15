@@ -12,8 +12,13 @@ class GenericTextField extends StatelessWidget {
   final int? maxLines;
   final int? maxLength;
   final bool enabled;
+  final String? suffixText;
   final Function(String)? onChanged;
   final EdgeInsetsGeometry padding;
+  final FormFieldValidator<String>? validator;
+  final bool isRequired;
+  final String? errMessage;
+
 
   const GenericTextField({
     Key? key,
@@ -28,6 +33,10 @@ class GenericTextField extends StatelessWidget {
     this.enabled = true,
     this.onChanged,
     this.padding = const EdgeInsets.all(8.0),
+    this.suffixText,
+    this.validator,
+    this.errMessage,
+    this.isRequired = false
   }) : super(key: key);
 
   OutlineInputBorder _buildBorder(Color color) {
@@ -37,6 +46,35 @@ class GenericTextField extends StatelessWidget {
     );
   }
 
+  Widget? _renderSuffixText(bool isDarkMode){
+    if(suffixText == null){
+      return null;
+    }
+    return Text(
+      style: TextStyle(
+        color: isDarkMode? TColors.textLight: TColors.textDark,
+      ),
+      suffixText!
+    );
+  }
+
+  String generateErrorMssg(){
+    if(errMessage != null){
+      return errMessage!;
+    }
+    return 'This field is required';
+  }
+  String? validationFunction(String? value) {
+    if (isRequired) {
+      if (validator != null) {
+        return validator!(value); // use ! to call a nullable function safely
+      } else if (value == null || value.isEmpty) {
+        return generateErrorMssg();
+      }
+    }
+    return null; // Make sure to return something for all paths
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDarkMode = TDeviceUtils.isDarkMode();
@@ -44,7 +82,7 @@ class GenericTextField extends StatelessWidget {
     return Expanded(
       child: Padding(
         padding: padding,
-        child: TextField(
+        child: TextFormField(
           controller: controller,
           obscureText: obscureText,
           keyboardType: keyboardType,
@@ -52,6 +90,7 @@ class GenericTextField extends StatelessWidget {
           maxLength: maxLength,
           enabled: enabled,
           onChanged: onChanged,
+          validator: validationFunction,
           decoration: InputDecoration(
             hintText: hintText,
             labelText: labelText,
@@ -62,6 +101,7 @@ class GenericTextField extends StatelessWidget {
             focusedErrorBorder: _buildBorder(TColors.warning),
             disabledBorder: _buildBorder(Colors.grey.shade300),
             contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+            suffix: _renderSuffixText(isDarkMode),
             floatingLabelStyle: TextStyle(
               color: primaryColor,
               fontWeight: FontWeight.bold,

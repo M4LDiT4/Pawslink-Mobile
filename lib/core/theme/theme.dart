@@ -13,6 +13,7 @@ import 'package:mobile_app_template/core/theme/custom_themes/appbar_theme.dart';
 import 'package:mobile_app_template/core/theme/custom_themes/bottom_sheet.dart';
 import 'package:mobile_app_template/core/theme/custom_themes/checkbox_theme.dart';
 import 'package:mobile_app_template/core/theme/custom_themes/chip_theme.dart';
+import 'package:mobile_app_template/core/theme/custom_themes/dropdown_theme.dart';
 import 'package:mobile_app_template/core/theme/custom_themes/elevated_button.dart';
 import 'package:mobile_app_template/core/theme/custom_themes/outlined_button.dart';
 import 'package:mobile_app_template/core/theme/custom_themes/text_theme.dart';
@@ -34,7 +35,8 @@ class TAppTheme {
     bottomSheetTheme: TBottomSheetTheme.light,
     elevatedButtonTheme: TElevatedButtonTheme.light,
     outlinedButtonTheme: TOutlinedButtonTheme.light,
-    inputDecorationTheme: TTextfieldTheme.light
+    inputDecorationTheme: TTextfieldTheme.light,
+    dropdownMenuTheme: TDropdownTheme.light
   );  
 
   static ThemeData darkTheme = ThemeData(
@@ -50,6 +52,7 @@ class TAppTheme {
     bottomSheetTheme: TBottomSheetTheme.dark,
     elevatedButtonTheme: TElevatedButtonTheme.dark,
     outlinedButtonTheme: TOutlinedButtonTheme.dark,
-    inputDecorationTheme: TTextfieldTheme.dark
+    inputDecorationTheme: TTextfieldTheme.dark,
+    dropdownMenuTheme: TDropdownTheme.dark,
   );  
 }

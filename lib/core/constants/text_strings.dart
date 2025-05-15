@@ -26,4 +26,7 @@ class TText{
   static const String createAccount = "Create Account";
   static const String noImgSelected = "No image selected";
   static const String imgPickerText1 = "Give your friend a Profile Picture";
+  static const String name = "Name";
+  static const String location = "Location";
+  static const String basicInformation = "Basic Information";
 }
