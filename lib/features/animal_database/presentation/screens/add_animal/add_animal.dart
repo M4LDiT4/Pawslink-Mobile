@@ -86,7 +86,7 @@ class AddAnimalScreeen extends StatelessWidget {
                   )
                 ],
               ),
-              const GenericExpansionTile(
+              GenericExpansionTile(
                 title: "Coat Color",
                 children: [
                   ChipInput()

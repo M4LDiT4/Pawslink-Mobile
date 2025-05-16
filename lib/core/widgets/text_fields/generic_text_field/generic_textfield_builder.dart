@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:mobile_app_template/core/widgets/text_fields/generic_text_field.dart';
+import 'package:mobile_app_template/core/widgets/text_fields/generic_text_field/generic_text_field.dart';
 
 class GenericTextfieldBuilder {
   TextEditingController? _controller;

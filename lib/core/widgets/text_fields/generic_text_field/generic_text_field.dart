@@ -3,7 +3,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:mobile_app_template/core/constants/colors.dart';
 import 'package:mobile_app_template/core/utils/device/device_utility.dart';
 
-class GenericTextField extends StatelessWidget {
+class GenericTextField extends StatefulWidget {
   final TextEditingController? controller;
   final String? hintText;
   final String? labelText;
@@ -41,6 +41,43 @@ class GenericTextField extends StatelessWidget {
     this.hasClearButton = false,
   }) : super(key: key);
 
+  @override
+  State<GenericTextField> createState() => _GenericTextFieldState();
+}
+
+class _GenericTextFieldState extends State<GenericTextField> {
+  late final TextEditingController _controller;
+  bool _hasText = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = widget.controller ?? TextEditingController();
+    _hasText = _controller.text.isNotEmpty;
+    _controller.addListener(() {
+      if (_hasText != _controller.text.isNotEmpty) {
+        setState(() {
+          _hasText = _controller.text.isNotEmpty;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    if (widget.controller == null) {
+      _controller.dispose();
+    }
+    super.dispose();
+  }
+
+  void _handleClear() {
+    _controller.clear();
+    if (widget.onChanged != null) {
+      widget.onChanged!('');
+    }
+  }
+
   OutlineInputBorder _buildBorder(Color color) {
     return OutlineInputBorder(
       borderRadius: BorderRadius.circular(8.0),
@@ -48,73 +85,66 @@ class GenericTextField extends StatelessWidget {
     );
   }
 
-  void _handleClear(){
-    if(controller == null){
-      return;
-    }
-    controller!.text = "";
-  }
+  Widget? _renderSuffixIcon(bool isDarkMode) {
+    if (!widget.hasClearButton || !_hasText) return null;
 
-  Widget? _renderSuffixIcon(bool isDarkMode){
-    if(!hasClearButton){
-      return  null;
-    }
     return IconButton(
-      onPressed: _handleClear, 
-      icon: const Icon(Iconsax.close_circle4)
+      onPressed: _handleClear,
+      icon: const Icon(Iconsax.close_circle4),
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints(minHeight: 32, minWidth: 32),
+      splashRadius: 20,
+      color: isDarkMode ? TColors.textLight : TColors.textDark,
     );
   }
 
-  Widget? _renderSuffixText(bool isDarkMode){
-    if(suffixText == null) {
-      return  null;
-    }
+  Widget? _renderSuffixText(bool isDarkMode) {
+    if (widget.suffixText == null) return null;
     return Text(
+      widget.suffixText!,
       style: TextStyle(
-        color: isDarkMode? TColors.textLight: TColors.textDark,
+        color: isDarkMode ? TColors.textLight : TColors.textDark,
       ),
-      suffixText!
     );
   }
 
-
-  String _generateErrorMssg(){
-    if(errMessage != null){
-      return errMessage!;
-    }
-    return 'This field is required';
+  String _generateErrorMssg() {
+    return widget.errMessage ?? 'Required';
   }
+
   String? _validationFunction(String? value) {
-    if (isRequired) {
-      if (validator != null) {
-        return validator!(value); // use ! to call a nullable function safely
+    if (widget.isRequired) {
+      if (widget.validator != null) {
+        return widget.validator!(value);
       } else if (value == null || value.isEmpty) {
         return _generateErrorMssg();
       }
     }
-    return null; // Make sure to return something for all paths
+    return null;
   }
 
   @override
   Widget build(BuildContext context) {
     final isDarkMode = TDeviceUtils.isDarkMode();
-    Color primaryColor = isDarkMode? TColors.primaryDark: TColors.primary;
+    final primaryColor = isDarkMode ? TColors.primaryDark : TColors.primary;
+
     return Expanded(
       child: Padding(
-        padding: padding,
+        padding: widget.padding,
         child: TextFormField(
-          controller: controller,
-          obscureText: obscureText,
-          keyboardType: keyboardType,
-          maxLines: maxLines,
-          maxLength: maxLength,
-          enabled: enabled,
-          onChanged: onChanged,
+          controller: _controller,
+          obscureText: widget.obscureText,
+          keyboardType: widget.keyboardType,
+          maxLines: widget.maxLines,
+          maxLength: widget.maxLength,
+          enabled: widget.enabled,
+          onChanged: widget.onChanged,
           validator: _validationFunction,
+          cursorColor: primaryColor,
           decoration: InputDecoration(
-            hintText: hintText,
-            labelText: labelText,
-            errorText: errorText,
+            hintText: widget.hintText,
+            labelText: widget.labelText,
+            errorText: widget.errorText,
             enabledBorder: _buildBorder(Colors.grey.shade400),
             focusedBorder: _buildBorder(primaryColor),
             errorBorder: _buildBorder(TColors.error),
@@ -128,17 +158,12 @@ class GenericTextField extends StatelessWidget {
               fontWeight: FontWeight.bold,
               fontSize: 14,
             ),
-            // This style applies when label is not floating (placeholder)
             labelStyle: TextStyle(
               color: Colors.grey.shade700,
               fontWeight: FontWeight.normal,
               fontSize: 16,
             ),
-            suffixIconConstraints:const BoxConstraints(
-              minHeight: 32,
-            ),
           ),
-          cursorColor: primaryColor,
         ),
       ),
     );
