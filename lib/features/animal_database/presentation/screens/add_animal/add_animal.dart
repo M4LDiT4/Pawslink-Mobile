@@ -10,7 +10,7 @@ import 'package:mobile_app_template/core/widgets/containers/generic_expansion_ti
 import 'package:mobile_app_template/core/widgets/dropdowns/generic_dropdown.dart';
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
 import 'package:mobile_app_template/core/widgets/pickers/img_pickers/generic_img_picker.dart';
-import 'package:mobile_app_template/core/widgets/text_fields/chip_text_input/chip_input.dart';
+import 'package:mobile_app_template/core/widgets/text_fields/chip_text_input/multivalue_textinput.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/generic_text_field/generic_textfield_builder.dart';
 import 'package:mobile_app_template/features/animal_database/controllers/add_animal_controller.dart';
 
@@ -89,7 +89,7 @@ class AddAnimalScreeen extends StatelessWidget {
               GenericExpansionTile(
                 title: "Coat Color",
                 children: [
-                  ChipInput()
+                  MultivalueTextInput(controller: controller.coatColorController,)
                 ],
               )
             ],

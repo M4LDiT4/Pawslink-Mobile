@@ -6,14 +6,14 @@ import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
 
 enum ActionButtonMode {add, delete}
 
-class ChipTextfield extends StatelessWidget {
+class MultiValueTextfield extends StatelessWidget {
   final TextEditingController controller;
   final bool isLast;
   final int index;
   final void Function (int index, ActionButtonMode mode) buttonAction; 
   
 
-  const ChipTextfield({
+  const MultiValueTextfield({
     super.key,
     required this.controller,
     required this.isLast,
@@ -49,6 +49,7 @@ class ChipTextfield extends StatelessWidget {
         GenericTextfieldBuilder()
         .clearButton(true)
         .controller(controller)
+        .focusOnCreate(true)
         .build(),
         _renderTrailingButtons()
       ],

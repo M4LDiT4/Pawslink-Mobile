@@ -20,6 +20,7 @@ class GenericTextField extends StatefulWidget {
   final bool isRequired;
   final String? errMessage;
   final bool hasClearButton;
+  final bool focusOnCreate;
 
   const GenericTextField({
     Key? key,
@@ -39,6 +40,7 @@ class GenericTextField extends StatefulWidget {
     this.errMessage,
     this.isRequired = false,
     this.hasClearButton = false,
+    this.focusOnCreate = false,
   }) : super(key: key);
 
   @override
@@ -46,33 +48,34 @@ class GenericTextField extends StatefulWidget {
 }
 
 class _GenericTextFieldState extends State<GenericTextField> {
-  late final TextEditingController _controller;
+  final FocusNode _focusNode = FocusNode();
   bool _hasText = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = widget.controller ?? TextEditingController();
-    _hasText = _controller.text.isNotEmpty;
-    _controller.addListener(() {
-      if (_hasText != _controller.text.isNotEmpty) {
-        setState(() {
-          _hasText = _controller.text.isNotEmpty;
-        });
-      }
-    });
+
+    if(widget.hasClearButton && widget.controller != null){
+      widget.controller!.addListener(() {
+        if (_hasText != widget.controller!.text.isNotEmpty) {
+          setState(() {
+            _hasText = widget.controller!.text.isNotEmpty;
+          });
+        }
+      });
+    }
+    if(widget.focusOnCreate){
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _focusNode.requestFocus();
+      });
+    }
   }
 
-  @override
-  void dispose() {
-    if (widget.controller == null) {
-      _controller.dispose();
-    }
-    super.dispose();
-  }
 
   void _handleClear() {
-    _controller.clear();
+    if(widget.controller != null){
+      widget.controller!.clear();
+    }
     if (widget.onChanged != null) {
       widget.onChanged!('');
     }
@@ -132,7 +135,7 @@ class _GenericTextFieldState extends State<GenericTextField> {
       child: Padding(
         padding: widget.padding,
         child: TextFormField(
-          controller: _controller,
+          controller: widget.controller,
           obscureText: widget.obscureText,
           keyboardType: widget.keyboardType,
           maxLines: widget.maxLines,
@@ -141,6 +144,7 @@ class _GenericTextFieldState extends State<GenericTextField> {
           onChanged: widget.onChanged,
           validator: _validationFunction,
           cursorColor: primaryColor,
+          focusNode: _focusNode,
           decoration: InputDecoration(
             hintText: widget.hintText,
             labelText: widget.labelText,

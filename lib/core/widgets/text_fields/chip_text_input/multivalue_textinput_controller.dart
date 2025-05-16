@@ -1,19 +1,11 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:mobile_app_template/core/widgets/text_fields/chip_text_input/chip_textfield.dart';
+import 'package:mobile_app_template/core/widgets/text_fields/chip_text_input/multivalue_textfield.dart';
 
-class ChipTextinputController extends GetxController {
+class MultiValueTextfieldController extends GetxController {
 
   final RxList<TextEditingController> valueList = <TextEditingController>[].obs;
-
-  @override
-  void onInit(){
-    super.onInit();
-    if(valueList.isEmpty){
-      valueList.add(TextEditingController()); //
-    }
-  }
 
   int getvalueListCount(){
     return valueList.length;

@@ -10,7 +10,6 @@ class GenericTextfieldBuilder {
   bool _obscureText = false;
   TextInputType _keyboardType = TextInputType.text;
   int? _maxLines = 1;
-  int? _maxLength;
   bool _enabled = true;
   String? _suffixText;
   EdgeInsetsGeometry _padding = const EdgeInsets.all(8);
@@ -19,6 +18,7 @@ class GenericTextfieldBuilder {
   bool _isRequired = false;
   String? _errMessage;
   bool _hasClearButton = false;
+  bool _focusOnCreate = false;
 
   //default constructor
   GenericTextfieldBuilder();
@@ -80,11 +80,6 @@ class GenericTextfieldBuilder {
     return this;
   }
 
-  GenericTextfieldBuilder maxLength(int length){
-    _maxLength = length;
-    return this;
-  }
-
   GenericTextfieldBuilder enable(bool flag){
     _enabled = flag;
     return this;
@@ -122,6 +117,11 @@ class GenericTextfieldBuilder {
     _padding = EdgeInsets.all(padding);
     return this;
   }
+
+  GenericTextfieldBuilder focusOnCreate(bool flag){
+    _focusOnCreate = flag;
+    return this;
+  }
   GenericTextField build(){
     return GenericTextField(
       labelText: _labelText,
@@ -139,6 +139,7 @@ class GenericTextfieldBuilder {
       isRequired: _isRequired,
       errMessage: _errMessage,
       hasClearButton: _hasClearButton,
+      focusOnCreate: _focusOnCreate,
     );
   }
 }
