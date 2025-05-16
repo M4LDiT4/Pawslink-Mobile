@@ -3,20 +3,31 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/constants/text_strings.dart';
+import 'package:mobile_app_template/core/enums/animal_sex.dart';
+import 'package:mobile_app_template/core/enums/animal_species.dart';
+import 'package:mobile_app_template/core/enums/animal_status.dart';
 import 'package:mobile_app_template/core/widgets/containers/generic_expansion_tile.dart';
 import 'package:mobile_app_template/core/widgets/dropdowns/generic_dropdown.dart';
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
 import 'package:mobile_app_template/core/widgets/pickers/img_pickers/generic_img_picker.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/chip_text_input/chip_input.dart';
-import 'package:mobile_app_template/core/widgets/text_fields/generic_text_field.dart';
+import 'package:mobile_app_template/core/widgets/text_fields/generic_text_field/generic_textfield_builder.dart';
 import 'package:mobile_app_template/features/animal_database/controllers/add_animal_controller.dart';
 
 class AddAnimalScreeen extends StatelessWidget {
   const AddAnimalScreeen({super.key});
 
-  void gotoCameraScreen () async{
+  List<String> _generateSpeciesList (){
+    return AnimalSpecies.values.map((e)=>e.label).toList();
   }
 
+  List<String> _generateStatusList () {
+    return AnimalStatus.values.map((e) => e.label).toList();
+  }
+
+  List<String> _generateSexList () {
+    return AnimalSex.values.map((e)=> e.label).toList();
+  }
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<AddAnimalController>();
@@ -34,38 +45,40 @@ class AddAnimalScreeen extends StatelessWidget {
                 children: [
                   Form(
                     key: controller.formKey,
-                    child:const Column(
+                    child: Column(
                       children: [
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          GenericTextField(
-                            labelText: TText.name,
-                            isRequired: true,
-                          ),
-                          GenericTextField(
-                            labelText: TText.location,
-                            isRequired: true,
-                          )
+                          GenericTextfieldBuilder
+                            .formField(label: TText.name)
+                            .required()
+                            .build()
+                          ,
+                          GenericTextfieldBuilder
+                            .formField(label: TText.location)
+                            .required()
+                            .build()
                         ],
                       ),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          GenericTextField(
-                            labelText: "Age", 
-                            suffixText: "months", 
-                            keyboardType: TextInputType.numberWithOptions(),
-                            isRequired: true,
-                          ),
-                          GenericDropdown(options: ["Male", "Female"], labelText: "Sex",)
+                          GenericTextfieldBuilder
+                            .formField(label: "Age")
+                            .suffixString("months")
+                            .required()
+                            .keyboardType(const TextInputType.numberWithOptions())
+                            .build(),
+
+                          GenericDropdown(options: _generateSexList(), labelText: "Sex",)
                         ],
                       ),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          GenericDropdown(options: ["Dog", "Cat"], labelText: "Species"),
-                          GenericDropdown(options: ["Rainbow bridge", "Adopted"], labelText: "Species"),
+                          GenericDropdown(options: _generateSpeciesList(), labelText: "Species"),
+                          GenericDropdown(options: _generateStatusList(), labelText: "Species"),
                         ],
                       ),
                     ],

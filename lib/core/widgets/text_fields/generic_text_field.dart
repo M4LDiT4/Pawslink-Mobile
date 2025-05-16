@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:mobile_app_template/core/constants/colors.dart';
 import 'package:mobile_app_template/core/utils/device/device_utility.dart';
 
@@ -18,6 +19,7 @@ class GenericTextField extends StatelessWidget {
   final FormFieldValidator<String>? validator;
   final bool isRequired;
   final String? errMessage;
+  final bool hasClearButton;
 
   const GenericTextField({
     Key? key,
@@ -35,7 +37,8 @@ class GenericTextField extends StatelessWidget {
     this.suffixText,
     this.validator,
     this.errMessage,
-    this.isRequired = false
+    this.isRequired = false,
+    this.hasClearButton = false,
   }) : super(key: key);
 
   OutlineInputBorder _buildBorder(Color color) {
@@ -45,9 +48,26 @@ class GenericTextField extends StatelessWidget {
     );
   }
 
+  void _handleClear(){
+    if(controller == null){
+      return;
+    }
+    controller!.text = "";
+  }
+
+  Widget? _renderSuffixIcon(bool isDarkMode){
+    if(!hasClearButton){
+      return  null;
+    }
+    return IconButton(
+      onPressed: _handleClear, 
+      icon: const Icon(Iconsax.close_circle4)
+    );
+  }
+
   Widget? _renderSuffixText(bool isDarkMode){
-    if(suffixText == null){
-      return null;
+    if(suffixText == null) {
+      return  null;
     }
     return Text(
       style: TextStyle(
@@ -57,18 +77,19 @@ class GenericTextField extends StatelessWidget {
     );
   }
 
-  String generateErrorMssg(){
+
+  String _generateErrorMssg(){
     if(errMessage != null){
       return errMessage!;
     }
     return 'This field is required';
   }
-  String? validationFunction(String? value) {
+  String? _validationFunction(String? value) {
     if (isRequired) {
       if (validator != null) {
         return validator!(value); // use ! to call a nullable function safely
       } else if (value == null || value.isEmpty) {
-        return generateErrorMssg();
+        return _generateErrorMssg();
       }
     }
     return null; // Make sure to return something for all paths
@@ -89,7 +110,7 @@ class GenericTextField extends StatelessWidget {
           maxLength: maxLength,
           enabled: enabled,
           onChanged: onChanged,
-          validator: validationFunction,
+          validator: _validationFunction,
           decoration: InputDecoration(
             hintText: hintText,
             labelText: labelText,
@@ -101,6 +122,7 @@ class GenericTextField extends StatelessWidget {
             disabledBorder: _buildBorder(Colors.grey.shade300),
             contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
             suffix: _renderSuffixText(isDarkMode),
+            suffixIcon: _renderSuffixIcon(isDarkMode),
             floatingLabelStyle: TextStyle(
               color: primaryColor,
               fontWeight: FontWeight.bold,
@@ -111,6 +133,9 @@ class GenericTextField extends StatelessWidget {
               color: Colors.grey.shade700,
               fontWeight: FontWeight.normal,
               fontSize: 16,
+            ),
+            suffixIconConstraints:const BoxConstraints(
+              minHeight: 32,
             ),
           ),
           cursorColor: primaryColor,
