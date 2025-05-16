@@ -19,7 +19,6 @@ class GenericTextField extends StatelessWidget {
   final bool isRequired;
   final String? errMessage;
 
-
   const GenericTextField({
     Key? key,
     this.controller,
