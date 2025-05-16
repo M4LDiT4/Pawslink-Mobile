@@ -1,19 +1,21 @@
 
+import 'package:mobile_app_template/core/constants/text_strings.dart';
+
 enum AnimalStatus {transient, rainbowBridge, adopted, onCampus, owned}
 
 extension AnimalStatusExtension on AnimalStatus {
   String get label {
     switch(this){
       case AnimalStatus.transient:
-        return "Transient";
+        return TText.transient;
       case AnimalStatus.adopted:
-        return "Adopted";
+        return TText.adopted;
       case AnimalStatus.onCampus:
-        return "On Campus";
+        return TText.onCampus;
       case AnimalStatus.owned:
-        return "Owned";
+        return TText.owned;
       case AnimalStatus.rainbowBridge:
-        return "Rainbow Bridge";
+        return TText.rainbowBridge;
     }
   }
 }

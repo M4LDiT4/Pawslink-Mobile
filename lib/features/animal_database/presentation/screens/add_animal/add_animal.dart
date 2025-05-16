@@ -65,20 +65,20 @@ class AddAnimalScreeen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           GenericTextfieldBuilder
-                            .formField(label: "Age")
-                            .suffixString("months")
+                            .formField(label: TText.age)
+                            .suffixString(TText.month)
                             .required()
                             .keyboardType(const TextInputType.numberWithOptions())
                             .build(),
 
-                          GenericDropdown(options: _generateSexList(), labelText: "Sex",)
+                          GenericDropdown(options: _generateSexList(), labelText: TText.sex,)
                         ],
                       ),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          GenericDropdown(options: _generateSpeciesList(), labelText: "Species"),
-                          GenericDropdown(options: _generateStatusList(), labelText: "Species"),
+                          GenericDropdown(options: _generateSpeciesList(), labelText: TText.species),
+                          GenericDropdown(options: _generateStatusList(), labelText: TText.status),
                         ],
                       ),
                     ],
