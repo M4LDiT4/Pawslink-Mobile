@@ -3,7 +3,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:mobile_app_template/core/constants/colors.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/utils/device/device_utility.dart';
-import 'package:mobile_app_template/core/widgets/text_fields/chip_text_input/multivalue_textfield.dart';
+import 'package:mobile_app_template/core/widgets/text_fields/multivalue_text_input/multivalue_textfield.dart';
 
 class TrailingButton extends StatelessWidget {
   final ActionButtonMode mode;

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mobile_app_template/core/widgets/text_fields/chip_text_input/multivalue_textfield.dart';
-import 'package:mobile_app_template/core/widgets/text_fields/chip_text_input/multivalue_textinput_controller.dart';
+import 'package:mobile_app_template/core/widgets/buttons/add_button.dart';
+import 'package:mobile_app_template/core/widgets/text_fields/multivalue_text_input/multivalue_textfield.dart';
+import 'package:mobile_app_template/core/widgets/text_fields/multivalue_text_input/multivalue_textinput_controller.dart';
 
 class MultivalueTextInput extends StatelessWidget {
   final MultiValueTextfieldController controller;
@@ -14,16 +15,11 @@ class MultivalueTextInput extends StatelessWidget {
     final length = controller.getvalueListCount();
     if(length == 0 ){
       return [
-        ElevatedButton(
-            onPressed: (){controller.handleButtonPress(0, ActionButtonMode.add);}, 
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.add),
-                Text("Add")
-              ],
-            )
-        )
+        AddButton(
+          onPressed: (){
+            controller.handleButtonPress(0, ActionButtonMode.add);
+            }
+          )
       ];
     }
     return controllers.asMap().entries.map((el){

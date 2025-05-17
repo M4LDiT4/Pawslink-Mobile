@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:mobile_app_template/core/widgets/text_fields/chip_text_input/trailing_button.dart';
+import 'package:mobile_app_template/core/widgets/text_fields/multivalue_text_input/trailing_button.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/generic_text_field/generic_textfield_builder.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
 

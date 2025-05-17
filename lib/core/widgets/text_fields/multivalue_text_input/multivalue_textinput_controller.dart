@@ -1,7 +1,7 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:mobile_app_template/core/widgets/text_fields/chip_text_input/multivalue_textfield.dart';
+import 'package:mobile_app_template/core/widgets/text_fields/multivalue_text_input/multivalue_textfield.dart';
 
 class MultiValueTextfieldController extends GetxController {
 

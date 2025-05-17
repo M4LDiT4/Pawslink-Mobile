@@ -31,4 +31,5 @@ class TNavigationService {
   static void back({dynamic result}) {
     Get.back(result: result);
   }
+
 }
