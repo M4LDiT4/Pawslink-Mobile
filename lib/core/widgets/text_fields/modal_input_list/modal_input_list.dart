@@ -7,26 +7,39 @@ import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/mo
 import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/modal_input_list_item.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/modals/input_modal_strategy.dart';
 
-class ModalInputList extends StatelessWidget {
-  final controller = Get.put<ModalInputListController>(ModalInputListController());
+class ModalInputList extends StatefulWidget {
   final InputModalStrategy modal;
-  ModalInputList({
+  final ModalInputListController? controller;
+  const ModalInputList({
     super.key,
-    required this.modal
+    required this.modal,
+    this.controller
   });
+  @override
+  State<ModalInputList> createState() => _ModalInputListState();
+}
 
+class _ModalInputListState extends State<ModalInputList> {
+  late ModalInputListController _controller;
+  late InputModalStrategy _modal;
 
-  void showEditorModal (BuildContext context) {
-    modal.show(context);
+  void showEditorModal(BuildContext context){
+    _modal.show(context);
+  }
+  @override 
+  void initState() {
+    _controller = widget.controller ?? Get.put<ModalInputListController>(ModalInputListController());
+    _modal = widget.modal.setCallback(_controller.addValue);
+    super.initState();
   }
   @override
   Widget build(BuildContext context) {
     return GenericExpansionTile(
       title: "Vaccination History",
       children: [
-        Column(
-          children: controller.valueList.map((e)=> ModalInputListItemCard(item: e)).toList()
-        ),
+        Obx(()=>Column(
+          children: _controller.valueList.map((e)=> ModalInputListItemCard(item: e)).toList()
+        )),
         AddButton(onPressed: ()=>showEditorModal(context))
       ]
     );

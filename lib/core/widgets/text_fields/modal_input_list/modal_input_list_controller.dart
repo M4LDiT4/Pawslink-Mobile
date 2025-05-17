@@ -32,4 +32,8 @@ class ModalInputListController extends GetxController {
   List<ModalInputListItem> getValueList(){
     return valueList;
   }
+
+  void addValue(ModalInputListItem item){
+    valueList.add(item);
+  }
 }
