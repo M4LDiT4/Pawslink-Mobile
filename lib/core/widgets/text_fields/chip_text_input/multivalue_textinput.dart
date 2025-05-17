@@ -14,12 +14,15 @@ class MultivalueTextInput extends StatelessWidget {
     final length = controller.getvalueListCount();
     if(length == 0 ){
       return [
-        SizedBox(
-          width: 250,
-          child: ElevatedButton(
+        ElevatedButton(
             onPressed: (){controller.handleButtonPress(0, ActionButtonMode.add);}, 
-            child: const Text("Add")
-          ),
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.add),
+                Text("Add")
+              ],
+            )
         )
       ];
     }

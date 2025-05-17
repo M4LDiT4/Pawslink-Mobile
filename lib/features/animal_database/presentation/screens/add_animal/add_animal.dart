@@ -12,6 +12,7 @@ import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart'
 import 'package:mobile_app_template/core/widgets/pickers/img_pickers/generic_img_picker.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/chip_text_input/multivalue_textinput.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/generic_text_field/generic_textfield_builder.dart';
+import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/modal_indput_list.dart';
 import 'package:mobile_app_template/features/animal_database/controllers/add_animal_controller.dart';
 
 class AddAnimalScreeen extends StatelessWidget {
@@ -91,12 +92,24 @@ class AddAnimalScreeen extends StatelessWidget {
                 children: [
                   MultivalueTextInput(controller: controller.coatColorController,)
                 ],
-              )
+              ),
+              GenericExpansionTile(
+                title: "Notes",
+                children: [
+                  MultivalueTextInput(controller: controller.notesController)
+                ],
+              ),
+              GenericExpansionTile(
+                title: "Traits and Personality",
+                children: [
+                  MultivalueTextInput(controller: controller.traitsController)
+                ],
+              ),
+              ModalIndputList()
             ],
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(onPressed: controller.handleSubmit, child: const Icon(Iconsax.check),),
     );
   }
 }

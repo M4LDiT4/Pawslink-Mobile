@@ -7,11 +7,15 @@ class AddAnimalController extends GetxController {
   late GlobalKey<FormState> formKey;
 
   late MultiValueTextfieldController coatColorController;
+  late MultiValueTextfieldController notesController;
+  late MultiValueTextfieldController traitsController;
 
   @override
   void onInit(){
     super.onInit();
     coatColorController = MultiValueTextfieldController();
+    notesController = MultiValueTextfieldController();
+    traitsController = MultiValueTextfieldController();
     formKey = GlobalKey<FormState>();
   }
 
