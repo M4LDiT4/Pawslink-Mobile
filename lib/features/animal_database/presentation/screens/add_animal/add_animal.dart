@@ -5,6 +5,7 @@ import 'package:mobile_app_template/core/constants/text_strings.dart';
 import 'package:mobile_app_template/core/enums/animal_sex.dart';
 import 'package:mobile_app_template/core/enums/animal_species.dart';
 import 'package:mobile_app_template/core/enums/animal_status.dart';
+import 'package:mobile_app_template/core/widgets/buttons/form_button/form_button.dart';
 import 'package:mobile_app_template/core/widgets/containers/generic_expansion_tile.dart';
 import 'package:mobile_app_template/core/widgets/dropdowns/generic_dropdown.dart';
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
@@ -14,6 +15,7 @@ import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/mo
 import 'package:mobile_app_template/core/widgets/text_fields/multivalue_text_input/multivalue_textinput.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/generic_text_field/generic_textfield_builder.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/modal_input_list.dart';
+import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
 import 'package:mobile_app_template/features/animal_database/controllers/add_animal_controller.dart';
 
 class AddAnimalScreeen extends StatelessWidget {
@@ -37,7 +39,11 @@ class AddAnimalScreeen extends StatelessWidget {
       appBar:const GenericAppbar(),
       body: SingleChildScrollView(
         child: Padding(
-          padding:const EdgeInsets.symmetric(horizontal: TSizes.defaultScreenPadding),
+          padding:const EdgeInsets.only(
+            left: TSizes.defaultScreenPadding,
+            right: TSizes.defaultScreenPadding,
+            bottom: 40,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -117,6 +123,21 @@ class AddAnimalScreeen extends StatelessWidget {
                 modal: MedicationModal(),
                 controller: controller.medController,
                 icon: Icons.medication,
+              ),
+              const FixedSeparator(space: TSizes.spaceBetweenItems),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  FormButton(
+                    onPressed: (){}, 
+                    type: FormButtonType.cancel,
+                    child: const Text("Cancel"),
+                  ),
+                  FormButton(
+                    onPressed: (){}, 
+                    child: const Text("Save")
+                  )
+                ],
               )
             ],
           ),

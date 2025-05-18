@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/widgets/buttons/add_button.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/multivalue_text_input/multivalue_textfield.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/multivalue_text_input/multivalue_textinput_controller.dart';
@@ -14,6 +15,15 @@ class MultivalueTextInput extends StatelessWidget {
     final length = controller.getvalueListCount();
     if(length == 0 ){
       return [
+        const Padding(
+          padding: EdgeInsets.symmetric(vertical: TSizes.paddingsm),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("No Record")
+            ],
+          ),
+        ),
         AddButton(
           onPressed: (){
             controller.handleButtonPress(0, ActionButtonMode.add);
@@ -35,7 +45,10 @@ class MultivalueTextInput extends StatelessWidget {
     return AnimatedBuilder(
       animation: controller, 
       builder: (context, _) => Column(
-      children: _generateInputFields(controller.getValues()),
+      children: [
+        const Divider(),
+        ..._generateInputFields(controller.getValues())
+        ],
       )
     );
   }

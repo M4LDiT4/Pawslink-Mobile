@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/widgets/buttons/add_button.dart';
 import 'package:mobile_app_template/core/widgets/containers/generic_expansion_tile.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/modal_input_list_controller.dart';
@@ -37,6 +38,19 @@ class _ModalInputListState extends State<ModalInputList> {
   }
 
   List<Widget> _buildListItems(){
+    if(_controller.valueList.isEmpty){
+      return [
+        const Padding(
+          padding: EdgeInsets.symmetric(vertical: TSizes.paddingsm),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("No Record")
+            ],
+          ),
+        ),
+      ];
+    }
     final widgetList = <Widget>[];
     for(int i = 0; i < _controller.valueList.length ; i++){
       widgetList.add(ModalInputListItemCard(
@@ -55,7 +69,10 @@ class _ModalInputListState extends State<ModalInputList> {
         AnimatedBuilder(
           animation: _controller, 
           builder: (context, _) => Column(
-            children: _buildListItems()
+            children: [
+              const Divider(),
+              ..._buildListItems()
+            ],
           ),
         ),
         AddButton(onPressed: ()=>showEditorModal(context))
