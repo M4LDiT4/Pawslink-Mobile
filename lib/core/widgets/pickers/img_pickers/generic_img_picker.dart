@@ -7,6 +7,7 @@ import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/constants/text_strings.dart';
 import 'package:mobile_app_template/core/utils/device/device_utility.dart';
 import 'package:mobile_app_template/core/utils/helpers/ui_helpers.dart';
+import 'package:mobile_app_template/core/widgets/pickers/img_pickers/generic_img_picker_controller.dart';
 import 'package:mobile_app_template/core/widgets/pickers/img_pickers/img_picker_src_selection_button.dart';
 
 ///@widget GenericImagePicker
@@ -14,31 +15,44 @@ import 'package:mobile_app_template/core/widgets/pickers/img_pickers/img_picker_
 ///@notes : local states are managed by a stateful widget
 
 class GenericImagePicker extends StatefulWidget {
-  const GenericImagePicker({super.key});
+  final GenericImgPickerController? controller;
+  const GenericImagePicker({
+    super.key,
+    this.controller,
+  });
 
   @override
   State<GenericImagePicker> createState() => _GenericImagePickerState();
 }
 
 class _GenericImagePickerState extends State<GenericImagePicker> {
-  final ImagePicker _picker = ImagePicker();
-  XFile? _selectedImage;
+  late GenericImgPickerController _controller;
+  late ImagePicker _picker;
 
-Future<void> pickImage(ImageSource source) async {
-  try {
-    final XFile? photo = await _picker.pickImage(source: source);
-
-    if (photo != null) {
-      setState(() {
-        _selectedImage = photo;
-      });
-    }
-  } catch (e) {
-    debugPrint('Image pick failed: $e');
-    TUIHelpers.showSnackBar("Camera permission denied");
-    // Optionally show a dialog/snackbar to inform user
+  @override
+  void initState(){
+    _controller = widget.controller ?? GenericImgPickerController();
+    _picker = ImagePicker();
+    super.initState();
   }
-}
+
+  Future<void> pickImage(ImageSource source) async {
+    try {
+      final XFile? photo = await _picker.pickImage(source: source);
+
+      if (photo != null) {
+        _controller.selectedImage = photo;
+      }
+    } catch (e) {
+      debugPrint('Image pick failed: $e');
+      TUIHelpers.showSnackBar("Camera permission denied");
+      // Optionally show a dialog/snackbar to inform user
+    }
+  }
+
+  void resetPicker(){
+    _controller.selectedImage = null;
+  }
 
   Widget _renderPickerContent(bool isDarkMode){
     return SizedBox(
@@ -54,16 +68,18 @@ Future<void> pickImage(ImageSource source) async {
             : TColors.backgroundLight,
         child: Padding(
           padding: const EdgeInsets.all(TSizes.paddingsm),
-          child: Column(
+          child: AnimatedBuilder(
+            animation: _controller, 
+            builder: (context, _) =>Column(
             children: [
-              if (_selectedImage != null)
+              if (_controller.selectedImage != null)
                 Stack(
                   alignment: Alignment.topRight,
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8),
                       child: Image.file(
-                        File(_selectedImage!.path),
+                        File(_controller.selectedImage!.path),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -75,11 +91,7 @@ Future<void> pickImage(ImageSource source) async {
                         child: IconButton(
                           icon: const Icon(Icons.close, size: 16, color: Colors.white),
                           padding: EdgeInsets.zero,
-                          onPressed: () {
-                            setState(() {
-                              _selectedImage = null;
-                            });
-                          },
+                          onPressed: resetPicker
                         ),
                       ),
                     ),
@@ -97,6 +109,7 @@ Future<void> pickImage(ImageSource source) async {
               ]
             ],
           ),
+          )
         ),
       ),
     );

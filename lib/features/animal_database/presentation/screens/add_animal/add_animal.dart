@@ -57,7 +57,9 @@ class AddAnimalScreeen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const GenericImagePicker(),
+              GenericImagePicker(
+                controller: controller.imgPickerController,
+              ),
               GenericExpansionTile(
                 title: TText.basicInformation,
                 children: [
