@@ -1,6 +1,5 @@
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:mobile_app_template/core/widgets/buttons/add_button.dart';
 import 'package:mobile_app_template/core/widgets/containers/generic_expansion_tile.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/modal_input_list_controller.dart';
@@ -13,7 +12,7 @@ class ModalInputList extends StatefulWidget {
   const ModalInputList({
     super.key,
     required this.modal,
-    this.controller
+    this.controller,
   });
   @override
   State<ModalInputList> createState() => _ModalInputListState();
@@ -28,8 +27,8 @@ class _ModalInputListState extends State<ModalInputList> {
   }
   @override 
   void initState() {
-    _controller = widget.controller ?? Get.put<ModalInputListController>(ModalInputListController());
-    _modal = widget.modal.setCallback(_controller.addValue);
+    _controller = widget.controller ?? ModalInputListController();
+    _modal = widget.modal.setCallback(_controller.addItem);
     super.initState();
   }
   @override
@@ -37,9 +36,12 @@ class _ModalInputListState extends State<ModalInputList> {
     return GenericExpansionTile(
       title: "Vaccination History",
       children: [
-        Obx(()=>Column(
-          children: _controller.valueList.map((e)=> ModalInputListItemCard(item: e)).toList()
-        )),
+        AnimatedBuilder(
+          animation: _controller, 
+          builder: (context, _) => Column(
+            children: _controller.valueList.map((e)=> ModalInputListItemCard(item: e)).toList()
+          ),
+        ),
         AddButton(onPressed: ()=>showEditorModal(context))
       ]
     );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app_template/core/constants/colors.dart';
 import 'package:mobile_app_template/core/utils/device/device_utility.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile_app_template/core/widgets/pickers/date_pickers/generic_datepicker_controller.dart';
 
 class GenericDatePickerButton extends StatefulWidget {
   const GenericDatePickerButton({
@@ -14,6 +15,8 @@ class GenericDatePickerButton extends StatefulWidget {
     this.errorText,
     this.padding = const EdgeInsets.all(8.0),
     this.suffixText,
+    this.controller,
+    this.isRequired = false,
   });
 
   final String labelText;
@@ -24,19 +27,29 @@ class GenericDatePickerButton extends StatefulWidget {
   final String? errorText;
   final EdgeInsetsGeometry padding;
   final String? suffixText;
+  final GenericDatepickerController? controller;
+  final bool isRequired;
 
   @override
   State<GenericDatePickerButton> createState() => _GenericDatePickerButtonState();
 }
 
 class _GenericDatePickerButtonState extends State<GenericDatePickerButton> {
-  DateTime? _selectedDate;
+  late final GenericDatepickerController _controller;
 
   @override
   void initState() {
     super.initState();
-    _selectedDate = widget.initialDate;
+    _controller = widget.controller ?? GenericDatepickerController();
+    _controller.initialDate(widget.initialDate);
+    _controller.errorText(widget.errorText);
+    _controller.isRequired(widget.isRequired);
   }
+
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  // }
 
   OutlineInputBorder _buildBorder(Color color) {
     return OutlineInputBorder(
@@ -62,7 +75,7 @@ class _GenericDatePickerButtonState extends State<GenericDatePickerButton> {
     final now = DateTime.now();
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _selectedDate ?? now,
+      initialDate: _controller.selectedDate,
       firstDate: widget.firstDate ?? DateTime(now.year - 5),
       lastDate: widget.lastDate ?? DateTime(now.year + 5),
       builder: (context, child) {
@@ -72,11 +85,12 @@ class _GenericDatePickerButtonState extends State<GenericDatePickerButton> {
         );
       },
     );
+
     if (picked != null) {
-      setState(() {
-        _selectedDate = picked;
-      });
-      if (widget.onDateSelected != null) widget.onDateSelected!(picked);
+      _controller.selectedDate = picked;
+      if (widget.onDateSelected != null) {
+        widget.onDateSelected!(picked);
+      }
     }
   }
 
@@ -85,45 +99,48 @@ class _GenericDatePickerButtonState extends State<GenericDatePickerButton> {
     final isDarkMode = TDeviceUtils.isDarkMode();
     final primaryColor = isDarkMode ? TColors.primaryDark : TColors.primary;
 
-    final formattedDate = _selectedDate != null
-        ? DateFormat.yMMMd().format(_selectedDate!)
-        : '';
-
     return Expanded(
       child: Padding(
         padding: widget.padding,
-        child: InputDecorator(
-          decoration: InputDecoration(
-            labelText: _selectedDate != null? widget.labelText: null,
-            errorText: widget.errorText,
-            enabledBorder: _buildBorder(Colors.grey.shade400),
-            focusedBorder: _buildBorder(primaryColor),
-            errorBorder: _buildBorder(TColors.error),
-            focusedErrorBorder: _buildBorder(TColors.warning),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-            floatingLabelStyle: TextStyle(
-              color: primaryColor,
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-            ),
-            labelStyle: TextStyle(
-              color: Colors.grey.shade700,
-              fontWeight: FontWeight.normal,
-              fontSize: 16,
-            ),
-            suffix: _renderSuffixText(isDarkMode),
-          ),
-          child: InkWell(
-            onTap: () => _pickDate(context),
-            child: Text(
-              formattedDate.isNotEmpty ? formattedDate : 'Select a date',
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: formattedDate.isNotEmpty
-                        ? (isDarkMode ? TColors.textLight : TColors.textDark)
-                        : Colors.grey,
-                  ),
-            ),
-          ),
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (context, _) {
+            final date = _controller.selectedDate;
+            final formattedDate = date != null ? DateFormat.yMMMd().format(date) : '';
+            return InputDecorator(
+              decoration: InputDecoration(
+                labelText: date != null ? widget.labelText : null,
+                errorText: _controller.getErrorMessage(),
+                enabledBorder: _buildBorder(Colors.grey.shade400),
+                focusedBorder: _buildBorder(primaryColor),
+                errorBorder: _buildBorder(TColors.error),
+                focusedErrorBorder: _buildBorder(TColors.warning),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                floatingLabelStyle: TextStyle(
+                  color: primaryColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+                labelStyle: TextStyle(
+                  color: Colors.grey.shade700,
+                  fontWeight: FontWeight.normal,
+                  fontSize: 16,
+                ),
+                suffix: _renderSuffixText(isDarkMode),
+              ),
+              child: InkWell(
+                onTap: () => _pickDate(context),
+                child: Text(
+                  formattedDate.isNotEmpty ? formattedDate : 'Select a date',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: formattedDate.isNotEmpty
+                            ? (isDarkMode ? TColors.textLight : TColors.textDark)
+                            : Colors.grey,
+                      ),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

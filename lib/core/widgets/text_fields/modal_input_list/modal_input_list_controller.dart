@@ -1,4 +1,5 @@
 
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class ModalInputListItem {
@@ -20,20 +21,26 @@ class ModalInputListItem {
   }
 }
 
-class ModalInputListController extends GetxController {
-  final List<ModalInputListItem> valueList = <ModalInputListItem>[].obs;
+class ModalInputListController extends ChangeNotifier{
+  final List<ModalInputListItem> _valueList = [];
 
-  @override
-  void onInit(){
-    super.onInit();
-    valueList.add(ModalInputListItem(title: "Title1", subtitle: "Subtitle1"));
-    valueList.add(ModalInputListItem(title: "Title2", subtitle: "Subtitle2"));
-  }
-  List<ModalInputListItem> getValueList(){
-    return valueList;
+  List<ModalInputListItem> get valueList => List.unmodifiable(_valueList);
+
+  void addItem(ModalInputListItem item){
+    _valueList.add(item);
+    notifyListeners();
   }
 
-  void addValue(ModalInputListItem item){
-    valueList.add(item);
+  void removeItem(int index){
+    if(index < _valueList.length){
+      valueList.removeAt(index);
+      notifyListeners();
+    }
+  }
+
+  void clear(){
+    _valueList.clear();
+    notifyListeners();
   }
 }
+
