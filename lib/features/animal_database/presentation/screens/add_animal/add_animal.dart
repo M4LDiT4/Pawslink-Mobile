@@ -17,9 +17,11 @@ import 'package:mobile_app_template/core/widgets/text_fields/generic_text_field/
 import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/modal_input_list.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
 import 'package:mobile_app_template/features/animal_database/controllers/add_animal_controller.dart';
+import 'package:mobile_app_template/services/navigation_service.dart';
 
 class AddAnimalScreeen extends StatelessWidget {
-  const AddAnimalScreeen({super.key});
+  final controller = Get.find<AddAnimalController>();
+  AddAnimalScreeen({super.key});
 
   List<String> _generateSpeciesList (){
     return AnimalSpecies.values.map((e)=>e.label).toList();
@@ -32,10 +34,18 @@ class AddAnimalScreeen extends StatelessWidget {
   List<String> _generateSexList () {
     return AnimalSex.values.map((e)=> e.label).toList();
   }
+
+  void _handleCancel(){
+    TNavigationService.back();
+  }
+
+  void _handleSave(){
+    controller.handleSubmit();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<AddAnimalController>();
-    return Scaffold(
+    return Scaffold( 
       appBar:const GenericAppbar(),
       body: SingleChildScrollView(
         child: Padding(
@@ -79,14 +89,26 @@ class AddAnimalScreeen extends StatelessWidget {
                             .keyboardType(const TextInputType.numberWithOptions())
                             .build(),
 
-                          GenericDropdown(options: _generateSexList(), labelText: TText.sex,)
+                          GenericDropdown(
+                            options: _generateSexList(), 
+                            labelText: TText.sex,
+                            isRequired: true,
+                          ),
                         ],
                       ),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          GenericDropdown(options: _generateSpeciesList(), labelText: TText.species),
-                          GenericDropdown(options: _generateStatusList(), labelText: TText.status),
+                          GenericDropdown(
+                            options: _generateSpeciesList(), 
+                            labelText: TText.species,
+                            isRequired: true,
+                          ),
+                          GenericDropdown(
+                            options: _generateStatusList(), 
+                            labelText: TText.status,
+                            isRequired: true,
+                          ),
                         ],
                       ),
                     ],
@@ -129,12 +151,12 @@ class AddAnimalScreeen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   FormButton(
-                    onPressed: (){}, 
+                    onPressed: _handleCancel, 
                     type: FormButtonType.cancel,
                     child: const Text("Cancel"),
                   ),
                   FormButton(
-                    onPressed: (){}, 
+                    onPressed: _handleSave, 
                     child: const Text("Save")
                   )
                 ],

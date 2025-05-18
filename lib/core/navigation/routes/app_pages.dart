@@ -42,7 +42,7 @@ class TAppPages {
     ),
     GetPage(
       name: TAppRoutes.addAnimal, 
-      page: () => const AddAnimalScreeen(),
+      page: () => AddAnimalScreeen(),
       transition: Transition.rightToLeft, // or slide, zoom, etc.
       transitionDuration: const Duration(milliseconds: 500),
       binding: AddAnimalControllerBinding()
