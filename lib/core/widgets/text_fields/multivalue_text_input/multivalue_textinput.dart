@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:mobile_app_template/core/widgets/buttons/add_button.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/multivalue_text_input/multivalue_textfield.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/multivalue_text_input/multivalue_textinput_controller.dart';
@@ -33,7 +32,9 @@ class MultivalueTextInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(()=> Column(
+    return AnimatedBuilder(
+      animation: controller, 
+      builder: (context, _) => Column(
       children: _generateInputFields(controller.getValues()),
       )
     );
