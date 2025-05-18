@@ -69,5 +69,10 @@ class GenericDatepickerController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void reset(){
+    _selectedDate = null;
+    _errorMssg = null;
+  }
+
 
 }

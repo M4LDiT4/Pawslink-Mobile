@@ -33,7 +33,7 @@ class ModalInputListController extends ChangeNotifier{
 
   void removeItem(int index){
     if(index < _valueList.length){
-      valueList.removeAt(index);
+      _valueList.removeAt(index);
       notifyListeners();
     }
   }

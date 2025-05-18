@@ -9,6 +9,7 @@ import 'package:mobile_app_template/core/widgets/containers/generic_expansion_ti
 import 'package:mobile_app_template/core/widgets/dropdowns/generic_dropdown.dart';
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
 import 'package:mobile_app_template/core/widgets/pickers/img_pickers/generic_img_picker.dart';
+import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/modals/medication_modal.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/modals/vaccination_modal.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/multivalue_text_input/multivalue_textinput.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/generic_text_field/generic_textfield_builder.dart';
@@ -106,7 +107,16 @@ class AddAnimalScreeen extends StatelessWidget {
                 ],
               ),
               ModalInputList(
-                modal: VaccinationModal(label: "Vaccination")
+                modal: VaccinationModal(),
+                title: "Vaccination Record",
+                controller: controller.vaxController,
+                icon: Icons.vaccines,
+              ),
+              ModalInputList(
+                title: "Medication Record",
+                modal: MedicationModal(),
+                controller: controller.medController,
+                icon: Icons.medication,
               )
             ],
           ),

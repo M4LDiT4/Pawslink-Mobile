@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/utils/formatters/formatter.dart';
@@ -10,22 +11,24 @@ import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/mo
 import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
 import 'package:mobile_app_template/services/navigation_service.dart';
 
-class VaccinationModal extends InputModalStrategy {
-  VaccinationModal();
+class MedicationModal extends InputModalStrategy {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _datePickerController = GenericDatepickerController();
-
+  
+  MedicationModal();
+ 
   @override
-  InputModalStrategy setCallback(void Function(ModalInputListItem item) callback) {
+  InputModalStrategy setCallback(void Function(ModalInputListItem item) callback){
     this.callback = callback;
     return this;
   }
 
   @override
-  void show(BuildContext context) {
+  void show(BuildContext context){
     AnimatedDialog.show(
-      context, label: "Vaccination", 
+      context, 
+      label: "Medication", 
       child: build(context)
     );
   }
@@ -60,7 +63,7 @@ class VaccinationModal extends InputModalStrategy {
         Row(children: [
           Text(
             style: Theme.of(context).textTheme.titleMedium,
-            "Enter Vaccination Details"
+            "Enter Medication Details"
             )
           ]
         ),
@@ -68,7 +71,7 @@ class VaccinationModal extends InputModalStrategy {
         Row(
           children: [
             GenericTextfieldBuilder
-            .formField(label: "Vaccination for")
+            .formField(label: "Medication for")
             .controller(_titleController)
             .required()
             .build(),
@@ -77,7 +80,7 @@ class VaccinationModal extends InputModalStrategy {
         Row(
           children: [
              GenericDatePickerButton(
-              labelText: "Vaccination Date",
+              labelText: "Medication Date",
               controller: _datePickerController,
               isRequired: true,
               errorText: "Field cannot be empty",
@@ -88,10 +91,11 @@ class VaccinationModal extends InputModalStrategy {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             TextButton(onPressed: handleCancel, child:const Text("Cancel")),
-            TextButton(onPressed: handleSave, child: Text("Confirm"))
+            TextButton(onPressed: handleSave, child: const Text("Confirm"))
           ],
         )
       ],
     ));
   }
+
 }

@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/modal_input_list_controller.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/multivalue_text_input/multivalue_textinput_controller.dart';
 
 class AddAnimalController extends GetxController {
@@ -9,6 +10,8 @@ class AddAnimalController extends GetxController {
   late MultiValueTextfieldController coatColorController;
   late MultiValueTextfieldController notesController;
   late MultiValueTextfieldController traitsController;
+  late ModalInputListController vaxController;
+  late ModalInputListController medController;
 
   @override
   void onInit(){
@@ -16,6 +19,8 @@ class AddAnimalController extends GetxController {
     coatColorController = MultiValueTextfieldController();
     notesController = MultiValueTextfieldController();
     traitsController = MultiValueTextfieldController();
+    vaxController = ModalInputListController();
+    medController = ModalInputListController();
     formKey = GlobalKey<FormState>();
   }
 

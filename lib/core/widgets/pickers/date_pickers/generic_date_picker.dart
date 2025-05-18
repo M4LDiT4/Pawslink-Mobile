@@ -36,6 +36,7 @@ class GenericDatePickerButton extends StatefulWidget {
 
 class _GenericDatePickerButtonState extends State<GenericDatePickerButton> {
   late final GenericDatepickerController _controller;
+  bool _expanded = false;
 
   @override
   void initState() {
@@ -44,12 +45,8 @@ class _GenericDatePickerButtonState extends State<GenericDatePickerButton> {
     _controller.initialDate(widget.initialDate);
     _controller.errorText(widget.errorText);
     _controller.isRequired(widget.isRequired);
+    _expanded = _controller.selectedDate != null;
   }
-
-  // @override
-  // void dispose() {
-  //   super.dispose();
-  // }
 
   OutlineInputBorder _buildBorder(Color color) {
     return OutlineInputBorder(
@@ -87,7 +84,10 @@ class _GenericDatePickerButtonState extends State<GenericDatePickerButton> {
     );
 
     if (picked != null) {
-      _controller.selectedDate = picked;
+      setState(() {
+        _controller.selectedDate = picked;
+        _expanded = true;
+      });
       if (widget.onDateSelected != null) {
         widget.onDateSelected!(picked);
       }
@@ -107,37 +107,58 @@ class _GenericDatePickerButtonState extends State<GenericDatePickerButton> {
           builder: (context, _) {
             final date = _controller.selectedDate;
             final formattedDate = date != null ? DateFormat.yMMMd().format(date) : '';
-            return InputDecorator(
-              decoration: InputDecoration(
-                labelText: date != null ? widget.labelText : null,
-                errorText: _controller.getErrorMessage(),
-                enabledBorder: _buildBorder(Colors.grey.shade400),
-                focusedBorder: _buildBorder(primaryColor),
-                errorBorder: _buildBorder(TColors.error),
-                focusedErrorBorder: _buildBorder(TColors.warning),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-                floatingLabelStyle: TextStyle(
-                  color: primaryColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
-                labelStyle: TextStyle(
-                  color: Colors.grey.shade700,
-                  fontWeight: FontWeight.normal,
-                  fontSize: 16,
-                ),
-                suffix: _renderSuffixText(isDarkMode),
-              ),
-              child: InkWell(
-                onTap: () => _pickDate(context),
-                child: Text(
-                  formattedDate.isNotEmpty ? formattedDate : 'Select a date',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: formattedDate.isNotEmpty
-                            ? (isDarkMode ? TColors.textLight : TColors.textDark)
-                            : Colors.grey,
+            final hasDate = date != null;
+
+            return AnimatedSize(
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.easeInOut,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  InputDecorator(
+                    decoration: InputDecoration(
+                      labelText: hasDate ? widget.labelText : null,
+                      errorText: _controller.getErrorMessage(),
+                      enabledBorder: _buildBorder(Colors.grey.shade400),
+                      focusedBorder: _buildBorder(primaryColor),
+                      errorBorder: _buildBorder(TColors.error),
+                      focusedErrorBorder: _buildBorder(TColors.warning),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                      floatingLabelStyle: TextStyle(
+                        color: primaryColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
                       ),
-                ),
+                      labelStyle: TextStyle(
+                        color: Colors.grey.shade700,
+                        fontWeight: FontWeight.normal,
+                        fontSize: 16,
+                      ),
+                      suffix: _renderSuffixText(isDarkMode),
+                    ),
+                    child: InkWell(
+                      onTap: () => _pickDate(context),
+                      child: AnimatedOpacity(
+                        duration: const Duration(milliseconds: 400),
+                        opacity: formattedDate.isNotEmpty ? 1 : 0.5,
+                        child: Text(
+                          formattedDate.isNotEmpty ? formattedDate : 'Select a date',
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                color: formattedDate.isNotEmpty
+                                    ? (isDarkMode ? TColors.textLight : TColors.textDark)
+                                    : Colors.grey.shade700,
+                              ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 400),
+                    child: _expanded
+                        ? const SizedBox(height: 10)
+                        : const SizedBox.shrink(),
+                  ),
+                ],
               ),
             );
           },

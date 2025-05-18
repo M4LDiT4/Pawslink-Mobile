@@ -9,10 +9,14 @@ import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/mo
 class ModalInputList extends StatefulWidget {
   final InputModalStrategy modal;
   final ModalInputListController? controller;
+  final String title;
+  final IconData? icon;
   const ModalInputList({
     super.key,
     required this.modal,
     this.controller,
+    required this.title,
+    this.icon,
   });
   @override
   State<ModalInputList> createState() => _ModalInputListState();
@@ -31,15 +35,27 @@ class _ModalInputListState extends State<ModalInputList> {
     _modal = widget.modal.setCallback(_controller.addItem);
     super.initState();
   }
+
+  List<Widget> _buildListItems(){
+    final widgetList = <Widget>[];
+    for(int i = 0; i < _controller.valueList.length ; i++){
+      widgetList.add(ModalInputListItemCard(
+        item: _controller.valueList[i],
+        onPressed: () => {_controller.removeItem(i)},
+        icon: widget.icon,
+      ));
+    }
+    return widgetList;
+  }
   @override
   Widget build(BuildContext context) {
     return GenericExpansionTile(
-      title: "Vaccination History",
+      title: widget.title,
       children: [
         AnimatedBuilder(
           animation: _controller, 
           builder: (context, _) => Column(
-            children: _controller.valueList.map((e)=> ModalInputListItemCard(item: e)).toList()
+            children: _buildListItems()
           ),
         ),
         AddButton(onPressed: ()=>showEditorModal(context))

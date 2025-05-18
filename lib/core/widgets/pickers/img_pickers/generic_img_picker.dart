@@ -6,6 +6,7 @@ import 'package:mobile_app_template/core/constants/colors.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/constants/text_strings.dart';
 import 'package:mobile_app_template/core/utils/device/device_utility.dart';
+import 'package:mobile_app_template/core/utils/helpers/ui_helpers.dart';
 import 'package:mobile_app_template/core/widgets/pickers/img_pickers/img_picker_src_selection_button.dart';
 
 ///@widget GenericImagePicker
@@ -23,14 +24,21 @@ class _GenericImagePickerState extends State<GenericImagePicker> {
   final ImagePicker _picker = ImagePicker();
   XFile? _selectedImage;
 
-  Future<void> pickImage(ImageSource source) async {
+Future<void> pickImage(ImageSource source) async {
+  try {
     final XFile? photo = await _picker.pickImage(source: source);
+
     if (photo != null) {
       setState(() {
         _selectedImage = photo;
       });
     }
+  } catch (e) {
+    debugPrint('Image pick failed: $e');
+    TUIHelpers.showSnackBar("Camera permission denied");
+    // Optionally show a dialog/snackbar to inform user
   }
+}
 
   Widget _renderPickerContent(bool isDarkMode){
     return SizedBox(
@@ -127,4 +135,7 @@ class _GenericImagePickerState extends State<GenericImagePicker> {
       ),
     );
   }
+}
+
+class Permission {
 }
