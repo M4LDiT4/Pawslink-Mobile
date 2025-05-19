@@ -5,6 +5,7 @@
 import 'package:get/get.dart';
 import 'package:mobile_app_template/core/bindings/controllers/add_animal.dart';
 import 'package:mobile_app_template/features/animal_database/presentation/screens/add_animal/add_animal.dart';
+import 'package:mobile_app_template/features/animal_database/presentation/screens/add_animal/add_animal_summary.dart';
 import 'package:mobile_app_template/features/authentication/presentation/sign_in.dart';
 import 'package:mobile_app_template/features/authentication/presentation/sign_up.dart';
 import 'package:mobile_app_template/features/onboarding/presentation/onboarding_screen.dart';
@@ -37,8 +38,8 @@ class TAppPages {
     GetPage(
       name: TAppRoutes.signup, 
       page: () => const SignUpScreen(),
-        transition: Transition.leftToRight, // or slide, zoom, etc.
-        transitionDuration: const Duration(milliseconds: 500),
+      transition: Transition.leftToRight, // or slide, zoom, etc.
+      transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
       name: TAppRoutes.addAnimal, 
@@ -47,5 +48,11 @@ class TAppPages {
       transitionDuration: const Duration(milliseconds: 500),
       binding: AddAnimalControllerBinding()
     ),
+    GetPage(
+      name: TAppRoutes.addAnimalSummary, 
+      page: () => AddAnimalSummary(),
+      transition: Transition.zoom, // or slide, zoom, etc.
+      transitionDuration: const Duration(milliseconds: 300),
+    )
   ];
 }

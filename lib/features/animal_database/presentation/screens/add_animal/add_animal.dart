@@ -72,11 +72,13 @@ class AddAnimalScreeen extends StatelessWidget {
                         children: [
                           GenericTextfieldBuilder
                             .formField(label: TText.name)
+                            .controller(controller.nameController)
                             .required()
                             .build()
                           ,
                           GenericTextfieldBuilder
                             .formField(label: TText.location)
+                            .controller(controller.locationController)
                             .required()
                             .build()
                         ],
@@ -86,6 +88,7 @@ class AddAnimalScreeen extends StatelessWidget {
                         children: [
                           GenericTextfieldBuilder
                             .formField(label: TText.age)
+                            .controller(controller.ageController)
                             .suffixString(TText.month)
                             .required()
                             .keyboardType(const TextInputType.numberWithOptions())
@@ -93,6 +96,7 @@ class AddAnimalScreeen extends StatelessWidget {
 
                           GenericDropdown(
                             options: _generateSexList(), 
+                            controller: controller.sexController,
                             labelText: TText.sex,
                             isRequired: true,
                           ),
@@ -102,12 +106,14 @@ class AddAnimalScreeen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           GenericDropdown(
-                            options: _generateSpeciesList(), 
+                            options: _generateSpeciesList(),
+                            controller: controller.speciesController, 
                             labelText: TText.species,
                             isRequired: true,
                           ),
                           GenericDropdown(
                             options: _generateStatusList(), 
+                            controller: controller.statusController,
                             labelText: TText.status,
                             isRequired: true,
                           ),
@@ -121,19 +127,25 @@ class AddAnimalScreeen extends StatelessWidget {
               GenericExpansionTile(
                 title: "Coat Color",
                 children: [
-                  MultivalueTextInput(controller: controller.coatColorController,)
+                  MultivalueTextInput(
+                    controller: controller.coatColorController,
+                  )
                 ],
               ),
               GenericExpansionTile(
                 title: "Notes",
                 children: [
-                  MultivalueTextInput(controller: controller.notesController)
+                  MultivalueTextInput(
+                    controller: controller.notesController
+                  )
                 ],
               ),
               GenericExpansionTile(
                 title: "Traits and Personality",
                 children: [
-                  MultivalueTextInput(controller: controller.traitsController)
+                  MultivalueTextInput(
+                    controller: controller.traitsController
+                  )
                 ],
               ),
               ModalInputList(

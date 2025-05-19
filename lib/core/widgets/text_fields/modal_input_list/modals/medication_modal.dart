@@ -6,9 +6,9 @@ import 'package:mobile_app_template/core/widgets/dialogs/animated_dialog.dart';
 import 'package:mobile_app_template/core/widgets/pickers/date_pickers/generic_date_picker.dart';
 import 'package:mobile_app_template/core/widgets/pickers/date_pickers/generic_datepicker_controller.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/generic_text_field/generic_textfield_builder.dart';
-import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/modal_input_list_controller.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/modals/input_modal_strategy.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
+import 'package:mobile_app_template/data/model/modal_input_list_item.dart';
 import 'package:mobile_app_template/services/navigation_service.dart';
 
 class MedicationModal extends InputModalStrategy {

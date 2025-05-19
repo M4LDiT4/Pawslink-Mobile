@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:mobile_app_template/core/constants/colors.dart';
 import 'package:mobile_app_template/core/utils/device/device_utility.dart';
-import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/modal_input_list_controller.dart';
+import 'package:mobile_app_template/data/model/modal_input_list_item.dart';
 
 class ModalInputListItemCard extends StatefulWidget {
   final ModalInputListItem item;

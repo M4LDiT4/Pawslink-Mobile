@@ -1,25 +1,6 @@
 
 import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';
-
-class ModalInputListItem {
-  final String title;
-  final String subtitle;
-
-  ModalInputListItem({
-    required this.title,
-    required this.subtitle
-  });
-
-
-  String getTitle(){
-    return title;
-  }
-
-  String getSubTitle(){
-    return subtitle;
-  }
-}
+import 'package:mobile_app_template/data/model/modal_input_list_item.dart';
 
 class ModalInputListController extends ChangeNotifier{
   final List<ModalInputListItem> _valueList = [];
@@ -41,6 +22,15 @@ class ModalInputListController extends ChangeNotifier{
   void clear(){
     _valueList.clear();
     notifyListeners();
+  }
+
+  List<String> getValueInString(){
+    final List<String> stringList = [];
+    for(var item in _valueList){
+      stringList.add(item.getValueInString());
+    }
+
+    return stringList;
   }
 }
 

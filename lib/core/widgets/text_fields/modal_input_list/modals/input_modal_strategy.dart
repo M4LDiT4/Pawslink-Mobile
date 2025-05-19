@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/modal_input_list_controller.dart';
+import 'package:mobile_app_template/data/model/modal_input_list_item.dart';
 
 abstract class InputModalStrategy {
   void Function(ModalInputListItem item)? callback;
