@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/navigation/route_params/add_animal_summary.dart';
-import 'package:mobile_app_template/core/utils/device/device_utility.dart';
+import 'package:mobile_app_template/core/utils/colors/color_utils.dart';
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
 
 class AddAnimalSummary extends StatelessWidget {
@@ -13,15 +13,12 @@ class AddAnimalSummary extends StatelessWidget {
 
   Widget _buildInfoTile(String? label, String value, IconData icon) {
     return ListTile(
-      leading: Icon(icon, color: Theme.of(Get.context!).colorScheme.tertiary),
+      leading: Icon(icon, color: TColorUtils.tertiary()),
       title: Text(
         value,
         style: const TextStyle(fontWeight: FontWeight.w600),
       ),
       subtitle: label != null ? Text(label) : null,
-      tileColor: Theme.of(Get.context!).colorScheme.surfaceContainerHighest,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     );
   }
 
@@ -68,7 +65,6 @@ class AddAnimalSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = TDeviceUtils.isDarkMode();
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: const GenericAppbar(),
@@ -88,8 +84,8 @@ class AddAnimalSummary extends StatelessWidget {
               _buildInfoTile("Species", params.species, Iconsax.category),
               _buildInfoTile("Status", params.status, Iconsax.status),
             ]),
-            _buildSectionWithList("Coat Color", params.coatColor, Iconsax.color_swatch),
-            _buildSectionWithList("Traits and Personality", params.traits, Iconsax.tag),
+            _buildSectionWithList("Coat Color", params.coatColor, Icons.color_lens),
+            _buildSectionWithList("Traits and Personality", params.traits, Icons.tag),
             _buildSectionWithList("Notes", params.notes, Iconsax.note),
             _buildSectionWithList("Vaccination History", params.vaccinations, Icons.vaccines),
             _buildSectionWithList("Medication", params.medications, Icons.medical_information),
