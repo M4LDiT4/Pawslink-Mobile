@@ -19,7 +19,7 @@ class FormButton extends StatelessWidget {
   });
 
   final _baseStyle = ElevatedButton.styleFrom(
-    padding: EdgeInsets.all(8),
+    padding: const EdgeInsets.all(8),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(4),
     )
