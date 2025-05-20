@@ -9,8 +9,12 @@ import 'package:mobile_app_template/services/navigation_service.dart';
 class AnimalDatabaseScreen extends StatelessWidget {
   const AnimalDatabaseScreen({super.key});
 
-  void navigateToAddAnimal () {
+  void _navigateToAddAnimal () {
     TNavigationService.toNamed(TAppRoutes.addAnimal);
+  }
+
+  void _navigateToViewAnimal() {
+    TNavigationService.toNamed(TAppRoutes.viewAnimal);
   }
   @override
   Widget build(BuildContext context) {
@@ -45,7 +49,7 @@ class AnimalDatabaseScreen extends StatelessWidget {
               children: [
                 AdminHomeActionButtons(
                   label: "View Animals",
-                  onPress: (){},
+                  onPress: _navigateToViewAnimal,
                 ),
                 AdminHomeActionButtons(
                   label: "View Drafts",
@@ -53,7 +57,7 @@ class AnimalDatabaseScreen extends StatelessWidget {
                 ),
                 AdminHomeActionButtons(
                   label: "+ Add Animal",
-                  onPress: navigateToAddAnimal,
+                  onPress: _navigateToAddAnimal,
                   type: AdminButtonType.special,
                 ),
               ],

@@ -21,4 +21,7 @@ class TImages{
   static const String logoUpRound = "assets/logos/up_round.png";
 
   static const String womanWithUmbrella = "assets/images/girl_with_umbrella.png";
+  
+  static const String catIcon = "assets/icons/cat.png";
+  static const String dogIcon = "assets/icons/dog.png";
 }

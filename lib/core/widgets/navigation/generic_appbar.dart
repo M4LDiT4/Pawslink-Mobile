@@ -9,10 +9,12 @@ import 'package:mobile_app_template/core/utils/device/device_utility.dart';
 class GenericAppbar extends StatelessWidget implements PreferredSizeWidget {
 
   final double height;
+  final PreferredSizeWidget? bottom;
 
   const GenericAppbar({
     super.key,
     this.height = kToolbarHeight,
+    this.bottom,
   });
 
   @override
@@ -35,8 +37,10 @@ class GenericAppbar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       automaticallyImplyLeading: true,
       elevation: 0,
+      bottom: bottom,
     );
   }
-  @override
-  Size get preferredSize => Size.fromHeight(height);
+ @override
+  Size get preferredSize =>
+      Size.fromHeight(height + (bottom?.preferredSize.height ?? 0));  
 }
