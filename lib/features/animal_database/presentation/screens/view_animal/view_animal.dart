@@ -8,7 +8,7 @@ class ViewAnimalScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
+    return const DefaultTabController(
       length: 2, // Number of tabs
       child: Scaffold(
         appBar: GenericAppbar(

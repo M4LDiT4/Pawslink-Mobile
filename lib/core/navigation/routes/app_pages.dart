@@ -53,10 +53,13 @@ class TAppPages {
       name: TAppRoutes.addAnimalSummary, 
       page: () => AddAnimalSummary(),
       transition: Transition.zoom, // or slide, zoom, etc.
-      transitionDuration: const Duration(milliseconds: 300),
+      transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
       name: TAppRoutes.viewAnimal, 
-      page: () => const ViewAnimalScreen())
+      page: () => const ViewAnimalScreen(),
+      transition: Transition.rightToLeft, // or slide, zoom, etc.
+      transitionDuration: const Duration(milliseconds: 500),
+    )
   ];
 }

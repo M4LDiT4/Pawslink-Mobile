@@ -1,11 +1,11 @@
-
+import 'package:flutter/material.dart';
 import 'package:mobile_app_template/core/constants/text_strings.dart';
 
-enum AnimalStatus {transient, rainbowBridge, adopted, onCampus, owned}
+enum AnimalStatus { transient, rainbowBridge, adopted, onCampus, owned }
 
 extension AnimalStatusExtension on AnimalStatus {
   String get label {
-    switch(this){
+    switch (this) {
       case AnimalStatus.transient:
         return TText.transient;
       case AnimalStatus.adopted:
@@ -19,3 +19,27 @@ extension AnimalStatusExtension on AnimalStatus {
     }
   }
 }
+
+extension AnimalStatusColorExtension on AnimalStatus {
+  Color get color {
+    switch (this) {
+      case AnimalStatus.transient:
+        return Colors.orange;
+      case AnimalStatus.adopted:
+        return Colors.green;
+      case AnimalStatus.onCampus:
+        return Colors.blue;
+      case AnimalStatus.owned:
+        return Colors.purple;
+      case AnimalStatus.rainbowBridge:
+        return Colors.grey;
+    }
+  }
+}
+
+extension AnimalStatusTextColorExtension on AnimalStatus {
+  Color get titleTextColor {
+    return color.computeLuminance() > 0.5 ? Colors.black : Colors.white;
+  }
+}
+

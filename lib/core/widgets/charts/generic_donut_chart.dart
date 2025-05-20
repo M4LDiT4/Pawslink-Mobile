@@ -1,8 +1,67 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_app_template/core/utils/colors/color_utils.dart';
+
+class GenericDonutChartParams {
+  final double value;
+  final String title;
+  final Color color;
+
+  GenericDonutChartParams({
+    required this.value,
+    required this.title,
+    required this.color,
+  });
+}
 
 class GenericDonutChart extends StatelessWidget {
-  const GenericDonutChart({super.key});
+  final List<GenericDonutChartParams> valueList;
+  final Widget? centerIcon;
+  const GenericDonutChart({
+    super.key,
+    required this.valueList,
+    this.centerIcon,
+  });
+
+  int _generateTotal(){
+    int count = 0;
+    for(var item in valueList){
+      count += item.value.toInt();
+    }
+    return count;
+  }
+
+  List<PieChartSectionData> _generateValueList (double radius, BuildContext context) {
+    final dataList = <PieChartSectionData>[];
+    Color textColor;
+    final titleStyle = Theme.of(context).textTheme.bodyMedium;
+    for(var item in valueList){
+      textColor = TColorUtils.getContrastingTextColor(item.color);
+      dataList.add(
+        PieChartSectionData(
+          value: item.value,
+          title: item.value.toInt().toString(),
+          color: item.color,
+          radius: radius,
+          titleStyle: titleStyle!.copyWith(color: textColor)
+        )
+      );
+    }
+    return dataList;
+  }
+
+  Widget _generateCenter(BuildContext context, double centerSpaceRadius){
+    if(centerIcon != null){
+      return centerIcon!;
+    }
+  return Text(
+    '${_generateTotal()}',
+    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+      fontSize: centerSpaceRadius * 0.8,
+      fontWeight: FontWeight.bold,
+    ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,9 +72,6 @@ class GenericDonutChart extends StatelessWidget {
           final radius = constraints.maxWidth * 0.3;
           final centerSpaceRadius = constraints.maxWidth * 0.2;
 
-          // Calculate total value
-          final total = 40 + 30 + 30;
-
           return Stack(
             alignment: Alignment.center,
             children: [
@@ -23,40 +79,11 @@ class GenericDonutChart extends StatelessWidget {
                 PieChartData(
                   centerSpaceRadius: centerSpaceRadius,
                   sectionsSpace: 2,
-                  sections: [
-                    PieChartSectionData(
-                      value: 40,
-                      color: Colors.blue,
-                      title: '40',
-                      radius: radius,
-                      titleStyle: const TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                    PieChartSectionData(
-                      value: 30,
-                      color: Colors.red,
-                      title: '30',
-                      radius: radius,
-                      titleStyle: const TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                    PieChartSectionData(
-                      value: 30,
-                      color: Colors.green,
-                      title: '30',
-                      radius: radius,
-                      titleStyle: const TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ],
+                  sections: _generateValueList(radius, context)
                 ),
               ),
               // Positioned center total text
-              Text(
-                '$total',
-                style: TextStyle(
-                  fontSize: centerSpaceRadius * 0.8,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
+              _generateCenter(context, centerSpaceRadius)
             ],
           );
         },

@@ -52,4 +52,5 @@ class TText{
   static const String confirm = "Confirm";
   static const String noRecord = "--No Record--";
   static const String save = "Save";
+  static const String summary = "Summary";
 }
