@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
-import 'package:mobile_app_template/navigation/admin_navigation/admin_navigation_controller.dart';
+import 'package:mobile_app_template/core/navigation/admin_navigation/admin_navigation_controller.dart';
 
 class AdminHomeNavigation extends StatelessWidget {
   final controller = Get.put(AdminNavigationController());

@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_template/core/constants/colors.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
+import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
 import 'package:mobile_app_template/core/utils/device/device_utility.dart';
 import 'package:mobile_app_template/core/widgets/buttons/admin/admin_home_actionbutton.dart';
+import 'package:mobile_app_template/services/navigation_service.dart';
 
 class AnimalDatabaseScreen extends StatelessWidget {
   const AnimalDatabaseScreen({super.key});
 
+  void navigateToAddAnimal () {
+    TNavigationService.toNamed(TAppRoutes.addAnimal);
+  }
   @override
   Widget build(BuildContext context) {
     final screenHeight = TDeviceUtils.getScreenBodyHeight();
@@ -48,7 +53,7 @@ class AnimalDatabaseScreen extends StatelessWidget {
                 ),
                 AdminHomeActionButtons(
                   label: "+ Add Animal",
-                  onPress: (){},
+                  onPress: navigateToAddAnimal,
                   type: AdminButtonType.special,
                 ),
               ],

@@ -24,4 +24,23 @@ class TText{
   static const String partnerShip = "in partnership with";
   static const String signInString = "Already have an account? Login";
   static const String createAccount = "Create Account";
+  static const String noImgSelected = "No image selected";
+  static const String imgPickerText1 = "Give your friend a Profile Picture";
+  static const String name = "Name";
+  static const String location = "Location";
+  static const String basicInformation = "Basic Information";
+  static const String transient = "Transient";
+  static const String onCampus = "On Campus";
+  static const String adopted ="Adopted";
+  static const String owned = "Owned";
+  static const String rainbowBridge = "Rainbow Bridge";
+  static const String male = "Male";
+  static const String female = "Female";
+  static const String dog = "Dog";
+  static const String cat = "Cat";
+  static const String age = "Age";
+  static const String month = "Months";
+  static const String species = "Species";
+  static const String status = "Status";
+  static const String sex = "Sex";
 }

@@ -1,0 +1,1 @@
+enum UseRole {visitor, normalUser, admin, superAdmin}

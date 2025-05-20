@@ -11,7 +11,7 @@ import 'package:mobile_app_template/core/widgets/text_fields/auth_text_field.dar
 import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/keyboard_safe_scrollview.dart';
 import 'package:mobile_app_template/features/authentication/controllers/sign_in_controller.dart';
-import 'package:mobile_app_template/navigation/routes/app_routes.dart';
+import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
 import 'package:mobile_app_template/services/navigation_service.dart';
 
 class SignInScreen extends StatelessWidget {
