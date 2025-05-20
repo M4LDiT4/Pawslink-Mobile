@@ -2,9 +2,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mobile_app_template/core/constants/colors.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/constants/text_strings.dart';
+import 'package:mobile_app_template/core/utils/colors/color_utils.dart';
 import 'package:mobile_app_template/core/utils/device/device_utility.dart';
 import 'package:mobile_app_template/core/utils/helpers/ui_helpers.dart';
 import 'package:mobile_app_template/core/widgets/pickers/img_pickers/generic_img_picker_controller.dart';
@@ -63,9 +63,7 @@ class _GenericImagePickerState extends State<GenericImagePicker> {
           side: const BorderSide(width: 2),
           borderRadius: BorderRadius.circular(8),
         ),
-        color: isDarkMode
-            ? TColors.backgroundDark
-            : TColors.backgroundLight,
+        color: TColorUtils.surface(),
         child: Padding(
           padding: const EdgeInsets.all(TSizes.paddingsm),
           child: AnimatedBuilder(
@@ -100,9 +98,7 @@ class _GenericImagePickerState extends State<GenericImagePicker> {
               else ...[
                 Icon(
                   size: 54,
-                  color: isDarkMode
-                      ? TColors.primaryDark
-                      : TColors.primary,
+                  color: TColorUtils.primary(),
                   Iconsax.gallery,
                 ),
                 const Text(TText.noImgSelected)

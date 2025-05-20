@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:mobile_app_template/core/constants/colors.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
-import 'package:mobile_app_template/core/utils/device/device_utility.dart';
+import 'package:mobile_app_template/core/utils/colors/color_utils.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/multivalue_text_input/multivalue_textfield.dart';
 
 class TrailingButton extends StatelessWidget {
@@ -21,14 +21,10 @@ class TrailingButton extends StatelessWidget {
     return Iconsax.minus;
   }
 
-  Icon _generateIcon(bool isDarkMode){
+  Icon _generateIcon(){
     Color color = TColors.textLight;
     if(mode == ActionButtonMode.delete){
-      if(isDarkMode){
-        color = TColors.primaryDark;
-      }else{
-        color = TColors.primary;
-      }
+      color = TColorUtils.primary();
     }
 
     return Icon(
@@ -47,14 +43,14 @@ class TrailingButton extends StatelessWidget {
     ),
   );
 
-  ButtonStyle _generateButtonStyle (bool isDarkMode){
+  ButtonStyle _generateButtonStyle (){
     if(mode == ActionButtonMode.add){
       return _baseButtonStyle;
     }
     return _baseButtonStyle.copyWith(
-      backgroundColor: WidgetStatePropertyAll(isDarkMode? TColors.backgroundDark : TColors.backgroundLight),
+      backgroundColor: WidgetStatePropertyAll(TColorUtils.surface()),
       side: WidgetStatePropertyAll(BorderSide(
-        color:isDarkMode? TColors.primaryDark : TColors.primary,
+        color:TColorUtils.primary(),
         width: 2 )
       ),
       shape: WidgetStatePropertyAll(RoundedRectangleBorder(
@@ -67,11 +63,10 @@ class TrailingButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = TDeviceUtils.isDarkMode();
     return ElevatedButton(
-        style: _generateButtonStyle(isDarkMode),
+        style: _generateButtonStyle(),
         onPressed: onPress, 
-        child: _generateIcon(isDarkMode)
+        child: _generateIcon()
       );
   }
 }
