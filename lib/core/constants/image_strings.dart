@@ -26,4 +26,8 @@ class TImages{
   static const String dogIcon = "assets/icons/dog.png";
   static const String neutered = "assets/icons/neutered.png";
   static const String spayed = "assets/icons/spayed.png";
+
+  static const String search = "assets/icons/search.png";
+  static const String filter ="assets/icons/filter.png";
+  static const String sort = "assets/icons/sort.png";
 }
