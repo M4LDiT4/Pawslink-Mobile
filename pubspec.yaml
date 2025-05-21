@@ -34,6 +34,9 @@ dependencies:
   # graphs
   fl_chart: ^0.66.2
 
+  # loading cards
+  shimmer: ^3.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
