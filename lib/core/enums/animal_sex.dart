@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_template/core/constants/text_strings.dart';
+import 'package:mobile_app_template/core/utils/device/device_utility.dart';
 
 enum AnimalSex {male, female}
 
@@ -17,11 +18,24 @@ extension AnimalSexExtension on AnimalSex {
 
 extension AnimalSexColorExtension on AnimalSex {
   Color get color {
+    final isDarkMode = TDeviceUtils.isDarkMode();
     switch (this) {
       case AnimalSex.male:
-        return Colors.blueAccent;
+        return isDarkMode ? Colors.lightBlueAccent : Colors.blueAccent;
       case AnimalSex.female:
-        return Colors.pinkAccent;
+        return isDarkMode ? Colors.pink.shade200 : Colors.pinkAccent;
+    }
+  }
+}
+
+
+extension AnimalSexWidgetExtension on AnimalSex {
+  IconData get icon {
+    switch(this){
+      case AnimalSex.female:
+        return Icons.female;
+      case AnimalSex.male:
+        return Icons.male;
     }
   }
 }

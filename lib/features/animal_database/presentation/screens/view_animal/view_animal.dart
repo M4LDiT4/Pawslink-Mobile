@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
+import 'package:mobile_app_template/features/animal_database/presentation/screens/view_animal/animal_list.dart';
 import 'package:mobile_app_template/features/animal_database/presentation/screens/view_animal/view_animal_summary.dart';
 import 'package:mobile_app_template/features/animal_database/presentation/widgets/tri_purpose_fab/view_animal_tri_purpose_fab.dart';
 
@@ -13,16 +14,11 @@ class ViewAnimalScreen extends StatefulWidget {
 
 class _ViewAnimalScreenState extends State<ViewAnimalScreen> with TickerProviderStateMixin {
   late TabController _tabController;
-  late AnimationController _fabAnimationController;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _fabAnimationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 200),
-    );
 
     _tabController.addListener(() {
       if (!_tabController.indexIsChanging) {
@@ -34,7 +30,6 @@ class _ViewAnimalScreenState extends State<ViewAnimalScreen> with TickerProvider
   @override
   void dispose() {
     _tabController.dispose();
-    _fabAnimationController.dispose();
     super.dispose();
   }
 
@@ -54,7 +49,7 @@ class _ViewAnimalScreenState extends State<ViewAnimalScreen> with TickerProvider
         controller: _tabController,
         children: const [
           ViewAnimalSummaryScreen(),
-          Center(child: Text('Profile')),
+          AnimalListScreen(),
         ],
       ),
       floatingActionButton: ViewAnimalTriPurposeFab(isVisible: _tabController.index == 1),
