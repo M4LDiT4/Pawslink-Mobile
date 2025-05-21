@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
-import 'package:mobile_app_template/core/constants/colors.dart';
 import 'package:mobile_app_template/core/constants/image_strings.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/enums/animal_sex.dart';
 import 'package:mobile_app_template/core/enums/animal_status.dart';
-import 'package:mobile_app_template/core/utils/colors/color_utils.dart';
-import 'package:mobile_app_template/core/utils/device/device_utility.dart';
 import 'package:mobile_app_template/core/widgets/charts/generic_donut_chart.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/widgets/view_animal_profile_slider.dart';
+import 'package:mobile_app_template/features/animal_database/presentation/widgets/view_animal_profile_slider/view_animal_profile_slider.dart';
 import 'package:mobile_app_template/features/animal_database/presentation/widgets/view_animal_summary_card.dart';
 import 'package:mobile_app_template/features/animal_database/presentation/widgets/view_animal_summary_listtile.dart';
 
@@ -36,10 +32,9 @@ class ViewAnimalSummaryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final valueList = _generateGeneralSummaryList();
-    final isDarkMode = TDeviceUtils.isDarkMode();
     return SingleChildScrollView(
       child: Padding(
-        padding:const EdgeInsets.symmetric(horizontal: TSizes.defaultScreenPadding),
+        padding:const EdgeInsets.only(left: TSizes.defaultScreenPadding, right: TSizes.defaultScreenPadding, bottom: TSizes.paddingxxl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -106,7 +101,7 @@ class ViewAnimalSummaryScreen extends StatelessWidget {
               )
             ),
             const FixedSeparator(space: TSizes.spaceBetweenSections),
-            const ViewAnimalProfileSlider(isLoading: true,)
+            const ViewAnimalProfileSlider()
           ],
         ),
       ),

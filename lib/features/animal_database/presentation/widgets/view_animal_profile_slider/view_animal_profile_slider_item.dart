@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:mobile_app_template/core/constants/colors.dart';
 import 'package:mobile_app_template/core/constants/image_strings.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/enums/animal_sex.dart';
-import 'package:mobile_app_template/core/utils/device/device_utility.dart';
 
-class ViewAnimalProfileSlider extends StatelessWidget {
+class ViewAnimalProfileSliderItem extends StatelessWidget {
   final bool isLoading;
 
-  const ViewAnimalProfileSlider({super.key, this.isLoading = false});
+  const ViewAnimalProfileSliderItem({super.key, this.isLoading = false});
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = TDeviceUtils.isDarkMode();
-
     Widget shimmerBox({
       double? width,
       double? height,
@@ -127,26 +123,8 @@ class ViewAnimalProfileSlider extends StatelessWidget {
     }
 
     return SizedBox(
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Text(
-                "Recents",
-                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                      color: TColors.primary,
-                    ),
-              ),
-            ],
-          ),
-          const SizedBox(height: TSizes.spaceBetweenItems),
-          Row(
-            children: [
-              isLoading ? buildShimmerCard() : buildRealCard(),
-            ],
-          )
-        ],
-      ),
+      child: 
+        isLoading ? buildShimmerCard() : buildRealCard(),
     );
   }
 }
