@@ -88,7 +88,7 @@ class VaccinationModal extends InputModalStrategy {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             TextButton(onPressed: handleCancel, child:const Text("Cancel")),
-            TextButton(onPressed: handleSave, child: Text("Confirm"))
+            TextButton(onPressed: handleSave, child: const Text("Confirm"))
           ],
         )
       ],

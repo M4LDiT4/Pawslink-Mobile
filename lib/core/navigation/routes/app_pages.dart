@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:mobile_app_template/core/bindings/controllers/add_animal.dart';
 import 'package:mobile_app_template/features/animal_database/presentation/screens/add_animal/add_animal.dart';
 import 'package:mobile_app_template/features/animal_database/presentation/screens/add_animal/add_animal_summary.dart';
+import 'package:mobile_app_template/features/animal_database/presentation/screens/view_animal/view_animal.dart';
 import 'package:mobile_app_template/features/authentication/presentation/sign_in.dart';
 import 'package:mobile_app_template/features/authentication/presentation/sign_up.dart';
 import 'package:mobile_app_template/features/onboarding/presentation/onboarding_screen.dart';
@@ -52,7 +53,13 @@ class TAppPages {
       name: TAppRoutes.addAnimalSummary, 
       page: () => AddAnimalSummary(),
       transition: Transition.zoom, // or slide, zoom, etc.
-      transitionDuration: const Duration(milliseconds: 300),
+      transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: TAppRoutes.viewAnimal, 
+      page: () => const ViewAnimalScreen(),
+      transition: Transition.rightToLeft, // or slide, zoom, etc.
+      transitionDuration: const Duration(milliseconds: 500),
     )
   ];
 }

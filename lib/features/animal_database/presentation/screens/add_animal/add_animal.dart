@@ -125,7 +125,7 @@ class AddAnimalScreeen extends StatelessWidget {
                 ],
               ),
               GenericExpansionTile(
-                title: "Coat Color",
+                title:TText.coatColor,
                 children: [
                   MultivalueTextInput(
                     controller: controller.coatColorController,
@@ -133,7 +133,7 @@ class AddAnimalScreeen extends StatelessWidget {
                 ],
               ),
               GenericExpansionTile(
-                title: "Notes",
+                title: TText.notes,
                 children: [
                   MultivalueTextInput(
                     controller: controller.notesController
@@ -141,7 +141,7 @@ class AddAnimalScreeen extends StatelessWidget {
                 ],
               ),
               GenericExpansionTile(
-                title: "Traits and Personality",
+                title: TText.traitsAndPersonality,
                 children: [
                   MultivalueTextInput(
                     controller: controller.traitsController
@@ -150,12 +150,12 @@ class AddAnimalScreeen extends StatelessWidget {
               ),
               ModalInputList(
                 modal: VaccinationModal(),
-                title: "Vaccination Record",
+                title: TText.vaxHistory,
                 controller: controller.vaxController,
                 icon: Icons.vaccines,
               ),
               ModalInputList(
-                title: "Medication Record",
+                title: TText.medHistory,
                 modal: MedicationModal(),
                 controller: controller.medController,
                 icon: Icons.medication,
@@ -167,11 +167,11 @@ class AddAnimalScreeen extends StatelessWidget {
                   FormButton(
                     onPressed: _handleCancel, 
                     type: FormButtonType.cancel,
-                    child: const Text("Cancel"),
+                    child: const Text(TText.cancel),
                   ),
                   FormButton(
                     onPressed: _handleSave, 
-                    child: const Text("Save")
+                    child: const Text(TText.save)
                   )
                 ],
               )

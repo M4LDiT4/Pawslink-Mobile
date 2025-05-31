@@ -52,4 +52,10 @@ class TColorUtils {
       Theme.of( Get.context!).brightness == Brightness.dark
           ? Colors.grey[400]!
           : Colors.grey[600]!;
+          
+  static Color getContrastingTextColor(Color backgroundColor) {
+    return backgroundColor.computeLuminance() > 0.5
+        ? Colors.black
+        : Colors.white;
+  }
 }

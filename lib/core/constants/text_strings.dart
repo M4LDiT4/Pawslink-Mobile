@@ -43,4 +43,14 @@ class TText{
   static const String species = "Species";
   static const String status = "Status";
   static const String sex = "Sex";
+  static const String cancel = "Cancel";
+  static const String coatColor = "Coat Color";
+  static const String traitsAndPersonality = "Traits and Personality";
+  static const String notes = "Notes";
+  static const String vaxHistory = "Vaccination History";
+  static const String medHistory = "Medication History";
+  static const String confirm = "Confirm";
+  static const String noRecord = "--No Record--";
+  static const String save = "Save";
+  static const String summary = "Summary";
 }

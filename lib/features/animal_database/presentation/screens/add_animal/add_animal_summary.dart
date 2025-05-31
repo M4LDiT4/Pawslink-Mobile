@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
+import 'package:mobile_app_template/core/constants/text_strings.dart';
 import 'package:mobile_app_template/core/navigation/route_params/add_animal_summary.dart';
 import 'package:mobile_app_template/core/utils/colors/color_utils.dart';
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
@@ -50,7 +51,7 @@ class AddAnimalSummary extends StatelessWidget {
       children.add(
         ListTile(
           title: Text(
-            '-- No Record --',
+            TText.noRecord,
             style: TextStyle(color: Theme.of(Get.context!).hintColor),
           ),
         ),
@@ -76,19 +77,20 @@ class AddAnimalSummary extends StatelessWidget {
             Text("Summary", style: Theme.of(context).textTheme.headlineMedium),
             const SizedBox(height: 24),
 
-            _buildFixedSection("Basic Information", [
-              _buildInfoTile("Name", params.name, Iconsax.pet),
-              _buildInfoTile("Age", params.age, Iconsax.cake),
-              _buildInfoTile("Location", params.location, Iconsax.location),
-              _buildInfoTile("Sex", params.sex, Iconsax.user),
-              _buildInfoTile("Species", params.species, Iconsax.category),
-              _buildInfoTile("Status", params.status, Iconsax.status),
+            _buildFixedSection(
+              TText.basicInformation,[
+              _buildInfoTile(TText.name, params.name, Iconsax.pet),
+              _buildInfoTile(TText.age, params.age, Iconsax.cake),
+              _buildInfoTile(TText.location, params.location, Iconsax.location),
+              _buildInfoTile(TText.sex, params.sex, Iconsax.user),
+              _buildInfoTile(TText.species, params.species, Iconsax.category),
+              _buildInfoTile(TText.status, params.status, Iconsax.status),
             ]),
-            _buildSectionWithList("Coat Color", params.coatColor, Icons.color_lens),
-            _buildSectionWithList("Traits and Personality", params.traits, Icons.tag),
-            _buildSectionWithList("Notes", params.notes, Iconsax.note),
-            _buildSectionWithList("Vaccination History", params.vaccinations, Icons.vaccines),
-            _buildSectionWithList("Medication", params.medications, Icons.medical_information),
+            _buildSectionWithList(TText.coatColor, params.coatColor, Icons.color_lens),
+            _buildSectionWithList(TText.traitsAndPersonality, params.traits, Icons.tag),
+            _buildSectionWithList(TText.notes, params.notes, Iconsax.note),
+            _buildSectionWithList(TText.vaxHistory, params.vaccinations, Icons.vaccines),
+            _buildSectionWithList(TText.medHistory, params.medications, Icons.medical_information),
             const SizedBox(height: 16),
             Align(
               alignment: Alignment.centerRight,
@@ -99,7 +101,7 @@ class AddAnimalSummary extends StatelessWidget {
                   foregroundColor: Theme.of(context).colorScheme.onPrimary,
                 ),
                 icon: const Icon(Icons.check),
-                label: const Text("Confirm"),
+                label: const Text(TText.confirm),
               ),
             )
           ],
