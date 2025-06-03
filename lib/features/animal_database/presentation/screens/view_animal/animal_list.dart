@@ -80,7 +80,7 @@ class AnimalListScreenState extends State<AnimalListScreen> {
     });
 
     // Simulate a delay like fetching data from network
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
 
     // Add 20 more items
     final nextItems = [

@@ -54,7 +54,7 @@ class TriPurposeFabState extends State<ViewAnimalTriPurposeFab> with SingleTicke
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.isVisible) return SizedBox.shrink();
+    if (!widget.isVisible) return const SizedBox.shrink();
 
     return Stack(
       alignment: Alignment.bottomRight,
@@ -93,7 +93,7 @@ class TriPurposeFabState extends State<ViewAnimalTriPurposeFab> with SingleTicke
           child: FloatingActionButton(
             onPressed: _handlePressMainFAB,
             child: _fabExpanded
-                ? Icon(Icons.close)
+                ? const Icon(Icons.close)
                 : Image.asset(
                   width: TSizes.iconlg,
                   TImages.search

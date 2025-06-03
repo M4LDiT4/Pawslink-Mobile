@@ -108,11 +108,11 @@ class ViewAnimalProfileSliderItem extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 6),
-                Row(
+                const Row(
                   children: [
                     Icon(Iconsax.location, size: TSizes.iconsm),
-                    const SizedBox(width: 4),
-                    const Text("Location"),
+                    SizedBox(width: 4),
+                    Text("Location"),
                   ],
                 )
               ],
