@@ -68,8 +68,28 @@ class AddAnimalSummary extends StatelessWidget {
   }
 
   void _showAnimatedDialog(BuildContext context){
-    AnimatedDialog.show(context, label: "this is label", child: const LoadingDialog());
+    AnimatedDialog.show(
+      context, label: "this is label", 
+      child: LoadingDialog(
+        asyncFunction: waitFiveSeconds,
+        successMessage: "Animal added successfully!",
+        errorMessage: "Failed to add animal!",
+        loadingMessage: "Saving animal info...",
+      )
+    );
   }
+
+  Future<bool> waitFiveSeconds() async {
+    await Future.delayed(const Duration(seconds: 5));
+    return true;
+  }
+
+  Future<bool> failWithError() async {
+    await Future.delayed(const Duration(seconds: 2));
+    throw Exception("Something went wrong!");
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
