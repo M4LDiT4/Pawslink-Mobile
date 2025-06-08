@@ -7,7 +7,7 @@ import 'package:mobile_app_template/core/navigation/route_params/add_animal_summ
 import 'package:mobile_app_template/core/utils/colors/color_utils.dart';
 import 'package:mobile_app_template/core/widgets/buttons/form_button/form_button.dart';
 import 'package:mobile_app_template/core/widgets/dialogs/animated_dialog.dart';
-import 'package:mobile_app_template/core/widgets/dialogs/loading_dialog.dart';
+import 'package:mobile_app_template/core/widgets/dialogs/loading_dialog/loading_dialog.dart';
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
 
 class AddAnimalSummary extends StatelessWidget {
