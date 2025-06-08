@@ -1,70 +1,142 @@
-///@description : template for creating http requests 
-///@note: This is just a template to hollow in creating functions/services that includes http requests
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+
 class THttpHelper {
   THttpHelper._();
-  ///@description : contains the base url for the api
-  static const String _baseUrl = "";
-  ///@note : you can add additional urls here
-  
-  ///@description : get request
-  ///@args : {String} endpoint -> can be whole url string or endpoint and combine with the baseUrl
-  ///@return : {Future<Map<String, dynamic>>} -> a response
-  static Future<Map<String, dynamic>> get(String endpoint) async {
-    final response = await http.get(Uri.parse(endpoint));
+
+  /// ---------------- GET ----------------
+  static Future<Map<String, dynamic>> get({
+    required Uri url,
+    Map<String, String>? headers,
+  }) async {
+    final response = await http.get(url, headers: headers);
     return _handleResponse(response);
   }
 
-  ///@description : creates a post request
-  ///@args : {String} endpoint -> can be whole url string or  an endpoint, then combine with the baseUrl
-  ///@args : {dynamic data} -> data to be sent to the api, dynamic for flexibility but you can change the type for type safety
-  ///@note : you can expand the arguments to dynamically alter the headers
-  ///@return : {Future<Map<String, dynamic>>} -> a response
-  static Future<Map<String, dynamic>> post(String endpoint, dynamic data) async {
+  /// ---------------- DELETE ----------------
+  static Future<Map<String, dynamic>> delete({
+    required Uri url,
+    Map<String, String>? headers,
+  }) async {
+    final response = await http.delete(url, headers: headers);
+    return _handleResponse(response);
+  }
+
+  /// ---------------- POST JSON ----------------
+  static Future<Map<String, dynamic>> postJson({
+    required Uri url,
+    required dynamic body,
+    Map<String, String>? headers,
+  }) async {
     final response = await http.post(
-      Uri.parse(endpoint),
-      headers: {'Content-Type' : 'application/json'},
-      body: json.encode(data)
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        ...?headers,
+      },
+      body: json.encode(body),
     );
-
     return _handleResponse(response);
   }
 
-  ///@description : creates a put request
-  ///@args : {String} endpoint -> can be whole url string or  an endpoint, then combine with the baseUrl
-  ///@args : {dynamic data} -> data to be sent to the api, dynamic for flexibility but you can change the type for type safety
-  ///@note : you can expand the arguments to dynamically alter the headers
-  ///@return : {Future<Map<String, dynamic>>} -> a response
-  static Future<Map<String, dynamic>> put(String endpoint, dynamic data) async {
+  /// ---------------- PUT JSON ----------------
+  static Future<Map<String, dynamic>> putJson({
+    required Uri url,
+    required dynamic body,
+    Map<String, String>? headers,
+  }) async {
     final response = await http.put(
-      Uri.parse(endpoint),
-      headers : {'Content-Type': 'application/json'},
-      body: json.encode(data)
-    );
-
-    return _handleResponse(response);
-  }
-
-  ///@description : creates a delete request
-  ///@args : {String} endpoint -> can be whole url string or an endpoint, then combine with the base url
-  ///@return : {Future<Map<String, dynamic>>} -> a response
-  static Future<Map<String, dynamic>> delete(String endpoint) async {
-    final response = await http.delete(
-      Uri.parse(endpoint)
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        ...?headers,
+      },
+      body: json.encode(body),
     );
     return _handleResponse(response);
   }
 
-  ///@description : http helper function that formats the response 
-  ///@args : {http.Response} response -> response from the api endpoint
-  ///@note : you can reuse this on your functions to return consistent responses
+  /// ---------------- POST FORM URLENCODED ----------------
+  static Future<Map<String, dynamic>> postForm({
+    required Uri url,
+    required Map<String, String> fields,
+    Map<String, String>? headers,
+  }) async {
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        ...?headers,
+      },
+      body: fields,
+    );
+    return _handleResponse(response);
+  }
+
+  /// ---------------- PUT FORM URLENCODED ----------------
+  static Future<Map<String, dynamic>> putForm({
+    required Uri url,
+    required Map<String, String> fields,
+    Map<String, String>? headers,
+  }) async {
+    final response = await http.put(
+      url,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        ...?headers,
+      },
+      body: fields,
+    );
+    return _handleResponse(response);
+  }
+
+  /// ---------------- POST MULTIPART ----------------
+  static Future<Map<String, dynamic>> postMultipart({
+    required Uri url,
+    Map<String, String>? fields,
+    Map<String, http.MultipartFile>? files,
+    Map<String, String>? headers,
+  }) async {
+    final request = http.MultipartRequest('POST', url);
+    if (headers != null) request.headers.addAll(headers);
+    if (fields != null) request.fields.addAll(fields);
+    if (files != null) request.files.addAll(files.values);
+
+    final streamed = await request.send();
+    final response = await http.Response.fromStream(streamed);
+    return _handleResponse(response);
+  }
+
+  /// ---------------- PUT MULTIPART ----------------
+  static Future<Map<String, dynamic>> putMultipart({
+    required Uri url,
+    Map<String, String>? fields,
+    Map<String, http.MultipartFile>? files,
+    Map<String, String>? headers,
+  }) async {
+    final request = http.MultipartRequest('PUT', url);
+    if (headers != null) request.headers.addAll(headers);
+    if (fields != null) request.fields.addAll(fields);
+    if (files != null) request.files.addAll(files.values);
+
+    final streamed = await request.send();
+    final response = await http.Response.fromStream(streamed);
+    return _handleResponse(response);
+  }
+
+  /// ---------------- Response Handler ----------------
   static Map<String, dynamic> _handleResponse(http.Response response) {
-    if(response.statusCode == 200){
-      return json.decode(response.body);
-    }else{
-      throw Exception('Failed to load data: ${response.statusCode}');
+    final statusCode = response.statusCode;
+    if (statusCode >= 200 && statusCode < 300) {
+      try {
+        return json.decode(response.body);
+      } catch (_) {
+        return {'success': true, 'message': 'No JSON body'};
+      }
+    } else {
+      throw Exception(
+        'HTTP ${response.statusCode}: ${response.reasonPhrase}\n${response.body}',
+      );
     }
   }
 }

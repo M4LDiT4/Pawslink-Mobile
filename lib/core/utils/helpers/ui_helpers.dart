@@ -86,4 +86,18 @@ class TUIHelpers {
       builder: (_) => child
     );
   }
+
+  static void showCustomDialog(Widget child, {bool isDismissible = true}){
+    final context = Get.context!;
+    showDialog(
+      context: context,
+      barrierDismissible: isDismissible,
+      builder: (_) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20)
+        ),
+        child: child
+      )
+    );
+  }
 }

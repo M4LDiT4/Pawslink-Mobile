@@ -5,6 +5,9 @@ import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/constants/text_strings.dart';
 import 'package:mobile_app_template/core/navigation/route_params/add_animal_summary.dart';
 import 'package:mobile_app_template/core/utils/colors/color_utils.dart';
+import 'package:mobile_app_template/core/widgets/buttons/form_button/form_button.dart';
+import 'package:mobile_app_template/core/widgets/dialogs/animated_dialog.dart';
+import 'package:mobile_app_template/core/widgets/dialogs/loading_dialog/loading_dialog.dart';
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
 
 class AddAnimalSummary extends StatelessWidget {
@@ -64,6 +67,10 @@ class AddAnimalSummary extends StatelessWidget {
     return _buildSection(title, children);
   }
 
+  void _showAnimatedDialog(BuildContext context){
+    AnimatedDialog.show(context, label: "this is label", child: const LoadingDialog());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,15 +101,11 @@ class AddAnimalSummary extends StatelessWidget {
             const SizedBox(height: 16),
             Align(
               alignment: Alignment.centerRight,
-              child: ElevatedButton.icon(
-                onPressed: () => Get.back(),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                ),
-                icon: const Icon(Icons.check),
-                label: const Text(TText.confirm),
-              ),
+              child: FormButton(
+                onPressed: (){_showAnimatedDialog(context);}, 
+                type: FormButtonType.confirm,
+                child: const Text(TText.confirm),
+              )
             )
           ],
         ),
