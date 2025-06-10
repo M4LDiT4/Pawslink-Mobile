@@ -163,24 +163,31 @@ class _LoadingDialogState extends State<LoadingDialog> with TickerProviderStateM
 
   //builds the action button
   //only return a widget instead of null when the status is error
-  Widget? _buildActionButtons() {
-    if (_status == ProcessStatus.error && _showActionButtons) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          TextButton(
-            onPressed: _popUntilHome,
-            child: const Text(TText.cancel),
-          ),
-          TextButton(
-            onPressed: _executeAsyncFunction,
-            child: const Text("Retry"),
-          ),
-        ],
-      );
-    }
-    return null;
+  Widget _buildActionButtons() {
+    final showButtons = _status == ProcessStatus.error && _showActionButtons;
+
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      alignment: Alignment.topCenter,
+      child: showButtons
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: _popUntilHome,
+                  child: const Text(TText.cancel),
+                ),
+                TextButton(
+                  onPressed: _executeAsyncFunction,
+                  child: const Text("Retry"),
+                ),
+              ],
+            )
+          : const SizedBox.shrink(), // animates to height 0
+    );
   }
+
 
   //builds the title of the dialog based on the current status
   Widget _buildTitleText() {
@@ -266,7 +273,7 @@ class _LoadingDialogState extends State<LoadingDialog> with TickerProviderStateM
           const FixedSeparator(space: TSizes.spaceFromTitlemid),
           _buildLoader(),
           _buildActionButtons() ?? const SizedBox.shrink(),
-        ],
+        ], 
       ),
     );
   }
