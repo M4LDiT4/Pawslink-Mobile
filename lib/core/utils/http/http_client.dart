@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+import 'package:mobile_app_template/core/utils/http/response.dart';
 
 class THttpHelper {
   THttpHelper._();
 
   /// ---------------- GET ----------------
-  static Future<Map<String, dynamic>> get({
+  static Future<TResponse> get({
     required Uri url,
     Map<String, String>? headers,
   }) async {
@@ -14,7 +16,7 @@ class THttpHelper {
   }
 
   /// ---------------- DELETE ----------------
-  static Future<Map<String, dynamic>> delete({
+  static Future<TResponse> delete({
     required Uri url,
     Map<String, String>? headers,
   }) async {
@@ -23,7 +25,7 @@ class THttpHelper {
   }
 
   /// ---------------- POST JSON ----------------
-  static Future<Map<String, dynamic>> postJson({
+  static Future<TResponse> postJson({
     required Uri url,
     required dynamic body,
     Map<String, String>? headers,
@@ -40,7 +42,7 @@ class THttpHelper {
   }
 
   /// ---------------- PUT JSON ----------------
-  static Future<Map<String, dynamic>> putJson({
+  static Future<TResponse> putJson({
     required Uri url,
     required dynamic body,
     Map<String, String>? headers,
@@ -57,7 +59,7 @@ class THttpHelper {
   }
 
   /// ---------------- POST FORM URLENCODED ----------------
-  static Future<Map<String, dynamic>> postForm({
+  static Future<TResponse> postForm({
     required Uri url,
     required Map<String, String> fields,
     Map<String, String>? headers,
@@ -74,7 +76,7 @@ class THttpHelper {
   }
 
   /// ---------------- PUT FORM URLENCODED ----------------
-  static Future<Map<String, dynamic>> putForm({
+  static Future<TResponse> putForm({
     required Uri url,
     required Map<String, String> fields,
     Map<String, String>? headers,
@@ -91,52 +93,61 @@ class THttpHelper {
   }
 
   /// ---------------- POST MULTIPART ----------------
-  static Future<Map<String, dynamic>> postMultipart({
+  static Future<TResponse> postMultipart({
     required Uri url,
     Map<String, String>? fields,
     Map<String, http.MultipartFile>? files,
     Map<String, String>? headers,
   }) async {
     final request = http.MultipartRequest('POST', url);
+
     if (headers != null) request.headers.addAll(headers);
     if (fields != null) request.fields.addAll(fields);
     if (files != null) request.files.addAll(files.values);
 
-    final streamed = await request.send();
-    final response = await http.Response.fromStream(streamed);
+    final response = await http.Response.fromStream(await request.send());
     return _handleResponse(response);
   }
 
   /// ---------------- PUT MULTIPART ----------------
-  static Future<Map<String, dynamic>> putMultipart({
+  static Future<TResponse> putMultipart({
     required Uri url,
     Map<String, String>? fields,
     Map<String, http.MultipartFile>? files,
     Map<String, String>? headers,
   }) async {
     final request = http.MultipartRequest('PUT', url);
+
     if (headers != null) request.headers.addAll(headers);
     if (fields != null) request.fields.addAll(fields);
     if (files != null) request.files.addAll(files.values);
 
-    final streamed = await request.send();
-    final response = await http.Response.fromStream(streamed);
+    final response = await http.Response.fromStream(await request.send());
     return _handleResponse(response);
   }
 
   /// ---------------- Response Handler ----------------
-  static Map<String, dynamic> _handleResponse(http.Response response) {
-    final statusCode = response.statusCode;
-    if (statusCode >= 200 && statusCode < 300) {
-      try {
-        return json.decode(response.body);
-      } catch (_) {
-        return {'success': true, 'message': 'No JSON body'};
-      }
-    } else {
-      throw Exception(
-        'HTTP ${response.statusCode}: ${response.reasonPhrase}\n${response.body}',
+  static TResponse _handleResponse(http.Response response) {
+    return TResponse.fromHttpResponse(response);
+  }
+
+  static Future<http.MultipartFile> createMultipartFileFromXFile(
+    XFile file, {
+    required String fieldName,
+  }) async {
+    return http.MultipartFile.fromPath(
+      fieldName,
+      file.path,
+      filename: file.name,
+    );
+  }
+
+  static Map<String, String> stringifyDynamicMap(Map<String, dynamic> map){
+    return map.map((key, value){
+      return MapEntry(
+        key,
+        value is List ? json.encode(value) : value.toString(),
       );
-    }
+    });
   }
 }

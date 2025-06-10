@@ -49,7 +49,10 @@ class AddAnimalSummaryParams {
       'traits': traits,
       'vaccinations': vaccinations,
       'medications': medications,
-      'animalImagePath': animalImage?.path, // optional: just the file path
     };
+  }
+
+  XFile? getImage(){
+    return animalImage;
   }
 }

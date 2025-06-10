@@ -5,13 +5,15 @@ import 'package:mobile_app_template/core/utils/helpers/number_helpers.dart';
 class AnimatedDialog {
   static void show(
     BuildContext context, {
-    required String label,
+    String label = "Dialog",
     required Widget child,
+    bool isDismissible = true,
+    
   }) {
     showGeneralDialog(
       context: context,
       barrierLabel: label,
-      barrierDismissible: true,
+      barrierDismissible: isDismissible,
       barrierColor: Colors.black.withAlpha(
         TNumberHelper.getAlphaWithOpacity(0.5),
       ),

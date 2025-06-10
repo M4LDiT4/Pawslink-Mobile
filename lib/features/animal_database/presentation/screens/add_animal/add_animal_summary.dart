@@ -5,10 +5,12 @@ import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/constants/text_strings.dart';
 import 'package:mobile_app_template/core/navigation/route_params/add_animal_summary.dart';
 import 'package:mobile_app_template/core/utils/colors/color_utils.dart';
+import 'package:mobile_app_template/core/utils/http/response.dart';
 import 'package:mobile_app_template/core/widgets/buttons/form_button/form_button.dart';
 import 'package:mobile_app_template/core/widgets/dialogs/animated_dialog.dart';
 import 'package:mobile_app_template/core/widgets/dialogs/loading_dialog/loading_dialog.dart';
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
+import 'package:mobile_app_template/services/api/animal_api.dart';
 
 class AddAnimalSummary extends StatelessWidget {
   final AddAnimalSummaryParams params = Get.arguments as AddAnimalSummaryParams;
@@ -67,29 +69,21 @@ class AddAnimalSummary extends StatelessWidget {
     return _buildSection(title, children);
   }
 
+  Future<TResponse> _saveAnimal() async {
+    return  AnimalApi.addAnimal(params);
+  }
+
   void _showAnimatedDialog(BuildContext context){
     AnimatedDialog.show(
-      context, label: "this is label", 
+      context, 
       child: LoadingDialog(
-        asyncFunction: waitFiveSeconds,
+        asyncFunction: _saveAnimal,
         successMessage: "Animal added successfully!",
         errorMessage: "Failed to add animal!",
         loadingMessage: "Saving animal info...",
       )
     );
   }
-
-  Future<bool> waitFiveSeconds() async {
-    await Future.delayed(const Duration(seconds: 5));
-    return true;
-  }
-
-  Future<bool> failWithError() async {
-    await Future.delayed(const Duration(seconds: 2));
-    throw Exception("Something went wrong!");
-  }
-
-
 
   @override
   Widget build(BuildContext context) {
