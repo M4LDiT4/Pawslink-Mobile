@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mobile_app_template/core/constants/lottie_strings.dart';
@@ -211,7 +212,7 @@ class _LoadingDialogState extends State<LoadingDialog> with TickerProviderStateM
           child: child,
         );
       },
-      child: Row(
+      child: Column(
         key: ValueKey("title-$title"), // 👈 Important for animation
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -247,7 +248,7 @@ class _LoadingDialogState extends State<LoadingDialog> with TickerProviderStateM
           child: child,
         );
       },
-      child: Row(
+      child: Column(
         key: ValueKey("info-$textContent"), // 👈 Important for animation
         mainAxisAlignment: MainAxisAlignment.start,
         children: [

@@ -10,6 +10,7 @@ import 'package:mobile_app_template/core/widgets/buttons/form_button/form_button
 import 'package:mobile_app_template/core/widgets/dialogs/animated_dialog.dart';
 import 'package:mobile_app_template/core/widgets/dialogs/loading_dialog/loading_dialog.dart';
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
+import 'package:mobile_app_template/data/model/modal_input_list_item.dart';
 import 'package:mobile_app_template/services/api/animal_api.dart';
 
 class AddAnimalSummary extends StatelessWidget {
@@ -17,11 +18,11 @@ class AddAnimalSummary extends StatelessWidget {
 
   AddAnimalSummary({super.key});
 
-  Widget _buildInfoTile(String? label, String value, IconData icon) {
+  Widget _buildInfoTile(String? label, String value, IconData icon, {String? suffix}) {
     return ListTile(
       leading: Icon(icon, color: TColorUtils.tertiary()),
       title: Text(
-        value,
+        "$value ${suffix ?? ""}",
         style: const TextStyle(fontWeight: FontWeight.w600),
       ),
       subtitle: label != null ? Text(label) : null,
@@ -69,6 +70,25 @@ class AddAnimalSummary extends StatelessWidget {
     return _buildSection(title, children);
   }
 
+  Widget _buildSectionWithModalInputListItem(String title, List<ModalInputListItem> stringlist, IconData leadingIcon) {
+    final children = <Widget>[];
+    if (stringlist.isEmpty) {
+      children.add(
+        ListTile(
+          title: Text(
+            TText.noRecord,
+            style: TextStyle(color: Theme.of(Get.context!).hintColor),
+          ),
+        ),
+      );
+    } else {
+      for (var item in stringlist) {
+        children.add(_buildInfoTile(null, item.getValueInString(), leadingIcon));
+      }
+    }
+    return _buildSection(title, children);
+  }
+
   Future<TResponse> _saveAnimal() async {
     return  AnimalApi.addAnimal(params);
   }
@@ -101,7 +121,7 @@ class AddAnimalSummary extends StatelessWidget {
             _buildFixedSection(
               TText.basicInformation,[
               _buildInfoTile(TText.name, params.name, Iconsax.pet),
-              _buildInfoTile(TText.age, params.age, Iconsax.cake),
+              _buildInfoTile(TText.age, params.age, Iconsax.cake, suffix: "months"),
               _buildInfoTile(TText.location, params.location, Iconsax.location),
               _buildInfoTile(TText.sex, params.sex, Iconsax.user),
               _buildInfoTile(TText.species, params.species, Iconsax.category),
@@ -110,8 +130,8 @@ class AddAnimalSummary extends StatelessWidget {
             _buildSectionWithList(TText.coatColor, params.coatColor, Icons.color_lens),
             _buildSectionWithList(TText.traitsAndPersonality, params.traits, Icons.tag),
             _buildSectionWithList(TText.notes, params.notes, Iconsax.note),
-            _buildSectionWithList(TText.vaxHistory, params.vaccinations, Icons.vaccines),
-            _buildSectionWithList(TText.medHistory, params.medications, Icons.medical_information),
+            _buildSectionWithModalInputListItem(TText.vaxHistory, params.vaccinations, Icons.vaccines),
+            _buildSectionWithModalInputListItem(TText.medHistory, params.medications, Icons.medical_information),
             const SizedBox(height: 16),
             Align(
               alignment: Alignment.centerRight,

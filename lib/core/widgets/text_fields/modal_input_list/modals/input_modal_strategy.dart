@@ -13,4 +13,6 @@ abstract class InputModalStrategy {
   Widget build(BuildContext context);
 
   InputModalStrategy setCallback(void Function(ModalInputListItem item) callback);
+
+  Map<String, dynamic> modalValueToMap();
 }

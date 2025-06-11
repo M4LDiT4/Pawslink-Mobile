@@ -32,5 +32,18 @@ class ModalInputListController extends ChangeNotifier{
 
     return stringList;
   }
+
+  List<Map<String, dynamic>> getValueInMap(){
+    final List<Map<String, dynamic>> mapList = [];
+    for(var item in _valueList){
+      mapList.add(item.getDataInMap());
+    }
+
+    return mapList;
+  }
+
+  List<ModalInputListItem> getValue(){
+    return List.unmodifiable(_valueList);
+  }
 }
 
