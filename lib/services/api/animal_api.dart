@@ -22,10 +22,11 @@ class AnimalApi {
       files['animalImage'] =await  THttpHelper.createMultipartFileFromXFile(image, fieldName: "");
     }
     // Make POST request
-    final response = await THttpHelper.postMultipart(
+    final response = await THttpHelper.postMultipart<Map<String, dynamic>>(
       url: url,
       fields: payload,
-      files: files
+      files: files,
+      fromJson: THttpHelper.defaultFromJson
     );
 
     return response;
