@@ -34,7 +34,7 @@ class TResponse<T>{
 
       return TResponse<T>(
         success: isSuccess,
-        message: jsonResponse['message']?.toString() ?? (isSuccess ? 'Success' : 'Unknown error'),
+        message: jsonResponse['error']?.toString() ?? (isSuccess ? 'Success' : 'Unknown error'),
         data: jsonResponse['data'] != null ? jsonResponse['data'] as T : null,
         statusCode: response.statusCode,
       );
@@ -49,4 +49,5 @@ class TResponse<T>{
       );
     }
   }
+  bool get isSuccess => success;
 }

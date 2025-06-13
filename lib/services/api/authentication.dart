@@ -1,4 +1,7 @@
+import 'package:mobile_app_template/core/utils/helpers/app_exception.dart';
 import 'package:mobile_app_template/core/utils/http/http_client.dart';
+import 'package:mobile_app_template/core/utils/http/response.dart';
+import 'package:mobile_app_template/services/local_storage/local_secure_storage.dart';
 
 class TAuthenticationService {
   //urls and paths
@@ -21,7 +24,22 @@ class TAuthenticationService {
       "password" : password
     };
 
-    final response = await THttpHelper.postJson(url: url, body: payload);
+    final TResponse<Map<String, dynamic>> response = await THttpHelper.postJson(url: url, body: payload, fromJson:THttpHelper.defaultFromJson);
+    if (!response.isSuccess) {
+      throw TAppException("Sign in failed: ${response.message}");
+    }
+    final data = response.data;
+    if (data == null) {
+      throw TAppException("Sign in failed: No data received");
+    }
+    if(!(data.containsKey('refreshToken') && data.containsKey('accessToken'))){
+      throw TAppException("Sign in failed: Invalid response structure");
+    }
+    final String accessToken = data['accessToken'];
+    final String refreshToken = data['refreshToken'];
+
+    await LocalSecureStorageService().saveAccessToken(accessToken);
+    await LocalSecureStorageService().saveRefreshToken(refreshToken);
   }
 
 

@@ -1,5 +1,6 @@
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 // This service is used to store sensitive data securely on the device
 class LocalSecureStorageService {
   static final LocalSecureStorageService _instance =
