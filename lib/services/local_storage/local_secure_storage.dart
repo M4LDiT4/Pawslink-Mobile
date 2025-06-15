@@ -13,36 +13,26 @@ class LocalSecureStorageService {
 
   //keys for storing values
   //prevents typos and makes it easier to manage keys
-  static const String _accessToken = "access_token";
-  static const String _refreshToken = "refresh_token";
+  static const String accessToken = "access_token";
+  static const String refreshToken = "refresh_token";
 
-  //save tokens
-  Future<void> saveAccessToken(String token) async {
-    await _storage.write(key: _accessToken, value: token);
+  final List<String> _keyList = [accessToken, refreshToken];
+
+  Future<void> saveData(String key, String? data) async{
+    await _storage.write(key: key, value: data);
   }
 
-  Future<String?> getAccessToken() async {
-    return await _storage.read(key :_accessToken);
+  Future<String?> getData(String key) async {
+    return await _storage.read(key: key);
   }
 
-  Future<void> deleteAccessToken() async{
-    await _storage.delete(key: _accessToken);
+  Future<void> deleteData(String key) async {
+    await _storage.delete(key: key);
   }
 
-  Future<void> saveRefreshToken(String token) async {
-    await _storage.write(key: _refreshToken, value: token);
-  }
-
-  Future<String?> getRefreshToken() async {
-    return await _storage.read(key: _refreshToken);
-  }
-
-  Future<void> deleteRefreshToken() async{
-    await _storage.delete(key: _refreshToken);
-  }
-
-  Future<void> clearTokens() async {
-    await deleteAccessToken();
-    await deleteRefreshToken();
+  Future<void> clearAllData()async{
+  for(final key in _keyList){
+      await _storage.delete(key: key);
+    }
   }
 }

@@ -7,6 +7,7 @@ import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobile_app_template/core/utils/http/dio/auth_interceptor.dart';
 import 'package:mobile_app_template/core/utils/http/response.dart';
+import 'package:mobile_app_template/services/api/authentication.dart';
 import 'package:path_provider/path_provider.dart';
 
 class DioHTTPHelper {
@@ -40,6 +41,11 @@ class DioHTTPHelper {
     _dio.interceptors.addAll([
       DioCacheInterceptor(options: cacheOptions),
       // AuthInterceptor(getToken: getToken, refreshToken: refreshToken, saveToken: saveToken), implement this
+      AuthInterceptor(
+        getAccessToken: TAuthenticationService().getAccesstoken, 
+        rotateToken: TAuthenticationService().rotateToken, 
+        dio: _dio
+      ),
       LogInterceptor(requestBody: true, responseBody: true),
       RetryInterceptor(
         dio: _dio,
@@ -82,12 +88,12 @@ class DioHTTPHelper {
 
   /// ---------------- POST JSON ----------------
   Future<TResponse<T>> postJson<T>({
-    required String url,
+    required Uri uri,
     required dynamic body,
     Map<String, String>? headers,
     required T Function(Map<String, dynamic>) fromJson,
   }) async {
-    final response = await _dio.post(url, data: jsonEncode(body), options: Options(headers: {
+    final response = await _dio.post(uri.toString(), data: jsonEncode(body), options: Options(headers: {
       'Content-Type': 'application/json',
       ...?headers,
     }));

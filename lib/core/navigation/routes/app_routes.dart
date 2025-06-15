@@ -2,7 +2,7 @@
 ///@description : define named routes here
 
 abstract class TAppRoutes {
-  static const home = '/home';
+  static const home = '/admin-home';
   static const profile = '/profile';
   static const settings = '/settings';
   static const login = '/login';
@@ -10,6 +10,6 @@ abstract class TAppRoutes {
   static const signup = '/signup';
   static const addAnimal = '/add-animal';
   static const addAnimalSummary ='/add-animal/summary';
-  static const viewAnimal = '/view-animal/';
+  static const viewAnimal = '/view-animal';
   // Add more routes as needed
 }
