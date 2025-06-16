@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mobile_app_template/core/constants/colors.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/constants/text_strings.dart';
 import 'package:mobile_app_template/core/enums/animal_sex.dart';
 import 'package:mobile_app_template/core/enums/animal_species.dart';
 import 'package:mobile_app_template/core/enums/animal_status.dart';
+import 'package:mobile_app_template/core/utils/device/device_utility.dart';
 import 'package:mobile_app_template/core/widgets/buttons/form_button/form_button.dart';
-import 'package:mobile_app_template/core/widgets/containers/generic_expansion_tile.dart';
 import 'package:mobile_app_template/core/widgets/dropdowns/generic_dropdown.dart';
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
 import 'package:mobile_app_template/core/widgets/pickers/img_pickers/generic_img_picker.dart';
@@ -43,8 +44,25 @@ class AddAnimalScreeen extends StatelessWidget {
     controller.handleSubmit();
   }
 
+  Widget _buildSection(bool isDarkMode, List<Widget> children, String title, BuildContext context){
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+            color: isDarkMode? TColors.primaryDark : TColors.primary
+          ),
+          title
+        ),
+        ...children
+      ]
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    bool isDarkMode = TDeviceUtils.isDarkMode();
     return Scaffold( 
       appBar:const GenericAppbar(),
       body: SingleChildScrollView(
@@ -60,9 +78,9 @@ class AddAnimalScreeen extends StatelessWidget {
               GenericImagePicker(
                 controller: controller.imgPickerController,
               ),
-              GenericExpansionTile(
-                title: TText.basicInformation,
-                children: [
+              _buildSection(
+                isDarkMode, 
+                [
                   Form(
                     key: controller.formKey,
                     child: Column(
@@ -121,32 +139,22 @@ class AddAnimalScreeen extends StatelessWidget {
                       ),
                     ],
                     ),
-                  )
-                ],
+                  ),
+                ], 
+                TText.basicInformation, 
+                context
               ),
-              GenericExpansionTile(
-                title:TText.coatColor,
-                children: [
-                  MultivalueTextInput(
-                    controller: controller.coatColorController,
-                  )
-                ],
+              MultivalueTextInput(
+                controller: controller.coatColorController,
+                title: TText.coatColor,
               ),
-              GenericExpansionTile(
+              MultivalueTextInput(
+                controller: controller.notesController,
                 title: TText.notes,
-                children: [
-                  MultivalueTextInput(
-                    controller: controller.notesController
-                  )
-                ],
               ),
-              GenericExpansionTile(
+               MultivalueTextInput(
+                controller: controller.traitsController,
                 title: TText.traitsAndPersonality,
-                children: [
-                  MultivalueTextInput(
-                    controller: controller.traitsController
-                  )
-                ],
               ),
               ModalInputList(
                 modal: VaccinationModal(),

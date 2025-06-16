@@ -25,30 +25,29 @@ class MultiValueTextfield extends StatefulWidget {
 
 class _MultiValueTextfieldState extends State<MultiValueTextfield>
     with TickerProviderStateMixin {
-  late AnimationController _fadeController;
-  late Animation<double> _fadeAnimation;
+  late AnimationController _animationController;
+  late Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
 
-    _fadeController = AnimationController(
+    _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
 
-    _fadeAnimation = CurvedAnimation(
-      parent: _fadeController,
+    _animation = CurvedAnimation(
+      parent: _animationController,
       curve: Curves.easeInOut,
     );
 
-    _fadeController.forward(); // Animate on entry
+    _animationController.forward(); // Animate on entry
   }
 
   @override
   void dispose() {
-    _fadeController.reverse(); // Animate out
-    _fadeController.dispose();
+    _animationController.dispose(); // No need to reverse here
     super.dispose();
   }
 
@@ -56,8 +55,9 @@ class _MultiValueTextfieldState extends State<MultiValueTextfield>
     widget.buttonAction(widget.index, ActionButtonMode.add);
   }
 
-  void handleDelete() {
-    widget.buttonAction(widget.index, ActionButtonMode.delete);
+  void handleDelete() async {
+    await _animationController.reverse(); // play exit animation
+    widget.buttonAction(widget.index, ActionButtonMode.delete); // actually remove
   }
 
   Widget _renderTrailingButtons() {
@@ -75,12 +75,13 @@ class _MultiValueTextfieldState extends State<MultiValueTextfield>
 
   @override
   Widget build(BuildContext context) {
-    return SizeTransition(
-      sizeFactor: _fadeAnimation,
-      axis: Axis.vertical,
-      child: FadeTransition(
-        opacity: _fadeAnimation,
+    return FadeTransition( // Optional: remove if you only want scale
+      opacity: _animation,
+      child: ScaleTransition(
+        scale: _animation,
+        alignment: Alignment.topLeft, // Smooth entrance from top
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             GenericTextfieldBuilder()
                 .clearButton(true)

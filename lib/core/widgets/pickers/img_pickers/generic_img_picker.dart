@@ -54,7 +54,7 @@ class _GenericImagePickerState extends State<GenericImagePicker> {
     _controller.selectedImage = null;
   }
 
-  Widget _renderPickerContent(bool isDarkMode){
+  Widget _renderPickerContent(){
     return SizedBox(
       width: double.infinity,
       child: Card(
@@ -113,38 +113,32 @@ class _GenericImagePickerState extends State<GenericImagePicker> {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = TDeviceUtils.isDarkMode();
-
     return SizedBox(
       width: double.infinity,
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(TSizes.paddingmd),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Text(TText.imgPickerText1),
-              _renderPickerContent(isDarkMode),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ImgPickerSrcSelectionBttn(
-                    icon: Iconsax.camera,
-                    handlePress: () => pickImage(ImageSource.camera),
-                  ),
-                  ImgPickerSrcSelectionBttn(
-                    icon: Iconsax.gallery,
-                    handlePress: () => pickImage(ImageSource.gallery),
-                  ),
-                ],
-              )
-            ],
-          ),
+      child: Padding(
+        padding: const EdgeInsets.all(TSizes.paddingmd),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Text(TText.imgPickerText1),
+            _renderPickerContent(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ImgPickerSrcSelectionBttn(
+                  icon: Iconsax.camera,
+                  handlePress: () => pickImage(ImageSource.camera),
+                ),
+                ImgPickerSrcSelectionBttn(
+                  icon: Iconsax.gallery,
+                  handlePress: () => pickImage(ImageSource.gallery),
+                ),
+              ],
+            )
+          ],
         ),
       ),
     );
   }
 }
 
-class Permission {
-}
