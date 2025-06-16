@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mobile_app_template/core/constants/colors.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/constants/text_strings.dart';
 import 'package:mobile_app_template/core/utils/colors/color_utils.dart';
@@ -113,6 +114,8 @@ class _GenericImagePickerState extends State<GenericImagePicker> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = TDeviceUtils.isDarkMode();
+    Color iconColor = isDarkMode? TColors.primaryDark : TColors.primary;
     return SizedBox(
       width: double.infinity,
       child: Padding(
@@ -123,16 +126,20 @@ class _GenericImagePickerState extends State<GenericImagePicker> {
             const Text(TText.imgPickerText1),
             _renderPickerContent(),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ImgPickerSrcSelectionBttn(
-                  icon: Iconsax.camera,
-                  handlePress: () => pickImage(ImageSource.camera),
+                IconButton(
+                  iconSize: TSizes.iconxl,
+                  color: iconColor,
+                  onPressed: () => pickImage(ImageSource.camera), 
+                  icon: const Icon(Iconsax.camera)
                 ),
-                ImgPickerSrcSelectionBttn(
-                  icon: Iconsax.gallery,
-                  handlePress: () => pickImage(ImageSource.gallery),
-                ),
+                IconButton(
+                  iconSize: TSizes.iconxl,
+                  color: iconColor,
+                  onPressed:() => pickImage(ImageSource.gallery),
+                  icon: const Icon(Iconsax.gallery)
+                )
               ],
             )
           ],
