@@ -11,5 +11,6 @@ abstract class TAppRoutes {
   static const addAnimal = '/add-animal';
   static const addAnimalSummary ='/add-animal/summary';
   static const viewAnimal = '/view-animal';
+  static const splashScreen ='/';
   // Add more routes as needed
 }

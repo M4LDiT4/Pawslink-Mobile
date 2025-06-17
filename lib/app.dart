@@ -22,7 +22,7 @@ class App extends StatelessWidget {
       theme: TAppTheme.lightTheme,
       darkTheme: TAppTheme.darkTheme,
       getPages: TAppPages.routes,
-      initialRoute: TAppRoutes.home,
+      initialRoute: TAppRoutes.splashScreen,
     );
   }
 }
