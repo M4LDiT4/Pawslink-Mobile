@@ -37,6 +37,16 @@ dependencies:
   # loading cards
   shimmer: ^3.0.0
   lottie: ^3.3.1
+  flutter_secure_storage: ^9.2.4
+
+  # network
+  dio: ^5.4.0
+  dio_retry_plus: ^2.0.0
+  dio_smart_retry: ^7.0.1
+  dio_cache_interceptor: ^3.5.0
+  dio_cache_interceptor_hive_store: ^3.1.0
+  flutter_dotenv: ^5.2.1
+
 
 dev_dependencies:
   flutter_test:
@@ -51,3 +61,4 @@ flutter:
     - assets/logos/
     - assets/images/
     - assets/lottie/
+    - .env

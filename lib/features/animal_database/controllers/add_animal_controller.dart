@@ -77,8 +77,8 @@ class AddAnimalController extends GetxController {
         coatColor: coatColorController.getStringValues(),
         notes: notesController.getStringValues(),
         traits: traitsController.getStringValues(),
-        vaccinations: vaxController.getValueInString(),
-        medications: medController.getValueInString()
+        vaccinations: vaxController.getValue(),
+        medications: medController.getValue()
       );
       TNavigationService.toNamed(TAppRoutes.addAnimalSummary, arguments: params);
     }

@@ -53,4 +53,10 @@ class TText{
   static const String noRecord = "--No Record--";
   static const String save = "Save";
   static const String summary = "Summary";
+  static const String processing = "Processing...";
+  static const String operationFailed = "Operation Failed";
+  static const String operationSuccess = "Operation Succesful";
+  static const String nullResponse = "Response is Null";
+  static const String unknownError = "Unknown error occured";
+  
 }

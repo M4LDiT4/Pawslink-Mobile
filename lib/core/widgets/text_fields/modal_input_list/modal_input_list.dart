@@ -1,11 +1,13 @@
 
 import 'package:flutter/material.dart';
+import 'package:mobile_app_template/core/constants/colors.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
-import 'package:mobile_app_template/core/widgets/buttons/add_button.dart';
-import 'package:mobile_app_template/core/widgets/containers/generic_expansion_tile.dart';
+import 'package:mobile_app_template/core/utils/device/device_utility.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/modal_input_list_controller.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/modal_input_list_item.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/modals/input_modal_strategy.dart';
+import 'package:mobile_app_template/core/widgets/text_fields/multivalue_text_input/multivalue_textfield.dart';
+import 'package:mobile_app_template/core/widgets/text_fields/multivalue_text_input/trailing_button.dart';
 
 class ModalInputList extends StatefulWidget {
   final InputModalStrategy modal;
@@ -63,19 +65,32 @@ class _ModalInputListState extends State<ModalInputList> {
   }
   @override
   Widget build(BuildContext context) {
-    return GenericExpansionTile(
-      title: widget.title,
+    final isDarkMode = TDeviceUtils.isDarkMode();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                color: isDarkMode? TColors.primaryDark : TColors.primary
+              ),
+              widget.title
+            ),
+            TrailingButton(onPress: ()=>showEditorModal(context), mode: ActionButtonMode.add)
+          ],
+        ),
         AnimatedBuilder(
           animation: _controller, 
           builder: (context, _) => Column(
             children: [
-              const Divider(),
-              ..._buildListItems()
+              ..._buildListItems(),
             ],
           ),
         ),
-        AddButton(onPressed: ()=>showEditorModal(context))
+        const Divider()
       ]
     );
   }

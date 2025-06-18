@@ -10,7 +10,7 @@ import 'package:mobile_app_template/core/utils/validation/validator.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/auth_text_field.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/keyboard_safe_scrollview.dart';
-import 'package:mobile_app_template/features/authentication/controllers/sign_up_controiller.dart';
+import 'package:mobile_app_template/features/authentication/controllers/sign_up_controller.dart';
 import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
 import 'package:mobile_app_template/services/navigation_service.dart';
 
@@ -62,14 +62,16 @@ class SignUpScreen extends StatelessWidget {
                       key: controller.formKey,
                       child: Column(
                         children: [
-                          const AuthTextField(
+                          AuthTextField(
                             label: TText.username,
+                            controller: controller.usernameController,
                             leadingIcon: Iconsax.user,
                             validator: TValidator.validateUsername,
                             isRequired: true,
                           ),
-                          const AuthTextField(
+                          AuthTextField(
                             label:TText.email,
+                            controller: controller.emailController,
                             leadingIcon: Iconsax.sms,
                             validator: TValidator.validateEmail,
                             keyboardType: TextInputType.emailAddress,
@@ -103,7 +105,7 @@ class SignUpScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(TSizes.borderRadiusxxl)
                           )
                         ),
-                        onPressed: controller.validate, 
+                        onPressed: () => controller.validate(context), 
                         child: const Text(TText.login)
                       )
                     ),

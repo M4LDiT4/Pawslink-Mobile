@@ -10,6 +10,7 @@ import 'package:mobile_app_template/features/animal_database/presentation/screen
 import 'package:mobile_app_template/features/authentication/presentation/sign_in.dart';
 import 'package:mobile_app_template/features/authentication/presentation/sign_up.dart';
 import 'package:mobile_app_template/features/onboarding/presentation/onboarding_screen.dart';
+import 'package:mobile_app_template/features/onboarding/presentation/splash_screen.dart';
 import 'package:mobile_app_template/features/sample_feature/presentation/screens/sample_screen.dart';
 import 'package:mobile_app_template/core/navigation/admin_navigation/admin_home_navigation.dart';
 
@@ -33,33 +34,38 @@ class TAppPages {
     GetPage(
       name: TAppRoutes.login, 
       page: () =>const SignInScreen(),
-        transition: Transition.leftToRight, // or slide, zoom, etc.
+        transition: Transition.fadeIn, // or slide, zoom, etc.
         transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
       name: TAppRoutes.signup, 
       page: () => const SignUpScreen(),
-      transition: Transition.leftToRight, // or slide, zoom, etc.
+      transition: Transition.fadeIn, // or slide, zoom, etc.
       transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
       name: TAppRoutes.addAnimal, 
       page: () => AddAnimalScreeen(),
-      transition: Transition.rightToLeft, // or slide, zoom, etc.
+      transition: Transition.fadeIn, // or slide, zoom, etc.
       transitionDuration: const Duration(milliseconds: 500),
       binding: AddAnimalControllerBinding()
     ),
     GetPage(
       name: TAppRoutes.addAnimalSummary, 
       page: () => AddAnimalSummary(),
-      transition: Transition.zoom, // or slide, zoom, etc.
+      transition: Transition.fadeIn, // or slide, zoom, etc.
       transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
       name: TAppRoutes.viewAnimal, 
       page: () => const ViewAnimalScreen(),
-      transition: Transition.rightToLeft, // or slide, zoom, etc.
+      transition: Transition.fadeIn, // or slide, zoom, etc.
       transitionDuration: const Duration(milliseconds: 500),
+    ),
+    GetPage(
+      name: TAppRoutes.splashScreen, 
+      page: () => const SplashScreen(),
+      transition: Transition.fadeIn
     )
   ];
 }

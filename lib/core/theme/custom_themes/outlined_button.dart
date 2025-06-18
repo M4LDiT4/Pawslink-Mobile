@@ -7,13 +7,14 @@ class TOutlinedButtonTheme {
   static final light = OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
       elevation: 0,
-      foregroundColor: TColors.textDark, // Black text color
+      foregroundColor: TColors.primary, // Black text color
       side: const BorderSide(
         color: TColors.primary, // Pink border for light mode
+        width: 2,
       ),
       textStyle: const TextStyle(
         fontSize: 16,
-        color: TColors.textDark, // Black text color
+        color: TColors.primary, // Black text color
         fontWeight: FontWeight.w600,
       ),
       padding: const EdgeInsets.symmetric(
@@ -29,13 +30,14 @@ class TOutlinedButtonTheme {
   static final dark = OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
       elevation: 0,
-      foregroundColor: TColors.textLight, // White text color
+      foregroundColor: TColors.primaryDark, // White text color
       side:const  BorderSide(
-        color: TColors.primary, // Pink border for dark mode
+        color: TColors.primaryDark,
+        width: 2, // Pink border for dark mode
       ),
       textStyle: const TextStyle(
         fontSize: 16,
-        color: TColors.textLight, // White text color
+        color: TColors.primaryDark, // White text color
         fontWeight: FontWeight.w600,
       ),
       padding: const EdgeInsets.symmetric(

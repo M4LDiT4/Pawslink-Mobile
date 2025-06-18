@@ -42,12 +42,21 @@ class VaccinationModal extends InputModalStrategy {
     if(isTitleValid && isDateValid){
       final item = ModalInputListItem(
         title: _titleController.text, 
-        subtitle: TFormatter.formatDate(_datePickerController.selectedDate)
+        subtitle: TFormatter.formatDate(_datePickerController.selectedDate),
+        data: modalValueToMap()
       );
       callback!(item);
       _titleController.clear();
       TNavigationService.back();
     }
+  }
+
+  @override
+  Map<String, dynamic> modalValueToMap() {
+    return {
+      "description": _titleController.text,
+      "date": _datePickerController.selectedDate!.toIso8601String(),
+    };
   }
 
   @override
