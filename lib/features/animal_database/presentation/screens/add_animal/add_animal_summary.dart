@@ -4,6 +4,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/constants/text_strings.dart';
 import 'package:mobile_app_template/core/navigation/route_params/add_animal_summary.dart';
+import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
 import 'package:mobile_app_template/core/utils/colors/color_utils.dart';
 import 'package:mobile_app_template/core/utils/http/response.dart';
 import 'package:mobile_app_template/core/widgets/buttons/form_button/form_button.dart';
@@ -12,6 +13,7 @@ import 'package:mobile_app_template/core/widgets/dialogs/loading_dialog/loading_
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
 import 'package:mobile_app_template/data/model/modal_input_list_item.dart';
 import 'package:mobile_app_template/services/api/animal_api.dart';
+import 'package:mobile_app_template/services/navigation_service.dart';
 
 class AddAnimalSummary extends StatelessWidget {
   final AddAnimalSummaryParams params = Get.arguments as AddAnimalSummaryParams;
@@ -93,6 +95,11 @@ class AddAnimalSummary extends StatelessWidget {
     return  AnimalApi.addAnimal(params);
   }
 
+  //pops the getx navigation stack until the name route home is found
+  void _popUntilHome() {
+    TNavigationService.offAllNamed(TAppRoutes.home);
+  }
+
   void _showAnimatedDialog(BuildContext context){
     AnimatedDialog.show(
       context, 
@@ -101,6 +108,7 @@ class AddAnimalSummary extends StatelessWidget {
         successMessage: "Animal added successfully!",
         errorMessage: "Failed to add animal!",
         loadingMessage: "Saving animal info...",
+        successFuction: _popUntilHome,
       )
     );
   }

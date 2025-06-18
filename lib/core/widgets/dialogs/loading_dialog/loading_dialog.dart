@@ -1,10 +1,8 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mobile_app_template/core/constants/lottie_strings.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/constants/text_strings.dart';
-import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
 import 'package:mobile_app_template/core/utils/helpers/app_exception.dart';
 import 'package:mobile_app_template/core/utils/http/response.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
@@ -18,6 +16,7 @@ class LoadingDialog extends StatefulWidget {
   final String errorMessage; //custom error message
   final String successMessage; //custom success message
   final Future<TResponse> Function()? asyncFunction; //async function to execute
+  final void Function() successFuction;
 
   //provide default values for the loadingMesage, errorMessage and successMessage on the constructor
   const LoadingDialog({
@@ -26,6 +25,7 @@ class LoadingDialog extends StatefulWidget {
     this.errorMessage =  TText.operationFailed,
     this.successMessage =  TText.operationSuccess,
     this.asyncFunction,
+    required this.successFuction
   });
 
   @override
@@ -77,6 +77,7 @@ class _LoadingDialogState extends State<LoadingDialog> with TickerProviderStateM
     //will set the state of the dialog to error
     //catches all errors and modfiies the _errMessage based on the cause of the error encountered
     } catch (e) {
+      if(!mounted) return;
       setState(() {
         //update the _errMessage based on the response
         _errMessage = e.toString();
@@ -131,7 +132,7 @@ class _LoadingDialogState extends State<LoadingDialog> with TickerProviderStateM
           onLoaded: (composition) {
             _animationController
               ..duration = composition.duration
-              ..forward().whenComplete(_popUntilHome); //executes the _popUntilHome function when the animation completes
+              ..forward().whenComplete(widget.successFuction); //executes the _popUntilHome function when the animation completes
           },
         ),
       ],
@@ -145,10 +146,6 @@ class _LoadingDialogState extends State<LoadingDialog> with TickerProviderStateM
       child: _buildLoaderByStatus(),
     );
   }
-  //pops the getx navigation stack until the name route home is found
-  void _popUntilHome() {
-    TNavigationService.offAllNamed(TAppRoutes.home);
-  }
 
   //returns the correct lottie gif based on the current status
   Widget _buildLoaderByStatus() {
@@ -160,6 +157,12 @@ class _LoadingDialogState extends State<LoadingDialog> with TickerProviderStateM
       case ProcessStatus.error:
         return _renderErrorContent();
     }
+  }
+
+  //close modal
+
+  void _closeModal(){
+    TNavigationService.back();
   }
 
   //builds the action button
@@ -176,7 +179,7 @@ class _LoadingDialogState extends State<LoadingDialog> with TickerProviderStateM
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
-                  onPressed: _popUntilHome,
+                  onPressed: _closeModal,
                   child: const Text(TText.cancel),
                 ),
                 TextButton(
@@ -273,7 +276,7 @@ class _LoadingDialogState extends State<LoadingDialog> with TickerProviderStateM
           _buildInfoText(),
           const FixedSeparator(space: TSizes.spaceFromTitlemid),
           _buildLoader(),
-          _buildActionButtons() ?? const SizedBox.shrink(),
+          _buildActionButtons(),
         ], 
       ),
     );

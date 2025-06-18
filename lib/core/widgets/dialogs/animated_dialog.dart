@@ -7,7 +7,7 @@ class AnimatedDialog {
     BuildContext context, {
     String label = "Dialog",
     required Widget child,
-    bool isDismissible = true,
+    bool isDismissible = false, //the dialog cannot be dismissed by clicking the gray part by default
     
   }) {
     showGeneralDialog(

@@ -35,6 +35,12 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     }else{
       TNavigationService.offAllNamed(TAppRoutes.home);
     }
+    //add here
+    //if there is an authenticated user, check access toke
+    //if access token is valid, go to home
+    //else rotate the token using the refresh token (if there is none go to login)
+    //if new access token is generated using the refresh token, go to home
+    //else (e.g. the refresh token has expired) go to login 
   }
 
   @override
