@@ -5,8 +5,10 @@ import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_store.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mobile_app_template/core/utils/helpers/app_exception.dart';
 import 'package:mobile_app_template/core/utils/http/dio/auth_interceptor.dart';
 import 'package:mobile_app_template/core/utils/http/response.dart';
+import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/services/api/authentication.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -93,11 +95,33 @@ class DioHTTPHelper {
     Map<String, String>? headers,
     required T Function(Map<String, dynamic>) fromJson,
   }) async {
-    final response = await _dio.post(uri.toString(), data: jsonEncode(body), options: Options(headers: {
-      'Content-Type': 'application/json',
-      ...?headers,
-    }));
-    return _handleResponse<T>(response, fromJson);
+    try{
+      final response = await _dio.post(uri.toString(), data: jsonEncode(body), options: Options(headers: {
+        'Content-Type': 'application/json',
+        ...?headers,
+      }));
+      return _handleResponse<T>(response, fromJson);
+    }on DioException catch(e){
+      TLogger.error(
+        'Dio Exception: ${e.toString()}'
+      );
+
+      if(e.response == null){
+        throw TAppException("Unknown error occured: No response received");
+      }
+      return _handleResponse(e.response!, fromJson);
+    }catch(e, stack){
+      TLogger.error('Unknown error: $e\n$stack');
+        final fallbackResponse = Response(
+        requestOptions: RequestOptions(path: uri.toString()),
+        statusCode: 500,
+        data: {
+          'error': e.toString(),
+        },
+      );
+
+      return _handleResponse<T>(fallbackResponse, fromJson);
+      }
   }
 
   /// ---------------- PUT JSON ----------------
@@ -181,6 +205,7 @@ class DioHTTPHelper {
     T Function(Map<String, dynamic>) fromJson,
   ){
     try{
+      TLogger.info(response.toString());
       final Map<String, dynamic> data = response.data;
       final isSuccess = response.statusCode != null && response.statusCode! >= 200 && response.statusCode! < 300;
 
