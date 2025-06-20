@@ -32,26 +32,37 @@ class TAuthenticationService {
     _baseUri = Uri.parse('http://$ip:8000/auth');
   }
 
-  Future<void> signIn(String username, String password) async{
+  Future<TResponse> signIn(String username, String password) async{
     final url = Uri(
       scheme: _baseUri.scheme,
       port: _baseUri.port,
       host: _baseUri.host,
-      path: _signIn
+      path: '${_baseUri.path}$_signIn'
     );
 
     final payload = {
-      "username": username,
+      "email": username,
       "password" : password
     };
+
+    TLogger.info(url.toString());
 
     final response = await _dio.postJson<_AuthToken>(
       uri: url,
       body: payload,
       fromJson: _processAuthResponse
     );
+
+    final data = response.data;
+    if(data == null){
+      throw TAppException(response.message ?? "Sign up failed");
+    }
+    if(data.accessToken == null || data.refreshToken == null){
+      throw TAppException("Signup successful but not authentication details received. Contact Support");
+    }
     await secureStorageService.saveData(LocalSecureStorageService.accessToken, response.data!.accessToken);
     await secureStorageService.saveData(LocalSecureStorageService.refreshToken, response.data!.refreshToken);
+    return response;
   }
 
   Future<TResponse> signUp(String username, String email, String password) async {
@@ -61,8 +72,6 @@ class TAuthenticationService {
       host: _baseUri.host,
       path: '${_baseUri.path}/$_signUp'
     );
-
-    TLogger.info(uri.toString());
 
     final payload = {
       "username": username,

@@ -29,6 +29,7 @@ class AnimalApi {
     if(!_isInitialized){
       _baseUri = Uri.parse('http://$ip:8000/$_basePath');
       _dio = DioHTTPHelper();
+      _isInitialized = true;
     }
   }
 
@@ -43,9 +44,9 @@ class AnimalApi {
     final payload = TMapHelpers.stringifyDynamicMap(params.toMap());
     //seperate the image as it is in file form
     final image = params.getImage();
-    MultipartFile? file;
+    MapEntry<String, MultipartFile>? file;
     if(image != null){
-      file = await DioHTTPHelper.createMultiPartFileFromXFile(image, fieldName: "image");
+      file = MapEntry("image",await DioHTTPHelper.createMultiPartFileFromXFile(image));
     }
 
     final response = await _dio.postMultipart<Map<String, dynamic>>(
@@ -54,6 +55,8 @@ class AnimalApi {
       fields: payload,
       fromJson: DioHTTPHelper.defaultFromJson
     );
+
+    TLogger.info(response.toString());
 
     return response;
   }

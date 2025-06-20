@@ -50,7 +50,6 @@ class DioHTTPHelper {
         rotateToken: TAuthenticationService().rotateToken,
         dio: _dio,
       ),
-      LogInterceptor(requestBody: true, responseBody: true),
       RetryInterceptor(
         dio: _dio,
         retries: 3,
@@ -247,8 +246,8 @@ class DioHTTPHelper {
   Future<TResponse<T>> postMultipart<T>({
     required Uri url,
     Map<String, String>? fields,
-    List<MultipartFile>? files,
     Map<String, String>? headers,
+    List<MapEntry<String, MultipartFile>>? files,
     required T Function(Map<String, dynamic>) fromJson,
   }) async {
     final data = FormData();
@@ -258,7 +257,7 @@ class DioHTTPHelper {
 
     // Add files with keys like file0, file1, ...
     if (files != null) {
-      data.files.addAll(List.generate(files.length, (i) => MapEntry("file$i", files[i])));
+      data.files.addAll(files);
     }
 
     try {
@@ -280,8 +279,8 @@ class DioHTTPHelper {
             data: {'error': e.message ?? 'No response received'},
           );
       return _handleResponse<T>(response, fromJson);
-    } catch (e, stack) {
-      TLogger.error('Unknown error: $e\n$stack');
+    } catch (e) {
+      TLogger.error('Unknown error: $e\n');
       final fallbackResponse = Response(
         requestOptions: RequestOptions(path: url.toString()),
         statusCode: 500,
@@ -347,7 +346,7 @@ class DioHTTPHelper {
     }
   }
 
-  static Future<MultipartFile> createMultiPartFileFromXFile(XFile file, {required String fieldName}) {
+  static Future<MultipartFile> createMultiPartFileFromXFile(XFile file) {
     return MultipartFile.fromFile(file.path, filename: file.name);
   }
 

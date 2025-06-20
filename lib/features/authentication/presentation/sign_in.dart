@@ -61,19 +61,20 @@ class SignInScreen extends StatelessWidget {
                     const FixedSeparator(space: TSizes.spaceBetweenItems),
                     Form(
                       key: controller.formkey,
-                      child: const Column(
+                      child: Column(
                           children: [
                             AuthTextField(
                               label: TText.email,
+                              controller: controller.usernameController,
                               leadingIcon: Iconsax.sms,
                               validator: TValidator.validateEmail,
                               isRequired: true,
                             ),
                             AuthTextField(
                               label: TText.password,
+                              controller: controller.passwordController,
                               leadingIcon: Iconsax.password_check,
                               isPassword: true,
-                              validator: TValidator.validatePassword,
                               isRequired: true,
                             )
                           ],
@@ -89,7 +90,7 @@ class SignInScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(TSizes.borderRadiusxxl)
                           )
                         ),
-                        onPressed: controller.submit, 
+                        onPressed: ()=>controller.submit(context), 
                         child: const Text(TText.login)
                       )
                     ),

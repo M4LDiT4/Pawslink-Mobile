@@ -62,6 +62,7 @@ class _LoadingDialogState extends State<LoadingDialog> with TickerProviderStateM
         _showActionButtons = false; //remove the action buttons from view if it is alread showing otherwise does nothing
       });
       final response = await widget.asyncFunction?.call();
+      TLogger.info(response.toString());
       //if response is null or if response is not successful, throw an exception
       //simple way of handling erratic requests and responses
       if (response == null) {
@@ -77,7 +78,6 @@ class _LoadingDialogState extends State<LoadingDialog> with TickerProviderStateM
     //will set the state of the dialog to error
     //catches all errors and modfiies the _errMessage based on the cause of the error encountered
     } catch (e) {
-      if(!mounted) return;
       setState(() {
         //update the _errMessage based on the response
         _errMessage = e.toString();
