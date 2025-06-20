@@ -1,16 +1,17 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
 import 'package:mobile_app_template/core/navigation/route_params/add_animal_summary.dart';
 import 'package:mobile_app_template/core/utils/helpers/app_exception.dart';
 import 'package:mobile_app_template/core/utils/helpers/map_helpers.dart';
 import 'package:mobile_app_template/core/utils/http/dio_client.dart';
-import 'package:mobile_app_template/core/utils/http/http_client.dart';
 import 'package:mobile_app_template/core/utils/http/response.dart';
+import 'package:mobile_app_template/core/utils/logger/logger.dart';
 
 class AnimalApi {
   final String _basePath = "animal-database";
   final String _addAnimal = "add-animal";
+
+  bool _isInitialized = false;
   late Uri _baseUri;
 
   late DioHTTPHelper _dio;
@@ -25,8 +26,10 @@ class AnimalApi {
   Future<void> init() async {
     final ip = dotenv.env['LOCALHOST_IP_ADDRESS'];
     if(ip == null) throw TAppException("Missing LOCALHOST_IP_ADDRESS in .env");
-    _baseUri = Uri.parse('http://$ip:8000/$_basePath');
-    _dio = DioHTTPHelper();
+    if(!_isInitialized){
+      _baseUri = Uri.parse('http://$ip:8000/$_basePath');
+      _dio = DioHTTPHelper();
+    }
   }
 
   Future<TResponse> addAnimal(AddAnimalSummaryParams params)async{
@@ -54,28 +57,4 @@ class AnimalApi {
 
     return response;
   }
-  // AnimalApi._();
-
-  // static Future<TResponse> addAnimal(AddAnimalSummaryParams params) async {
-  //   final url = Uri.http(_baseUrl, _addAnimalPath);
-
-  //   // Convert params into a Map (assumes AddAnimalSummaryParams has a toJson method)
-  //   final payload = THttpHelper.stringifyDynamicMap(params.toMap());
-  //   final image = params.getImage();
-
-  //   final files = <String, http.MultipartFile>{};
-
-  //   if (image != null) {
-  //     files['animalImage'] =await  THttpHelper.createMultipartFileFromXFile(image, fieldName: "");
-  //   }
-  //   // Make POST request
-  //   final response = await THttpHelper.postMultipart<Map<String, dynamic>>(
-  //     url: url,
-  //     fields: payload,
-  //     files: files,
-  //     fromJson: THttpHelper.defaultFromJson
-  //   );
-
-  //   return response;
-  // }
 }

@@ -103,6 +103,7 @@ class AddAnimalSummary extends StatelessWidget {
   }
 
   void _showAnimatedDialog(BuildContext context){
+    AnimalApi().init();
     AnimatedDialog.show(
       context, 
       child: LoadingDialog(
