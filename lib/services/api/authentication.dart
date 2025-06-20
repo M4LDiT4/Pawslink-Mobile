@@ -77,7 +77,7 @@ class TAuthenticationService {
 
     final data = response.data;
     if(data == null){
-      throw TAppException("Sign up failed");
+      throw TAppException(response.message ?? "Sign up failed");
     }
     if(data.accessToken == null || data.refreshToken == null){
       throw TAppException("Signup successful but not authentication details received. Contact Support");

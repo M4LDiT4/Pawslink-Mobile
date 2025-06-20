@@ -40,7 +40,9 @@ class _AdminHomeNavigationState extends State<AdminHomeNavigation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const GenericAppbar(),
+      appBar: const GenericAppbar(
+        showLeading: false,
+      ),
       bottomNavigationBar: Obx(
         () => NavigationBar(
           selectedIndex: controller.selectedIndex.value,

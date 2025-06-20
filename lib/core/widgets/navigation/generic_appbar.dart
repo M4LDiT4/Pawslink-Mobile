@@ -10,16 +10,18 @@ class GenericAppbar extends StatelessWidget implements PreferredSizeWidget {
 
   final double height;
   final PreferredSizeWidget? bottom;
+  final bool showLeading;
 
   const GenericAppbar({
     super.key,
     this.height = kToolbarHeight,
     this.bottom,
+    this.showLeading = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    final bool canPop = Get.previousRoute.isNotEmpty;
+    final bool canPop = Get.previousRoute.isNotEmpty && showLeading;
     final isDarkMode = TDeviceUtils.isDarkMode();
     return AppBar(
       leading: canPop? IconButton(
