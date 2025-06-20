@@ -92,7 +92,9 @@ class AddAnimalSummary extends StatelessWidget {
   }
 
   Future<TResponse> _saveAnimal() async {
-    return  AnimalApi.addAnimal(params);
+    //please invoke AnimalApi().init()
+    //before using the api 
+    return  AnimalApi().addAnimal(params);
   }
 
   //pops the getx navigation stack until the name route home is found
