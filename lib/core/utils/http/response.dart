@@ -50,4 +50,9 @@ class TResponse<T>{
     }
   }
   bool get isSuccess => success;
+
+  @override
+  String toString() {
+    return 'TResponse<$T>(success: $success, statusCode: $statusCode, message: $message, data: ${jsonEncode(data)})';
+  }
 }

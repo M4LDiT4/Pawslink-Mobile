@@ -9,8 +9,9 @@ import 'package:mobile_app_template/services/local_storage/local_secure_storage.
 class TAuthenticationService {
   //urls and paths
   static const String _signIn = "/sign-in";
-  static const String _signUp = "sign-up";
+  static const String _signUp = "/sign-up";
   static const String _baseAuth = "/auth";
+  static const String _refresh = "refresh";
   late Uri _baseUri;
 
   //secure storage
@@ -70,7 +71,7 @@ class TAuthenticationService {
       scheme: _baseUri.scheme,
       port: _baseUri.port,
       host: _baseUri.host,
-      path: '${_baseUri.path}/$_signUp'
+      path: '${_baseUri.path}$_signUp'
     );
 
     final payload = {
@@ -97,7 +98,7 @@ class TAuthenticationService {
     return response;
   }
 
-  Future<TResponse> rotateToken() async{
+  Future<void> rotateToken() async{
     final refreshToken = await secureStorageService.getData(LocalSecureStorageService.refreshToken);
     if(refreshToken == null){
       throw TAppException("Login data expired, please login again");
@@ -106,24 +107,23 @@ class TAuthenticationService {
       scheme: _baseUri.scheme,
       host: _baseUri.host,
       port: _baseUri.port,
-      path: _baseAuth
+      path: '$_baseAuth/$_refresh'
     );
     final Map<String, String> body = {
       "refreshToken" : refreshToken
     };
-    final response = await DioHTTPHelper().postJson<String?>(
+    final response = await DioHTTPHelper().postJson<_AuthToken?>(
       uri: uri, 
       body: body, 
-      fromJson: _processRefreshTokenResponse
+      fromJson: _processAuthResponse
     );
-    return response;
-  }
 
-  String? _processRefreshTokenResponse(Map<String, dynamic> map){
-    if(map.containsKey("refreshToken")){
-      return map['refreshToken'];
+    if(response.data == null){
+      throw TAppException(response.message?? "Invalid refresh token");
     }
-    return null;
+
+    await secureStorageService.saveData(LocalSecureStorageService.accessToken, response.data!.accessToken);
+    await secureStorageService.saveData(LocalSecureStorageService.refreshToken, response.data!.refreshToken);
   }
 
   _AuthToken _processAuthResponse(Map<String, dynamic> data){

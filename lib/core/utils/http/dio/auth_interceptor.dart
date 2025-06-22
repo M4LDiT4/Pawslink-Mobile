@@ -41,12 +41,16 @@ class AuthInterceptor extends Interceptor {
     final isUnauthorized = err.response?.statusCode == 401;
 
     if (isUnauthorized) {
+      TLogger.info('Not authorized, attempt to rotate token');
+
       if (!_isRefreshing) {
         _isRefreshing = true;
 
         rotateToken().then((_) async {
           final newToken = await getAccessToken();
           if (newToken != null) {
+            TLogger.info("New access token: $newToken");
+
             // Retry all queued requests
             for (final request in _queuedRequests) {
               final updatedOptions = request.options.copyWith(
@@ -60,7 +64,13 @@ class AuthInterceptor extends Interceptor {
                 final response = await request.dio.fetch(updatedOptions);
                 request.handler.resolve(response);
               } catch (e) {
-                request.handler.reject(e as DioException);
+                request.handler.reject(
+                  DioException(
+                    requestOptions: request.options,
+                    error: e,
+                    type: DioExceptionType.unknown,
+                  ),
+                );
               }
             }
 
@@ -78,18 +88,57 @@ class AuthInterceptor extends Interceptor {
               final response = await dio.fetch(updatedOptions);
               handler.resolve(response);
             } catch (e) {
-              handler.reject(e as DioException);
+              TLogger.error('Retry failed: ${e.toString()}');
+              handler.reject(
+                DioException(
+                  requestOptions: updatedOptions,
+                  error: e,
+                  type: DioExceptionType.unknown,
+                ),
+              );
             }
           } else {
-            TLogger.warning("Token refresh returned null");
-            handler.next(err);
+            for (final request in _queuedRequests) {
+              request.handler.reject(
+                DioException(
+                  requestOptions: request.options,
+                  type: DioExceptionType.badResponse,
+                  error: "Token refresh returned null",
+                ),
+              );
+            }
+            _queuedRequests.clear();
+
+            handler.reject(
+              DioException(
+                requestOptions: err.requestOptions,
+                type: DioExceptionType.badResponse,
+                error: "Token refresh returned null",
+              ),
+            );
           }
 
           _isRefreshing = false;
         }).catchError((error) {
           TLogger.error("Token refresh failed: $error");
+          for (final request in _queuedRequests) {
+            request.handler.reject(
+              DioException(
+                requestOptions: request.options,
+                error: error.toString(),
+              ),
+            );
+          }
+          _queuedRequests.clear();
+
           _isRefreshing = false;
-          handler.next(err);
+
+          handler.reject(
+            DioException(
+              requestOptions: err.requestOptions,
+              error: error.toString(),
+            ),
+          );
         });
       } else {
         // Queue current request until refresh completes

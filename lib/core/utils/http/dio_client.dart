@@ -271,12 +271,12 @@ class DioHTTPHelper {
       );
       return _handleResponse<T>(response, fromJson);
     } on DioException catch (e) {
-      TLogger.error('Dio Exception: ${e.toString()}');
+      TLogger.error('Dio Exception: ${e.message}');
       final response = e.response ??
           Response(
             requestOptions: RequestOptions(path: url.toString()),
             statusCode: 500,
-            data: {'error': e.message ?? 'No response received'},
+            data: {'error': e.message},
           );
       return _handleResponse<T>(response, fromJson);
     } catch (e) {
