@@ -6,6 +6,7 @@ import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_stor
 import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobile_app_template/core/utils/http/dio/auth_interceptor.dart';
+import 'package:mobile_app_template/core/utils/http/dio/connection_interceptor.dart';
 import 'package:mobile_app_template/core/utils/http/response.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/services/api/authentication.dart';
@@ -41,12 +42,14 @@ class DioHTTPHelper {
 
     _dio.interceptors.addAll([
       DioCacheInterceptor(options: cacheOptions),
+
+      ConnectionInterceptor(),
+
       AuthInterceptor(
         getAccessToken: TAuthenticationService().getAccesstoken,
         rotateToken: TAuthenticationService().rotateToken,
         dio: _dio,
       ),
-      LogInterceptor(requestBody: true, responseBody: true),
       RetryInterceptor(
         dio: _dio,
         retries: 3,
@@ -56,7 +59,7 @@ class DioHTTPHelper {
           Duration(seconds: 3),
         ],
         logPrint: print,
-      )
+      ),
     ]);
   }
 
@@ -243,27 +246,41 @@ class DioHTTPHelper {
   Future<TResponse<T>> postMultipart<T>({
     required Uri url,
     Map<String, String>? fields,
-    List<MultipartFile>? files,
     Map<String, String>? headers,
+    List<MapEntry<String, MultipartFile>>? files,
     required T Function(Map<String, dynamic>) fromJson,
   }) async {
     final data = FormData();
+
+    // Add fields
     if (fields != null) data.fields.addAll(fields.entries);
-    if (files != null) data.files.addAll(List.generate(files.length, (i) => MapEntry("file$i", files[i])));
+
+    // Add files with keys like file0, file1, ...
+    if (files != null) {
+      data.files.addAll(files);
+    }
 
     try {
-      final response = await _dio.post(url.toString(), data: data, options: Options(headers: headers));
-      return _handleResponse<T>(response, fromJson);
-    } on DioException catch (e) {
-      TLogger.error('Dio Exception: ${e.toString()}');
-      final response = e.response ?? Response(
-        requestOptions: RequestOptions(path: url.toString()),
-        statusCode: 500,
-        data: {'error': e.message ?? 'No response received'},
+      final response = await _dio.post(
+        url.toString(),
+        data: data,
+        options: Options(headers: {
+          'Content-Type': 'multipart/form-data',
+          ...?headers,
+        }),
       );
       return _handleResponse<T>(response, fromJson);
-    } catch (e, stack) {
-      TLogger.error('Unknown error: $e\n$stack');
+    } on DioException catch (e) {
+      TLogger.error('Dio Exception: ${e.message}');
+      final response = e.response ??
+          Response(
+            requestOptions: RequestOptions(path: url.toString()),
+            statusCode: 500,
+            data: {'error': e.message},
+          );
+      return _handleResponse<T>(response, fromJson);
+    } catch (e) {
+      TLogger.error('Unknown error: $e\n');
       final fallbackResponse = Response(
         requestOptions: RequestOptions(path: url.toString()),
         statusCode: 500,
@@ -272,6 +289,7 @@ class DioHTTPHelper {
       return _handleResponse<T>(fallbackResponse, fromJson);
     }
   }
+
 
   Future<TResponse<T>> putMultipart<T>({
     required String url,
@@ -328,7 +346,7 @@ class DioHTTPHelper {
     }
   }
 
-  static Future<MultipartFile> createMultiPartFileFromXFile(XFile file, {required String fieldName}) {
+  static Future<MultipartFile> createMultiPartFileFromXFile(XFile file) {
     return MultipartFile.fromFile(file.path, filename: file.name);
   }
 

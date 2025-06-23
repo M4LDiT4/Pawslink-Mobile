@@ -9,8 +9,9 @@ import 'package:mobile_app_template/services/local_storage/local_secure_storage.
 class TAuthenticationService {
   //urls and paths
   static const String _signIn = "/sign-in";
-  static const String _signUp = "sign-up";
+  static const String _signUp = "/sign-up";
   static const String _baseAuth = "/auth";
+  static const String _refresh = "refresh";
   late Uri _baseUri;
 
   //secure storage
@@ -32,26 +33,37 @@ class TAuthenticationService {
     _baseUri = Uri.parse('http://$ip:8000/auth');
   }
 
-  Future<void> signIn(String username, String password) async{
+  Future<TResponse> signIn(String username, String password) async{
     final url = Uri(
       scheme: _baseUri.scheme,
       port: _baseUri.port,
       host: _baseUri.host,
-      path: _signIn
+      path: '${_baseUri.path}$_signIn'
     );
 
     final payload = {
-      "username": username,
+      "email": username,
       "password" : password
     };
+
+    TLogger.info(url.toString());
 
     final response = await _dio.postJson<_AuthToken>(
       uri: url,
       body: payload,
       fromJson: _processAuthResponse
     );
+
+    final data = response.data;
+    if(data == null){
+      throw TAppException(response.message ?? "Sign in failed");
+    }
+    if(data.accessToken == null || data.refreshToken == null){
+      throw TAppException("Signup successful but not authentication details received. Contact Support");
+    }
     await secureStorageService.saveData(LocalSecureStorageService.accessToken, response.data!.accessToken);
     await secureStorageService.saveData(LocalSecureStorageService.refreshToken, response.data!.refreshToken);
+    return response;
   }
 
   Future<TResponse> signUp(String username, String email, String password) async {
@@ -59,10 +71,8 @@ class TAuthenticationService {
       scheme: _baseUri.scheme,
       port: _baseUri.port,
       host: _baseUri.host,
-      path: '${_baseUri.path}/$_signUp'
+      path: '${_baseUri.path}$_signUp'
     );
-
-    TLogger.info(uri.toString());
 
     final payload = {
       "username": username,
@@ -88,7 +98,7 @@ class TAuthenticationService {
     return response;
   }
 
-  Future<TResponse> rotateToken() async{
+  Future<void> rotateToken() async{
     final refreshToken = await secureStorageService.getData(LocalSecureStorageService.refreshToken);
     if(refreshToken == null){
       throw TAppException("Login data expired, please login again");
@@ -97,24 +107,23 @@ class TAuthenticationService {
       scheme: _baseUri.scheme,
       host: _baseUri.host,
       port: _baseUri.port,
-      path: _baseAuth
+      path: '$_baseAuth/$_refresh'
     );
     final Map<String, String> body = {
       "refreshToken" : refreshToken
     };
-    final response = await DioHTTPHelper().postJson<String?>(
+    final response = await DioHTTPHelper().postJson<_AuthToken?>(
       uri: uri, 
       body: body, 
-      fromJson: _processRefreshTokenResponse
+      fromJson: _processAuthResponse
     );
-    return response;
-  }
 
-  String? _processRefreshTokenResponse(Map<String, dynamic> map){
-    if(map.containsKey("refreshToken")){
-      return map['refreshToken'];
+    if(response.data == null){
+      throw TAppException(response.message?? "Invalid refresh token");
     }
-    return null;
+
+    await secureStorageService.saveData(LocalSecureStorageService.accessToken, response.data!.accessToken);
+    await secureStorageService.saveData(LocalSecureStorageService.refreshToken, response.data!.refreshToken);
   }
 
   _AuthToken _processAuthResponse(Map<String, dynamic> data){

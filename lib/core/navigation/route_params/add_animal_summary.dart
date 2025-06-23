@@ -2,7 +2,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mobile_app_template/data/model/modal_input_list_item.dart';
 
 class AddAnimalSummaryParams {
-  final String? userId;
   final String name;
   final String age;
   final String location;
@@ -17,7 +16,6 @@ class AddAnimalSummaryParams {
   final XFile? animalImage;
 
   AddAnimalSummaryParams({
-    this.userId,
     required this.name,
     required this.age,
     required this.location,
@@ -38,13 +36,12 @@ class AddAnimalSummaryParams {
 
   Map<String, dynamic> toMap() {
     return {
-      'userId': userId,
       'name': name,
-      'speceis': species,
+      'species': species.toLowerCase(),
       'age': age,
       'location': location,
-      'sex': sex,
-      'status': status,
+      'sex': sex.toLowerCase(),
+      'status': status.toLowerCase(),
       'coatColor': coatColor,
       'notes': notes,
       'traitsAndPersonality': traits,
