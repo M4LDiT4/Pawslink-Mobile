@@ -131,6 +131,8 @@ class AnimalListScreenState extends State<AnimalListScreen> {
     });
   }
 
+
+
   @override
   void dispose() {
     _scrollController.dispose();

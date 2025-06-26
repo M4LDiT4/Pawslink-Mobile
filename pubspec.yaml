@@ -39,6 +39,9 @@ dependencies:
   lottie: ^3.3.1
   flutter_secure_storage: ^9.2.4
 
+  # image carousel
+  carousel_slider: ^4.2.1
+
   # network
   dio: ^5.4.0
   dio_retry_plus: ^2.0.0

@@ -6,4 +6,5 @@ class TLottie {
   static String success = "assets/lottie/success.json";
   static String walkingWoman = "assets/lottie/walking-woman.json";
   static String background = "assets/lottie/background.json";
+  static String catLoader = "assets/lottie/cat-loader.json";
 }
