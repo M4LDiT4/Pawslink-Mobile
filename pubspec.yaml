@@ -54,6 +54,7 @@ dependencies:
 
   # qr code scanner
   mobile_scanner: ^7.0.1
+  pretty_qr_code: ^3.4.0
 
 
 dev_dependencies:

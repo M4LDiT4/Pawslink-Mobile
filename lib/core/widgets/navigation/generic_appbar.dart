@@ -10,14 +10,14 @@ class GenericAppbar extends StatelessWidget implements PreferredSizeWidget {
   final double height;
   final PreferredSizeWidget? bottom;
   final bool showLeading;
-  final List<Widget>? actions; // <-- NEW
+  final List<Widget>? actions;
 
   const GenericAppbar({
     super.key,
     this.height = kToolbarHeight,
     this.bottom,
     this.showLeading = true,
-    this.actions, // <-- NEW
+    this.actions,
   });
 
   @override
@@ -44,7 +44,7 @@ class GenericAppbar extends StatelessWidget implements PreferredSizeWidget {
       automaticallyImplyLeading: true,
       elevation: 0,
       bottom: bottom,
-      actions: actions, // <-- Attach actions here
+      actions: actions, 
     );
   }
 

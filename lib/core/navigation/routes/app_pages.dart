@@ -6,7 +6,8 @@ import 'package:get/get.dart';
 import 'package:mobile_app_template/core/bindings/controllers/add_animal.dart';
 import 'package:mobile_app_template/features/animal_database/presentation/screens/add_animal/add_animal.dart';
 import 'package:mobile_app_template/features/animal_database/presentation/screens/add_animal/add_animal_summary.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/screens/scan_qr_code/qr_code_scanner.dart';
+import 'package:mobile_app_template/features/animal_database/presentation/screens/qr_code/generate_qr_code.dart';
+import 'package:mobile_app_template/features/animal_database/presentation/screens/qr_code/qr_code_scanner.dart';
 import 'package:mobile_app_template/features/animal_database/presentation/screens/view_animal/view_animal.dart';
 import 'package:mobile_app_template/features/animal_database/presentation/screens/view_animal_details/view_animal_details.dart';
 import 'package:mobile_app_template/features/authentication/presentation/sign_in.dart';
@@ -78,6 +79,11 @@ class TAppPages {
       name: TAppRoutes.qrCodeScanner,
       page: () => const QRCodeScannerScreen(),
       transition: Transition.leftToRightWithFade,
+    ),
+    GetPage(
+      name: TAppRoutes.qrCodeGenerator,
+      page: () => const QrCodeGeneratorScreen(),
+      transition: Transition.leftToRightWithFade
     )
   ];
 }
