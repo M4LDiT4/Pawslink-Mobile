@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app_template/core/constants/colors.dart';
+import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 /// Widget to display scanned barcodes.
 class ScannedBarcodeLabel extends StatelessWidget {
   /// Construct a new [ScannedBarcodeLabel] instance.
-  const ScannedBarcodeLabel({required this.barcodes, super.key});
+  const ScannedBarcodeLabel({
+    required this.barcodes,
+    required this.handleOK,
+    required this.handledCancel, 
+    super.key,
+  });
+  final void Function() handleOK;
+  final void Function() handledCancel;
 
   /// Barcode stream for scanned barcodes to display
   final Stream<BarcodeCapture> barcodes;
@@ -16,22 +25,39 @@ class ScannedBarcodeLabel extends StatelessWidget {
       builder: (context, snapshot) {
         final List<Barcode> scannedBarcodes = snapshot.data?.barcodes ?? [];
 
-        final String values = scannedBarcodes
-            .map((e) => e.displayValue)
-            .join('\n');
+        List<Widget> children = [
+          const Text(
+            style: TextStyle(
+              color: TColors.textLight
+            ),
+            "Scan something"
+          )
+        ];
 
-        if (scannedBarcodes.isEmpty) {
-          return const Text(
-            'Scan something!',
-            overflow: TextOverflow.fade,
-            style: TextStyle(color: Colors.white),
-          );
+        if(scannedBarcodes.isNotEmpty){
+          children = [
+            IconButton(
+              onPressed: (){}, 
+              icon: const Icon(
+                Icons.close,
+                size: TSizes.iconxl,
+                color: TColors.textLight,
+              )
+            ),
+            IconButton(
+              onPressed: (){}, 
+              icon: const Icon(
+                Icons.check,
+                size: TSizes.iconxl,
+                color: TColors.textLight,
+              )
+            )
+          ];
         }
 
-        return Text(
-          values.isEmpty ? 'No display value.' : values,
-          overflow: TextOverflow.fade,
-          style: const TextStyle(color: Colors.white),
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: children,
         );
       },
     );

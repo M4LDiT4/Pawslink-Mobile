@@ -9,26 +9,20 @@ import 'package:mobile_app_template/features/animal_database/presentation/widget
 import 'package:mobile_app_template/features/animal_database/presentation/widgets/scan_qr_code/buttons/start_stop_button.dart';
 import 'package:mobile_app_template/features/animal_database/presentation/widgets/scan_qr_code/buttons/switch_camera_button.dart';
 import 'package:mobile_app_template/features/animal_database/presentation/widgets/scan_qr_code/buttons/toggle_flashlight_button.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/widgets/scan_qr_code/dialogs/barcode_format_dialog.dart';
 import 'package:mobile_app_template/features/animal_database/presentation/widgets/scan_qr_code/dialogs/box_fit_dialog.dart';
 import 'package:mobile_app_template/features/animal_database/presentation/widgets/scan_qr_code/dialogs/detection_speed_dialog.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/widgets/scan_qr_code/dialogs/detection_timeout_dialog.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/widgets/scan_qr_code/dialogs/resolution_dialog.dart';
 import 'package:mobile_app_template/features/animal_database/presentation/widgets/scan_qr_code/scanned_barcode_label.dart';
 import 'package:mobile_app_template/features/animal_database/presentation/widgets/scan_qr_code/scanner_error_widget.dart';
 import 'package:mobile_app_template/features/animal_database/presentation/widgets/scan_qr_code/zoom_scale_slider_widget.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 enum _PopupMenuItems {
-  cameraResolution,
   detectionSpeed,
-  detectionTimeout,
   returnImage,
   invertImage,
   autoZoom,
   useBarcodeOverlay,
   boxFit,
-  formats,
   scanWindow,
 }
 
@@ -57,23 +51,20 @@ class _QRCodeScannerScreen extends State<QRCodeScannerScreen> {
   int detectionTimeoutMs = 1000;
 
   bool useBarcodeOverlay = true;
-  BoxFit boxFit = BoxFit.contain;
+  BoxFit boxFit = BoxFit.cover;
   bool enableLifecycle = false;
 
   /// Hides the MobileScanner widget while the MobileScannerController is
   /// rebuilding
   bool hideMobileScannerWidget = false;
 
-  List<BarcodeFormat> selectedFormats = [];
-
   MobileScannerController initController() => MobileScannerController(
     autoStart: false,
     cameraResolution: desiredCameraResolution,
     detectionSpeed: detectionSpeed,
-    detectionTimeoutMs: detectionTimeoutMs,
-    formats: selectedFormats,
+    detectionTimeoutMs: 1000,
+    formats: [BarcodeFormat.qrCode],
     returnImage: returnImage,
-    // torchEnabled: true,
     invertImage: invertImage,
     autoZoom: autoZoom,
   );
@@ -91,22 +82,6 @@ class _QRCodeScannerScreen extends State<QRCodeScannerScreen> {
     await controller?.dispose();
     controller = null;
   }
-
-  Future<void> _showResolutionDialog() async {
-    final Size? result = await showDialog<Size>(
-      context: context,
-      builder:
-          (context) =>
-              ResolutionDialog(initialResolution: desiredCameraResolution),
-    );
-
-    if (result != null) {
-      setState(() {
-        desiredCameraResolution = result;
-      });
-    }
-  }
-
   Future<void> _showDetectionSpeedDialog() async {
     final DetectionSpeed? result = await showDialog<DetectionSpeed>(
       context: context,
@@ -120,21 +95,6 @@ class _QRCodeScannerScreen extends State<QRCodeScannerScreen> {
     }
   }
 
-  Future<void> _showDetectionTimeoutDialog() async {
-    final int? result = await showDialog<int>(
-      context: context,
-      builder:
-          (context) =>
-              DetectionTimeoutDialog(initialTimeoutMs: detectionTimeoutMs),
-    );
-
-    if (result != null) {
-      setState(() {
-        detectionTimeoutMs = result;
-      });
-    }
-  }
-
   Future<void> _showBoxFitDialog() async {
     final BoxFit? result = await showDialog<BoxFit>(
       context: context,
@@ -144,20 +104,6 @@ class _QRCodeScannerScreen extends State<QRCodeScannerScreen> {
     if (result != null) {
       setState(() {
         boxFit = result;
-      });
-    }
-  }
-
-  Future<void> _showBarcodeFormatDialog() async {
-    final List<BarcodeFormat>? result = await showDialog<List<BarcodeFormat>>(
-      context: context,
-      builder:
-          (context) => BarcodeFormatDialog(selectedFormats: selectedFormats),
-    );
-
-    if (result != null) {
-      setState(() {
-        selectedFormats = result;
       });
     }
   }
@@ -211,14 +157,8 @@ class _QRCodeScannerScreen extends State<QRCodeScannerScreen> {
             tooltip: 'Menu',
             onSelected: (item) async {
               switch (item) {
-                case _PopupMenuItems.cameraResolution:
-                  await _showResolutionDialog();
                 case _PopupMenuItems.detectionSpeed:
                   await _showDetectionSpeedDialog();
-                case _PopupMenuItems.detectionTimeout:
-                  await _showDetectionTimeoutDialog();
-                case _PopupMenuItems.formats:
-                  await _showBarcodeFormatDialog();
                 case _PopupMenuItems.boxFit:
                   await _showBoxFitDialog();
                 case _PopupMenuItems.returnImage:
@@ -238,27 +178,13 @@ class _QRCodeScannerScreen extends State<QRCodeScannerScreen> {
             },
             itemBuilder:
                 (context) => [
-                  if (!kIsWeb && Platform.isAndroid)
-                    PopupMenuItem(
-                      value: _PopupMenuItems.cameraResolution,
-                      child: Text(_PopupMenuItems.cameraResolution.name),
-                    ),
                   PopupMenuItem(
                     value: _PopupMenuItems.detectionSpeed,
                     child: Text(_PopupMenuItems.detectionSpeed.name),
                   ),
                   PopupMenuItem(
-                    value: _PopupMenuItems.detectionTimeout,
-                    enabled: detectionSpeed == DetectionSpeed.normal,
-                    child: Text(_PopupMenuItems.detectionTimeout.name),
-                  ),
-                  PopupMenuItem(
                     value: _PopupMenuItems.boxFit,
                     child: Text(_PopupMenuItems.boxFit.name),
-                  ),
-                  PopupMenuItem(
-                    value: _PopupMenuItems.formats,
-                    child: Text(_PopupMenuItems.formats.name),
                   ),
                   const PopupMenuDivider(),
                   if (!kIsWeb && Platform.isAndroid)
@@ -301,7 +227,7 @@ class _QRCodeScannerScreen extends State<QRCodeScannerScreen> {
                   MobileScanner(
                     // useAppLifecycleState: false, // Only set to false if you want
                     // to handle lifecycle changes yourself
-                    scanWindow: useScanWindow ? scanWindow : null,
+                    scanWindow: scanWindow,
                     controller: controller,
                     errorBuilder: (context, error) {
                       return ScannerErrorWidget(error: error);
@@ -316,6 +242,11 @@ class _QRCodeScannerScreen extends State<QRCodeScannerScreen> {
                       scanWindow: scanWindow,
                       controller: controller!,
                     ),
+                  //modify this
+                  //the image should be on the center and ask the user if it is correct or not
+                  //pause the scanner until the user has decided
+                  //if it is not correct return the scanning
+                  //else create an function to execute on success
                   if (returnImage)
                     Align(
                       alignment: Alignment.topRight,
@@ -379,6 +310,8 @@ class _QRCodeScannerScreen extends State<QRCodeScannerScreen> {
                           Expanded(
                             child: ScannedBarcodeLabel(
                               barcodes: controller!.barcodes,
+                              handleOK: (){},
+                              handledCancel: (){},
                             ),
                           ),
                           if (!kIsWeb) ZoomScaleSlider(controller: controller!),
