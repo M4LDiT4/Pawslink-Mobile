@@ -13,5 +13,7 @@ abstract class TAppRoutes {
   static const viewAnimal = '/view-animal';
   static const splashScreen ='/';
   static const viewAnimalDetails = "/view-animal/details";
+  static const qrCodeScanner = "/animal-database/scan-qr-code";
+  static const qrCodeGenerator ="/animal-database/generate-qr-code";
   // Add more routes as needed
 }

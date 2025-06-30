@@ -16,6 +16,10 @@ class AnimalDatabaseScreen extends StatelessWidget {
   void _navigateToViewAnimal() {
     TNavigationService.toNamed(TAppRoutes.viewAnimal);
   }
+
+  void _navigateToScanQrCode(){
+    TNavigationService.toNamed(TAppRoutes.qrCodeScanner);
+  }
   @override
   Widget build(BuildContext context) {
     final screenHeight = TDeviceUtils.getScreenBodyHeight();
@@ -56,11 +60,15 @@ class AnimalDatabaseScreen extends StatelessWidget {
                   onPress: (){},
                 ),
                 AdminHomeActionButtons(
+                  onPress: _navigateToScanQrCode, 
+                  label: "Scan"
+                ),
+                AdminHomeActionButtons(
                   label: "+ Add Animal",
                   onPress: _navigateToAddAnimal,
                   type: AdminButtonType.special,
                 ),
-              ],
+              ]
             ),
           )
         ],
