@@ -27,9 +27,15 @@ dependencies:
   # splash screen
   flutter_native_splash: ^2.4.6
 
-  # image picker 
+  # file picker 
   image_picker: ^1.1.2
+  file_selector: ^1.0.3
+
+  # path related
   path_provider: ^2.1.5
+
+  # permissions
+  permission_handler: ^11.3.1
 
   # graphs
   fl_chart: ^0.66.2
@@ -55,7 +61,6 @@ dependencies:
   # qr code scanner
   mobile_scanner: ^7.0.1
   pretty_qr_code: ^3.4.0
-
 
 dev_dependencies:
   flutter_test:

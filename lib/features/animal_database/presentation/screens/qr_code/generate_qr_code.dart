@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app_template/core/constants/colors.dart';
 import 'package:mobile_app_template/core/constants/image_strings.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
+import 'package:mobile_app_template/core/utils/helpers/file_helper.dart';
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
+import 'package:mobile_app_template/features/animal_database/presentation/widgets/view_animal_profile_slider/generate_qr_button.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 
 class QrCodeGeneratorScreen extends StatefulWidget {
+  //pass the stringified object id here
   const QrCodeGeneratorScreen({super.key});
 
   @override
@@ -13,7 +16,7 @@ class QrCodeGeneratorScreen extends StatefulWidget {
 }
 
 class _QrCodeGeneratorScreenState extends State<QrCodeGeneratorScreen> {
-
+  final GlobalKey _key = GlobalKey();
   late QrImage _qrImage;
 
   @override
@@ -21,11 +24,17 @@ class _QrCodeGeneratorScreenState extends State<QrCodeGeneratorScreen> {
     super.initState();
     final qrCode = QrCode(
       8, QrErrorCorrectLevel.H
-    )..addData("This is my data");
+    )..addData("This is my data"); //replace this with actual object id
 
     _qrImage = QrImage(qrCode);
     
   }
+
+  Future<String?> _saveQRCode() async{
+    final response = await TFileHelpers.saveQRCode(_key, "name");
+    return response;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,31 +48,28 @@ class _QrCodeGeneratorScreenState extends State<QrCodeGeneratorScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                PrettyQrView(
+                RepaintBoundary(
+                  key: _key,
+                  child: PrettyQrView(
                   qrImage: _qrImage,
-                  decoration:  PrettyQrDecoration(
-                    image: const PrettyQrDecorationImage(
-                      image:AssetImage(TImages.logoPawslinkRoundColored)
-                    ).copyWith(scale: 0.4),
-                    quietZone: PrettyQrQuietZone.standart,
-                    shape:const PrettyQrSmoothSymbol(
-                      color: PrettyQrBrush.gradient(
-                        gradient: LinearGradient(
-                          colors: [TColors.primary, TColors.tertiary]
-                        )
-                      ), // fallback if shader fails
+                    decoration:  PrettyQrDecoration(
+                      image: const PrettyQrDecorationImage(
+                        image:AssetImage(TImages.logoPawslinkRoundColored)
+                      ).copyWith(scale: 0.4),
+                      quietZone: PrettyQrQuietZone.standart,
+                      shape:const PrettyQrSmoothSymbol(
+                        color: PrettyQrBrush.gradient(
+                          gradient: LinearGradient(
+                            colors: [TColors.primary, TColors.tertiary]
+                          )
+                        ), // fallback if shader fails
+                      ),
                     ),
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: (){}, 
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.download),
-                      Text("Download QR Code")
-                    ],
-                  )
+                SizedBox(
+                  width: double.infinity,
+                  child: SaveQRButton(asyncFunction: _saveQRCode),
                 )
               ],
             )
@@ -73,3 +79,5 @@ class _QrCodeGeneratorScreenState extends State<QrCodeGeneratorScreen> {
     );
   }
 }
+
+

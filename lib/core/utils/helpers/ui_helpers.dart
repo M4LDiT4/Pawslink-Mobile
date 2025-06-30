@@ -101,3 +101,10 @@ class TUIHelpers {
     );
   }
 }
+
+//remove if unused
+enum _SnackBarStatus{
+  neutral,
+  error,
+  success
+}
