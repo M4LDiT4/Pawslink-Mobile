@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/screens/view_animal/animal_list.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/screens/view_animal/view_animal_summary.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/widgets/tri_purpose_fab/view_animal_tri_purpose_fab.dart';
+import 'package:mobile_app_template/features/animal_database/screens/view_animal/animal_list.dart';
+import 'package:mobile_app_template/features/animal_database/screens/view_animal/view_animal_summary.dart';
+import 'package:mobile_app_template/features/animal_database/widgets/tri_purpose_fab/view_animal_tri_purpose_fab.dart';
 
 class ViewAnimalScreen extends StatefulWidget {
   const ViewAnimalScreen({super.key});

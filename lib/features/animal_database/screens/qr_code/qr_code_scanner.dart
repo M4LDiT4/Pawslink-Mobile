@@ -4,16 +4,16 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/widgets/scan_qr_code/buttons/analyze_image_button.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/widgets/scan_qr_code/buttons/pause_button.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/widgets/scan_qr_code/buttons/start_stop_button.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/widgets/scan_qr_code/buttons/switch_camera_button.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/widgets/scan_qr_code/buttons/toggle_flashlight_button.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/widgets/scan_qr_code/dialogs/box_fit_dialog.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/widgets/scan_qr_code/dialogs/detection_speed_dialog.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/widgets/scan_qr_code/scanned_barcode_label.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/widgets/scan_qr_code/scanner_error_widget.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/widgets/scan_qr_code/zoom_scale_slider_widget.dart';
+import 'package:mobile_app_template/features/animal_database/widgets/scan_qr_code/buttons/analyze_image_button.dart';
+import 'package:mobile_app_template/features/animal_database/widgets/scan_qr_code/buttons/pause_button.dart';
+import 'package:mobile_app_template/features/animal_database/widgets/scan_qr_code/buttons/start_stop_button.dart';
+import 'package:mobile_app_template/features/animal_database/widgets/scan_qr_code/buttons/switch_camera_button.dart';
+import 'package:mobile_app_template/features/animal_database/widgets/scan_qr_code/buttons/toggle_flashlight_button.dart';
+import 'package:mobile_app_template/features/animal_database/widgets/scan_qr_code/dialogs/box_fit_dialog.dart';
+import 'package:mobile_app_template/features/animal_database/widgets/scan_qr_code/dialogs/detection_speed_dialog.dart';
+import 'package:mobile_app_template/features/animal_database/widgets/scan_qr_code/scanned_barcode_label.dart';
+import 'package:mobile_app_template/features/animal_database/widgets/scan_qr_code/scanner_error_widget.dart';
+import 'package:mobile_app_template/features/animal_database/widgets/scan_qr_code/zoom_scale_slider_widget.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 enum _PopupMenuItems {

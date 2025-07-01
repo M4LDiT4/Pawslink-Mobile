@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_template/core/constants/image_strings.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/widgets/tri_purpose_fab/view_animal_fab.dart';
+import 'package:mobile_app_template/features/animal_database/widgets/tri_purpose_fab/view_animal_fab.dart';
 
 class ViewAnimalTriPurposeFab extends StatefulWidget {
   final bool isVisible; // whether to show FAB or not (based on tab index)

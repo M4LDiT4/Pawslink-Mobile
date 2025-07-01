@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app_template/core/enums/animal_sex.dart';
 import 'package:mobile_app_template/core/enums/animal_status.dart';
 import 'package:mobile_app_template/data/model/animal_profile_item.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/widgets/animal_profile_list_item.dart';
+import 'package:mobile_app_template/features/animal_database/widgets/animal_profile_list_item.dart';
 
 class AnimalListScreen extends StatefulWidget {
   const AnimalListScreen({
