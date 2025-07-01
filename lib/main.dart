@@ -9,7 +9,7 @@ import 'package:mobile_app_template/services/api/authentication.dart';
 
 import 'app.dart';
 void main() async {
-  // Todo: Add widgets binding
+  WidgetsFlutterBinding.ensureInitialized();
   // Todo: Init Local Storage
   // Todo: Await Native Splash Screen
   // Todo: Initialize backend
