@@ -144,9 +144,7 @@ class _GenericDatePickerButtonState extends State<GenericDatePickerButton> {
                         child: Text(
                           formattedDate.isNotEmpty ? formattedDate : 'Select a date',
                           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                color: formattedDate.isNotEmpty
-                                    ? (isDarkMode ? TColors.textLight : TColors.textDark)
-                                    : Colors.grey.shade700,
+                                color: isDarkMode ? TColors.textLight : TColors.textDark,
                               ),
                         ),
                       ),
