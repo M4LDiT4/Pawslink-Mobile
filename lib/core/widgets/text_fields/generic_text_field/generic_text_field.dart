@@ -11,6 +11,7 @@ class GenericTextField extends StatefulWidget {
   final bool obscureText;
   final TextInputType keyboardType;
   final int? maxLines;
+  final int? minLines;
   final int? maxLength;
   final bool enabled;
   final String? suffixText;
@@ -31,6 +32,7 @@ class GenericTextField extends StatefulWidget {
     this.obscureText = false,
     this.keyboardType = TextInputType.text,
     this.maxLines = 1,
+    this.minLines = 1,
     this.maxLength,
     this.enabled = true,
     this.onChanged,
@@ -139,6 +141,7 @@ class _GenericTextFieldState extends State<GenericTextField> {
           obscureText: widget.obscureText,
           keyboardType: widget.keyboardType,
           maxLines: widget.maxLines,
+          minLines: widget.minLines,
           maxLength: widget.maxLength,
           enabled: widget.enabled,
           onChanged: widget.onChanged,

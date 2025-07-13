@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_template/core/constants/colors.dart';
-import 'package:mobile_app_template/core/utils/device/device_utility.dart';
 import 'package:mobile_app_template/core/widgets/pickers/time_pickers/generic_time_picker_controller.dart';
 
 class GenericTimePicker extends StatefulWidget {
@@ -26,7 +25,6 @@ class GenericTimePicker extends StatefulWidget {
 
 class _GenericTimePickerState extends State<GenericTimePicker> {
   late final GenericTimePickerController _controller;
-  bool _expanded = false;
 
   @override
   void initState(){
@@ -36,7 +34,6 @@ class _GenericTimePickerState extends State<GenericTimePicker> {
       ..initialtime(widget.initialTime)
       ..isRequired(widget.isRequired)
       ..customErrorMssg(widget.errorText);
-    _expanded = _controller.selectedTime != null;
   }
 
   OutlineInputBorder _buildBorder(Color color) {
@@ -56,7 +53,6 @@ class _GenericTimePickerState extends State<GenericTimePicker> {
       _controller.validate();
       setState(() {
         _controller.selectedTime = picked;
-        _expanded = true;
       });
     }
   }
@@ -64,7 +60,6 @@ class _GenericTimePickerState extends State<GenericTimePicker> {
   @override
   Widget build(BuildContext context) {
     Color primaryColor = Theme.of(context).colorScheme.primary;
-    bool isDarkMode = TDeviceUtils.isDarkMode();
     return Expanded(
       child: Padding(
         padding: widget.padding,
@@ -110,17 +105,11 @@ class _GenericTimePickerState extends State<GenericTimePicker> {
                         child: Text(
                           formattedTime.isNotEmpty ? formattedTime : 'Select Time',
                           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: isDarkMode ? TColors.textLight : TColors.textDark,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 400),
-                    child: _expanded
-                        ? const SizedBox(height: 10)
-                        : const SizedBox.shrink(),
                   ),
                 ],
               ),

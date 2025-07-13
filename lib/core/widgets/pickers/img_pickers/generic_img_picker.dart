@@ -9,7 +9,6 @@ import 'package:mobile_app_template/core/utils/colors/color_utils.dart';
 import 'package:mobile_app_template/core/utils/device/device_utility.dart';
 import 'package:mobile_app_template/core/utils/helpers/ui_helpers.dart';
 import 'package:mobile_app_template/core/widgets/pickers/img_pickers/generic_img_picker_controller.dart';
-import 'package:mobile_app_template/core/widgets/pickers/img_pickers/img_picker_src_selection_button.dart';
 
 ///@widget GenericImagePicker
 ///@description : widget for picking and capturing images

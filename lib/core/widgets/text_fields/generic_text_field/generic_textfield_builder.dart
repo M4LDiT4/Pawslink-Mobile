@@ -10,6 +10,7 @@ class GenericTextfieldBuilder {
   bool _obscureText = false;
   TextInputType _keyboardType = TextInputType.text;
   int? _maxLines = 1;
+  int? _minlines = 1;
   bool _enabled = true;
   String? _suffixText;
   EdgeInsetsGeometry _padding = const EdgeInsets.all(8);
@@ -75,7 +76,10 @@ class GenericTextfieldBuilder {
     return this;
   }
 
-  GenericTextfieldBuilder maxLines (int lines){
+  GenericTextfieldBuilder maxLines (int? lines){
+    if(lines == null){
+      _minlines = 1;
+    }
     _maxLines = lines;
     return this;
   }
@@ -131,6 +135,7 @@ class GenericTextfieldBuilder {
       obscureText: _obscureText,
       keyboardType: _keyboardType,
       maxLines: _maxLines,
+      minLines: _minlines,
       enabled: _enabled,
       suffixText: _suffixText,
       onChanged: _onChanged,

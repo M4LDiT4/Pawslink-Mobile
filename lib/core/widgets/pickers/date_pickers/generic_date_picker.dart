@@ -36,7 +36,6 @@ class GenericDatePickerButton extends StatefulWidget {
 
 class _GenericDatePickerButtonState extends State<GenericDatePickerButton> {
   late final GenericDatepickerController _controller;
-  bool _expanded = false;
 
   @override
   void initState() {
@@ -45,7 +44,6 @@ class _GenericDatePickerButtonState extends State<GenericDatePickerButton> {
       ..initialDate(widget.initialDate)
       ..isRequired(widget.isRequired)
       ..errorText(widget.errorText);
-    _expanded = _controller.selectedDate != null;
   }
 
   OutlineInputBorder _buildBorder(Color color) {
@@ -86,7 +84,6 @@ class _GenericDatePickerButtonState extends State<GenericDatePickerButton> {
     if (picked != null) {
       setState(() {
         _controller.selectedDate = picked;
-        _expanded = true;
       });
       if (widget.onDateSelected != null) {
         widget.onDateSelected!(picked);
@@ -144,17 +141,11 @@ class _GenericDatePickerButtonState extends State<GenericDatePickerButton> {
                         child: Text(
                           formattedDate.isNotEmpty ? formattedDate : 'Select a date',
                           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                color: isDarkMode ? TColors.textLight : TColors.textDark,
-                              ),
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 400),
-                    child: _expanded
-                        ? const SizedBox(height: 10)
-                        : const SizedBox.shrink(),
                   ),
                 ],
               ),

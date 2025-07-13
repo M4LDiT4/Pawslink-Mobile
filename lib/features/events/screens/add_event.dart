@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
 import 'package:mobile_app_template/core/widgets/pickers/date_pickers/generic_date_picker.dart';
+import 'package:mobile_app_template/core/widgets/pickers/time_pickers/generic_time_picker.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/generic_text_field/generic_textfield_builder.dart';
 import 'package:mobile_app_template/core/widgets/texts/section_title.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
@@ -32,10 +33,19 @@ class AddEventScreen extends StatelessWidget {
               ),
               const Row(
                 children: [
-                  GenericDatePickerButton(labelText: "Event Date")
+                  GenericDatePickerButton(labelText: "Event Date"),
+                  GenericTimePicker(labelText: "Time"),
+                ],
+              ),
+              Row(
+                children: [
+                  GenericTextfieldBuilder()
+                  .maxLines(null)
+                  .label("Description")
+                  .keyboardType(TextInputType.multiline)
+                  .build()
                 ],
               )
-              //add additional texts
             ],
           ),
         ),
