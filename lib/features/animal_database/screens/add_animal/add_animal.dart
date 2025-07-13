@@ -16,6 +16,7 @@ import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/mo
 import 'package:mobile_app_template/core/widgets/text_fields/multivalue_text_input/multivalue_textinput.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/generic_text_field/generic_textfield_builder.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/modal_input_list.dart';
+import 'package:mobile_app_template/core/widgets/texts/section_title.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
 import 'package:mobile_app_template/features/animal_database/controllers/add_animal_controller.dart';
 import 'package:mobile_app_template/services/navigation_service.dart';
@@ -49,12 +50,7 @@ class AddAnimalScreeen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-            color: isDarkMode? TColors.primaryDark : TColors.primary
-          ),
-          title
-        ),
+        SectionTitle(title: title),
         ...children
       ]
     );

@@ -4,6 +4,7 @@ import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
 import 'package:mobile_app_template/core/widgets/pickers/date_pickers/generic_date_picker.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/generic_text_field/generic_textfield_builder.dart';
+import 'package:mobile_app_template/core/widgets/texts/section_title.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
 import 'package:mobile_app_template/features/events/widgets/event_image_picker.dart';
 
@@ -21,7 +22,7 @@ class AddEventScreen extends StatelessWidget {
             children: [
               const ImagePickerWidget(),
               const FixedSeparator(space: TSizes.spaceBetweenSections),
-              const Text("Event information"),
+              const SectionTitle(title: "Event Details"),
               Row(
                 children: [
                   GenericTextfieldBuilder

@@ -41,10 +41,10 @@ class _GenericDatePickerButtonState extends State<GenericDatePickerButton> {
   @override
   void initState() {
     super.initState();
-    _controller = widget.controller ?? GenericDatepickerController();
-    _controller.initialDate(widget.initialDate);
-    _controller.errorText(widget.errorText);
-    _controller.isRequired(widget.isRequired);
+    _controller = widget.controller ?? GenericDatepickerController()
+      ..initialDate(widget.initialDate)
+      ..isRequired(widget.isRequired)
+      ..errorText(widget.errorText);
     _expanded = _controller.selectedDate != null;
   }
 
