@@ -69,7 +69,7 @@ class _GenericTimePickerState extends State<GenericTimePicker> {
             TimeOfDay? selectedTime = _controller.selectedTime;
             String formattedTime = selectedTime != null 
               ? selectedTime.format(context) 
-              : 'Select Time';
+              : '';
             bool hasTime = selectedTime != null;
             return AnimatedSize(
               duration: const Duration(milliseconds: 300),
@@ -100,7 +100,7 @@ class _GenericTimePickerState extends State<GenericTimePicker> {
                     child: InkWell(
                       onTap: ()=>_selectTime(context),
                       child: AnimatedOpacity(
-                        opacity: formattedTime.isNotEmpty ? 1 : 0.5, 
+                        opacity: formattedTime.isNotEmpty ? 1 : 0.6, 
                         duration: const Duration(milliseconds: 300),
                         child: Text(
                           formattedTime.isNotEmpty ? formattedTime : 'Select Time',

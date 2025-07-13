@@ -4,6 +4,7 @@
 
 import 'package:get/get.dart';
 import 'package:mobile_app_template/core/bindings/controllers/add_animal.dart';
+import 'package:mobile_app_template/core/bindings/controllers/add_event.dart';
 import 'package:mobile_app_template/features/animal_database/screens/add_animal/add_animal.dart';
 import 'package:mobile_app_template/features/animal_database/screens/add_animal/add_animal_summary.dart';
 import 'package:mobile_app_template/features/animal_database/screens/qr_code/generate_qr_code.dart';
@@ -24,7 +25,7 @@ class TAppPages {
   static final routes = [
     GetPage(
       name: TAppRoutes.home,
-      page: () => AdminHomeNavigation(),
+      page: () =>const AdminHomeNavigation(),
     ),
     GetPage(
       name: TAppRoutes.profile,
@@ -88,8 +89,9 @@ class TAppPages {
     ),
     GetPage(
       name: TAppRoutes.addEvent, 
-      page: () => const AddEventScreen(),
-      transition: Transition.leftToRightWithFade
+      page: () => AddEventScreen(),
+      transition: Transition.leftToRightWithFade,
+      binding:  AddEventControllerBinding()
     ),
   ];
 }

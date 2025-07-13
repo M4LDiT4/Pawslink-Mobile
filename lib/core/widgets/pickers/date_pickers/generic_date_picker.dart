@@ -137,7 +137,7 @@ class _GenericDatePickerButtonState extends State<GenericDatePickerButton> {
                       onTap: () => _pickDate(context),
                       child: AnimatedOpacity(
                         duration: const Duration(milliseconds: 400),
-                        opacity: formattedDate.isNotEmpty ? 1 : 0.5,
+                        opacity: formattedDate.isNotEmpty ? 1 : 0.6,
                         child: Text(
                           formattedDate.isNotEmpty ? formattedDate : 'Select a date',
                           style: Theme.of(context).textTheme.bodyLarge?.copyWith(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mobile_app_template/core/constants/colors.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/constants/text_strings.dart';
 import 'package:mobile_app_template/core/enums/animal_sex.dart';
@@ -51,7 +50,7 @@ class AddAnimalScreeen extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         SectionTitle(title: title),
-        ...children
+        ...children,
       ]
     );
   }
@@ -74,6 +73,7 @@ class AddAnimalScreeen extends StatelessWidget {
               GenericImagePicker(
                 controller: controller.imgPickerController,
               ),
+              const FixedSeparator(space: TSizes.spaceBetweenSections),
               _buildSection(
                 isDarkMode, 
                 [
@@ -140,24 +140,29 @@ class AddAnimalScreeen extends StatelessWidget {
                 TText.basicInformation, 
                 context
               ),
+              const FixedSeparator(space: TSizes.spaceBetweenSections),
               MultivalueTextInput(
                 controller: controller.coatColorController,
                 title: TText.coatColor,
               ),
+              const FixedSeparator(space: TSizes.spaceBetweenSections),
               MultivalueTextInput(
                 controller: controller.notesController,
                 title: TText.notes,
               ),
+              const FixedSeparator(space: TSizes.spaceBetweenSections),
                MultivalueTextInput(
                 controller: controller.traitsController,
                 title: TText.traitsAndPersonality,
               ),
+              const FixedSeparator(space: TSizes.spaceBetweenSections),
               ModalInputList(
                 modal: VaccinationModal(),
                 title: TText.vaxHistory,
                 controller: controller.vaxController,
                 icon: Icons.vaccines,
               ),
+              const FixedSeparator(space: TSizes.spaceBetweenSections),
               ModalInputList(
                 title: TText.medHistory,
                 modal: MedicationModal(),
