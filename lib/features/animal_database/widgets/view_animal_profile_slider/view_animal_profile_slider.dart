@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:mobile_app_template/core/constants/colors.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/widgets/view_animal_profile_slider/view_animal_profile_slider_item.dart';
+import 'package:mobile_app_template/features/animal_database/widgets/view_animal_profile_slider/view_animal_profile_slider_item.dart';
 
 class ViewAnimalProfileSlider extends StatelessWidget {
   const ViewAnimalProfileSlider({super.key});

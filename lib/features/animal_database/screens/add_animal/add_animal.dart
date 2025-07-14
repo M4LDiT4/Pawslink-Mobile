@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mobile_app_template/core/constants/colors.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/constants/text_strings.dart';
 import 'package:mobile_app_template/core/enums/animal_sex.dart';
@@ -16,6 +15,7 @@ import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/mo
 import 'package:mobile_app_template/core/widgets/text_fields/multivalue_text_input/multivalue_textinput.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/generic_text_field/generic_textfield_builder.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/modal_input_list.dart';
+import 'package:mobile_app_template/core/widgets/texts/section_title.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
 import 'package:mobile_app_template/features/animal_database/controllers/add_animal_controller.dart';
 import 'package:mobile_app_template/services/navigation_service.dart';
@@ -49,13 +49,8 @@ class AddAnimalScreeen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-            color: isDarkMode? TColors.primaryDark : TColors.primary
-          ),
-          title
-        ),
-        ...children
+        SectionTitle(title: title),
+        ...children,
       ]
     );
   }
@@ -78,6 +73,7 @@ class AddAnimalScreeen extends StatelessWidget {
               GenericImagePicker(
                 controller: controller.imgPickerController,
               ),
+              const FixedSeparator(space: TSizes.spaceBetweenSections),
               _buildSection(
                 isDarkMode, 
                 [
@@ -144,24 +140,29 @@ class AddAnimalScreeen extends StatelessWidget {
                 TText.basicInformation, 
                 context
               ),
+              const FixedSeparator(space: TSizes.spaceBetweenSections),
               MultivalueTextInput(
                 controller: controller.coatColorController,
                 title: TText.coatColor,
               ),
+              const FixedSeparator(space: TSizes.spaceBetweenSections),
               MultivalueTextInput(
                 controller: controller.notesController,
                 title: TText.notes,
               ),
+              const FixedSeparator(space: TSizes.spaceBetweenSections),
                MultivalueTextInput(
                 controller: controller.traitsController,
                 title: TText.traitsAndPersonality,
               ),
+              const FixedSeparator(space: TSizes.spaceBetweenSections),
               ModalInputList(
                 modal: VaccinationModal(),
                 title: TText.vaxHistory,
                 controller: controller.vaxController,
                 icon: Icons.vaccines,
               ),
+              const FixedSeparator(space: TSizes.spaceBetweenSections),
               ModalInputList(
                 title: TText.medHistory,
                 modal: MedicationModal(),

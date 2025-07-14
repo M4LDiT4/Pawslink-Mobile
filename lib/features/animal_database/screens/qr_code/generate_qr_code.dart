@@ -4,7 +4,7 @@ import 'package:mobile_app_template/core/constants/image_strings.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/utils/helpers/file_helper.dart';
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/widgets/view_animal_profile_slider/generate_qr_button.dart';
+import 'package:mobile_app_template/features/animal_database/widgets/view_animal_profile_slider/generate_qr_button.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 
 class QrCodeGeneratorScreen extends StatefulWidget {

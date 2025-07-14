@@ -4,14 +4,16 @@
 
 import 'package:get/get.dart';
 import 'package:mobile_app_template/core/bindings/controllers/add_animal.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/screens/add_animal/add_animal.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/screens/add_animal/add_animal_summary.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/screens/qr_code/generate_qr_code.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/screens/qr_code/qr_code_scanner.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/screens/view_animal/view_animal.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/screens/view_animal_details/view_animal_details.dart';
+import 'package:mobile_app_template/core/bindings/controllers/add_event.dart';
+import 'package:mobile_app_template/features/animal_database/screens/add_animal/add_animal.dart';
+import 'package:mobile_app_template/features/animal_database/screens/add_animal/add_animal_summary.dart';
+import 'package:mobile_app_template/features/animal_database/screens/qr_code/generate_qr_code.dart';
+import 'package:mobile_app_template/features/animal_database/screens/qr_code/qr_code_scanner.dart';
+import 'package:mobile_app_template/features/animal_database/screens/view_animal/view_animal.dart';
+import 'package:mobile_app_template/features/animal_database/screens/view_animal_details/view_animal_details.dart';
 import 'package:mobile_app_template/features/authentication/presentation/sign_in.dart';
 import 'package:mobile_app_template/features/authentication/presentation/sign_up.dart';
+import 'package:mobile_app_template/features/events/screens/add_event.dart';
 import 'package:mobile_app_template/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:mobile_app_template/features/onboarding/presentation/splash_screen.dart';
 import 'package:mobile_app_template/features/sample_feature/presentation/screens/sample_screen.dart';
@@ -23,7 +25,7 @@ class TAppPages {
   static final routes = [
     GetPage(
       name: TAppRoutes.home,
-      page: () => AdminHomeNavigation(),
+      page: () =>const AdminHomeNavigation(),
     ),
     GetPage(
       name: TAppRoutes.profile,
@@ -84,6 +86,12 @@ class TAppPages {
       name: TAppRoutes.qrCodeGenerator,
       page: () => const QrCodeGeneratorScreen(),
       transition: Transition.leftToRightWithFade
-    )
+    ),
+    GetPage(
+      name: TAppRoutes.addEvent, 
+      page: () => AddEventScreen(),
+      transition: Transition.leftToRightWithFade,
+      binding:  AddEventControllerBinding()
+    ),
   ];
 }

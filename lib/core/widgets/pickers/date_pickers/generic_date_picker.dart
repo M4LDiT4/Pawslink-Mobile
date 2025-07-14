@@ -36,16 +36,14 @@ class GenericDatePickerButton extends StatefulWidget {
 
 class _GenericDatePickerButtonState extends State<GenericDatePickerButton> {
   late final GenericDatepickerController _controller;
-  bool _expanded = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = widget.controller ?? GenericDatepickerController();
-    _controller.initialDate(widget.initialDate);
-    _controller.errorText(widget.errorText);
-    _controller.isRequired(widget.isRequired);
-    _expanded = _controller.selectedDate != null;
+    _controller = widget.controller ?? GenericDatepickerController()
+      ..initialDate(widget.initialDate)
+      ..isRequired(widget.isRequired)
+      ..errorText(widget.errorText);
   }
 
   OutlineInputBorder _buildBorder(Color color) {
@@ -86,7 +84,6 @@ class _GenericDatePickerButtonState extends State<GenericDatePickerButton> {
     if (picked != null) {
       setState(() {
         _controller.selectedDate = picked;
-        _expanded = true;
       });
       if (widget.onDateSelected != null) {
         widget.onDateSelected!(picked);
@@ -140,23 +137,15 @@ class _GenericDatePickerButtonState extends State<GenericDatePickerButton> {
                       onTap: () => _pickDate(context),
                       child: AnimatedOpacity(
                         duration: const Duration(milliseconds: 400),
-                        opacity: formattedDate.isNotEmpty ? 1 : 0.5,
+                        opacity: formattedDate.isNotEmpty ? 1 : 0.6,
                         child: Text(
                           formattedDate.isNotEmpty ? formattedDate : 'Select a date',
                           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                color: formattedDate.isNotEmpty
-                                    ? (isDarkMode ? TColors.textLight : TColors.textDark)
-                                    : Colors.grey.shade700,
-                              ),
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 400),
-                    child: _expanded
-                        ? const SizedBox(height: 10)
-                        : const SizedBox.shrink(),
                   ),
                 ],
               ),

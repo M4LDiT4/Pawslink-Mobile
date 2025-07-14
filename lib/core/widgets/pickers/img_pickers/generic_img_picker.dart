@@ -1,151 +1,140 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mobile_app_template/core/constants/colors.dart';
-import 'package:mobile_app_template/core/constants/sizes.dart';
-import 'package:mobile_app_template/core/constants/text_strings.dart';
-import 'package:mobile_app_template/core/utils/colors/color_utils.dart';
-import 'package:mobile_app_template/core/utils/device/device_utility.dart';
-import 'package:mobile_app_template/core/utils/helpers/ui_helpers.dart';
+import 'package:mobile_app_template/core/widgets/buttons/secondary_elevated_button.dart';
+import 'package:mobile_app_template/core/widgets/image/aspectratio_image.dart';
 import 'package:mobile_app_template/core/widgets/pickers/img_pickers/generic_img_picker_controller.dart';
-import 'package:mobile_app_template/core/widgets/pickers/img_pickers/img_picker_src_selection_button.dart';
-
-///@widget GenericImagePicker
-///@description : widget for picking and capturing images
-///@notes : local states are managed by a stateful widget
+import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
 
 class GenericImagePicker extends StatefulWidget {
   final GenericImgPickerController? controller;
+
   const GenericImagePicker({
     super.key,
     this.controller,
   });
 
   @override
-  State<GenericImagePicker> createState() => _GenericImagePickerState();
+  State<GenericImagePicker> createState() => _GenericImagePicker();
 }
 
-class _GenericImagePickerState extends State<GenericImagePicker> {
+class _GenericImagePicker extends State<GenericImagePicker> {
+  final ImagePicker _picker = ImagePicker();
   late GenericImgPickerController _controller;
-  late ImagePicker _picker;
 
   @override
-  void initState(){
-    _controller = widget.controller ?? GenericImgPickerController();
-    _picker = ImagePicker();
+  void initState() {
     super.initState();
+    _controller = widget.controller ?? GenericImgPickerController();
   }
 
-  Future<void> pickImage(ImageSource source) async {
-    try {
-      final XFile? photo = await _picker.pickImage(source: source);
-
-      if (photo != null) {
-        _controller.selectedImage = photo;
-      }
-    } catch (e) {
-      debugPrint('Image pick failed: $e');
-      TUIHelpers.showSnackBar("Camera permission denied");
-      // Optionally show a dialog/snackbar to inform user
+  Future<void> _pickImage(ImageSource source) async {
+    final pickedFile = await _picker.pickImage(source: source);
+    if (pickedFile != null) {
+      _controller.selectedImage = File(pickedFile.path); // Triggers AnimatedBuilder
     }
+
+    if (!mounted) return;
+    Navigator.pop(context); // Close the bottom sheet
   }
 
-  void resetPicker(){
-    _controller.selectedImage = null;
-  }
-
-  Widget _renderPickerContent(){
-    return SizedBox(
-      width: double.infinity,
-      child: Card(
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(width: 2),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        color: TColorUtils.surface(),
-        child: Padding(
-          padding: const EdgeInsets.all(TSizes.paddingsm),
-          child: AnimatedBuilder(
-            animation: _controller, 
-            builder: (context, _) =>Column(
+  void _showImageSourceDialog() {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) {
+        return SafeArea(
+          child: Wrap(
             children: [
-              if (_controller.selectedImage != null)
-                Stack(
-                  alignment: Alignment.topRight,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.file(
-                        File(_controller.selectedImage!.path),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: CircleAvatar(
-                        radius: 16,
-                        backgroundColor: Colors.black54,
-                        child: IconButton(
-                          icon: const Icon(Icons.close, size: 16, color: Colors.white),
-                          padding: EdgeInsets.zero,
-                          onPressed: resetPicker
-                        ),
-                      ),
-                    ),
-                  ],
-                )
-              else ...[
-                Icon(
-                  size: 54,
-                  color: TColorUtils.primary(),
-                  Iconsax.gallery,
-                ),
-                const Text(TText.noImgSelected)
-              ]
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Gallery'),
+                onTap: () => _pickImage(ImageSource.gallery),
+              ),
+              ListTile(
+                leading: const Icon(Icons.camera_alt),
+                title: const Text('Camera'),
+                onTap: () => _pickImage(ImageSource.camera),
+              ),
             ],
           ),
-          )
-        ),
-      ),
+        );
+      },
     );
+  }
+
+  void _removeImage() {
+    _controller.clearImage();
   }
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = TDeviceUtils.isDarkMode();
-    Color iconColor = isDarkMode? TColors.primaryDark : TColors.primary;
-    return SizedBox(
-      width: double.infinity,
-      child: Padding(
-        padding: const EdgeInsets.all(TSizes.paddingmd),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Text(TText.imgPickerText1),
-            _renderPickerContent(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  iconSize: TSizes.iconxl,
-                  color: iconColor,
-                  onPressed: () => pickImage(ImageSource.camera), 
-                  icon: const Icon(Iconsax.camera)
-                ),
-                IconButton(
-                  iconSize: TSizes.iconxl,
-                  color: iconColor,
-                  onPressed:() => pickImage(ImageSource.gallery),
-                  icon: const Icon(Iconsax.gallery)
-                )
-              ],
-            )
-          ],
+    return Column(
+      children: [
+        Container(
+          constraints: const BoxConstraints(minHeight: 200),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: Colors.grey[100],
+          ),
+          child: AnimatedBuilder(
+            animation: _controller,
+            builder: (context, _) {
+              final image = _controller.selectedImage;
+              return image == null
+                  ? const Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.image, size: 60, color: Colors.grey),
+                          SizedBox(height: 8),
+                          Text("No image selected"),
+                        ],
+                      ),
+                    )
+                  : Stack(
+                      children: [
+                        AspectRatioImage.file(
+                          image,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        Positioned(
+                          top: 4,
+                          right: 4,
+                          child: GestureDetector(
+                            onTap: _removeImage,
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.black54,
+                              ),
+                              padding: const EdgeInsets.all(4),
+                              child: const Icon(
+                                Icons.close,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+            },
+          ),
         ),
-      ),
+        const FixedSeparator(space: 8),
+        SecondaryElevatedButton(
+          onPressed: _showImageSourceDialog,
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.upload),
+              SizedBox(width: 8),
+              Text("Choose a photo"),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
-

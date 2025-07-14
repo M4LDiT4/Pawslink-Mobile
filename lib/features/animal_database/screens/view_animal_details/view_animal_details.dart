@@ -13,9 +13,9 @@ import 'package:mobile_app_template/core/utils/formatters/formatter.dart';
 import 'package:mobile_app_template/core/utils/helpers/string_helper.dart';
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/widgets/date_label_listtile.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/widgets/utility_button.dart';
-import 'package:mobile_app_template/features/animal_database/presentation/widgets/value_label_column.dart';
+import 'package:mobile_app_template/features/animal_database/widgets/date_label_listtile.dart';
+import 'package:mobile_app_template/features/animal_database/widgets/utility_button.dart';
+import 'package:mobile_app_template/features/animal_database/widgets/value_label_column.dart';
 import 'package:mobile_app_template/services/navigation_service.dart';
 
 class ViewAnimalDetailsScreen extends StatefulWidget {
