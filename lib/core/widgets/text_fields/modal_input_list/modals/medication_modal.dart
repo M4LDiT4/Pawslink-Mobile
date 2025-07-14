@@ -9,7 +9,7 @@ import 'package:mobile_app_template/core/widgets/text_fields/generic_text_field/
 import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/modals/input_modal_strategy.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
 import 'package:mobile_app_template/data/model/modal_input_list_item.dart';
-import 'package:mobile_app_template/services/navigation_service.dart';
+import 'package:mobile_app_template/services/navigation/navigation_service.dart';
 
 class MedicationModal extends InputModalStrategy {
   final _formKey = GlobalKey<FormState>();

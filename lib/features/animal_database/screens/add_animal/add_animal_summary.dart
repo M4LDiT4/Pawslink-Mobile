@@ -13,7 +13,7 @@ import 'package:mobile_app_template/core/widgets/dialogs/loading_dialog/loading_
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
 import 'package:mobile_app_template/data/model/modal_input_list_item.dart';
 import 'package:mobile_app_template/services/api/animal_api.dart';
-import 'package:mobile_app_template/services/navigation_service.dart';
+import 'package:mobile_app_template/services/navigation/navigation_service.dart';
 
 class AddAnimalSummary extends StatelessWidget {
   final AddAnimalSummaryParams params = Get.arguments as AddAnimalSummaryParams;

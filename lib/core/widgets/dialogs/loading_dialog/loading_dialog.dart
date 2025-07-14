@@ -7,7 +7,7 @@ import 'package:mobile_app_template/core/utils/helpers/app_exception.dart';
 import 'package:mobile_app_template/core/utils/http/response.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
-import 'package:mobile_app_template/services/navigation_service.dart';
+import 'package:mobile_app_template/services/navigation/navigation_service.dart';
 
 enum ProcessStatus { loading, success, error }
 

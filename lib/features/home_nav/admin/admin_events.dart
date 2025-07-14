@@ -4,7 +4,7 @@ import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
 import 'package:mobile_app_template/core/utils/device/device_utility.dart';
 import 'package:mobile_app_template/core/widgets/buttons/admin/admin_home_actionbutton.dart';
-import 'package:mobile_app_template/services/navigation_service.dart';
+import 'package:mobile_app_template/services/navigation/navigation_service.dart';
 
 class AdminEventsScreens extends StatelessWidget {
   const AdminEventsScreens({super.key});

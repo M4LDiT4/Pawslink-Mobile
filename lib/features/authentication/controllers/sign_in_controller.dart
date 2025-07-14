@@ -6,7 +6,7 @@ import 'package:mobile_app_template/core/utils/http/response.dart';
 import 'package:mobile_app_template/core/widgets/dialogs/animated_dialog.dart';
 import 'package:mobile_app_template/core/widgets/dialogs/loading_dialog/loading_dialog.dart';
 import 'package:mobile_app_template/services/api/authentication.dart';
-import 'package:mobile_app_template/services/navigation_service.dart';
+import 'package:mobile_app_template/services/navigation/navigation_service.dart';
 
 class SignInController extends GetxController{
   final formkey = GlobalKey<FormState>();

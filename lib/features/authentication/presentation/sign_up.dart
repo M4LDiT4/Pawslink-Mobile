@@ -12,7 +12,7 @@ import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/keyboard_safe_scrollview.dart';
 import 'package:mobile_app_template/features/authentication/controllers/sign_up_controller.dart';
 import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
-import 'package:mobile_app_template/services/navigation_service.dart';
+import 'package:mobile_app_template/services/navigation/navigation_service.dart';
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});
