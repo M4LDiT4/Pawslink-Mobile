@@ -5,16 +5,25 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:mobile_app_template/core/dependency_injection/dependency_injection.dart';
+import 'package:mobile_app_template/core/utils/http/dio_client.dart';
 import 'package:mobile_app_template/services/api/authentication.dart';
 
 import 'app.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  //setup up dedendency injection
+  await setupDependencyInjection();
   // Todo: Init Local Storage
   // Todo: Await Native Splash Screen
   // Todo: Initialize backend
   // Todo: Initalize authentication
   await dotenv.load();
+
+  // Initialize dio client
+  await DioHTTPHelper().init();
+  
   await TAuthenticationService().init();
   runApp(const App());
 }
