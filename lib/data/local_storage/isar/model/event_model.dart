@@ -5,7 +5,7 @@ part 'event_model.g.dart';
 
 @collection
 class Event {
-  Id id = Isar.autoIncrement;
+  Id id = Isar.autoIncrement; //local identifier 
 
   late String title;
   late String description;
