@@ -48,7 +48,26 @@ const EventSchema = CollectionSchema(
   deserialize: _eventDeserialize,
   deserializeProp: _eventDeserializeProp,
   idName: r'id',
-  indexes: {},
+  indexes: {
+    r'title_date': IndexSchema(
+      id: 5655848347739255151,
+      name: r'title_date',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'title',
+          type: IndexType.hash,
+          caseSensitive: true,
+        ),
+        IndexPropertySchema(
+          name: r'date',
+          type: IndexType.value,
+          caseSensitive: false,
+        )
+      ],
+    )
+  },
   links: {},
   embeddedSchemas: {},
   getId: _eventGetId,
@@ -206,6 +225,144 @@ extension EventQueryWhere on QueryBuilder<Event, Event, QWhereClause> {
         lower: lowerId,
         includeLower: includeLower,
         upper: upperId,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Event, Event, QAfterWhereClause> titleEqualToAnyDate(
+      String title) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'title_date',
+        value: [title],
+      ));
+    });
+  }
+
+  QueryBuilder<Event, Event, QAfterWhereClause> titleNotEqualToAnyDate(
+      String title) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'title_date',
+              lower: [],
+              upper: [title],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'title_date',
+              lower: [title],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'title_date',
+              lower: [title],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'title_date',
+              lower: [],
+              upper: [title],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<Event, Event, QAfterWhereClause> titleDateEqualTo(
+      String title, DateTime date) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'title_date',
+        value: [title, date],
+      ));
+    });
+  }
+
+  QueryBuilder<Event, Event, QAfterWhereClause> titleEqualToDateNotEqualTo(
+      String title, DateTime date) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'title_date',
+              lower: [title],
+              upper: [title, date],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'title_date',
+              lower: [title, date],
+              includeLower: false,
+              upper: [title],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'title_date',
+              lower: [title, date],
+              includeLower: false,
+              upper: [title],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'title_date',
+              lower: [title],
+              upper: [title, date],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<Event, Event, QAfterWhereClause> titleEqualToDateGreaterThan(
+    String title,
+    DateTime date, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'title_date',
+        lower: [title, date],
+        includeLower: include,
+        upper: [title],
+      ));
+    });
+  }
+
+  QueryBuilder<Event, Event, QAfterWhereClause> titleEqualToDateLessThan(
+    String title,
+    DateTime date, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'title_date',
+        lower: [title],
+        upper: [title, date],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<Event, Event, QAfterWhereClause> titleEqualToDateBetween(
+    String title,
+    DateTime lowerDate,
+    DateTime upperDate, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'title_date',
+        lower: [title, lowerDate],
+        includeLower: includeLower,
+        upper: [title, upperDate],
         includeUpper: includeUpper,
       ));
     });
