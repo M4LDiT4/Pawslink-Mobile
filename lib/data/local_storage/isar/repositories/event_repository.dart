@@ -4,8 +4,12 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:isar/isar.dart';
+import 'package:mobile_app_template/data/local_storage/isar/helpers/isar_filter_helper.dart';
+import 'package:mobile_app_template/data/local_storage/isar/helpers/isar_helper.dart';
 import 'package:mobile_app_template/data/local_storage/isar/model/event_model.dart';
 import 'package:mobile_app_template/data/repositories/file_repository.dart';
+
+enum SortOrder {asc, desc}
 
 class EventRepository {
   final Future<Isar> _db;
@@ -71,6 +75,23 @@ class EventRepository {
   Future<List<Event>> getAllEvents() async {
     final isar = await _db;
     return await isar.events.where().findAll();
+  }
+
+
+  Future<List<Event>> getEvents(
+    DynamicFilter<String>? titleFilter,
+    DynamicFilter<DateTime>? dateFilter,
+    String? sortBy, //property to sort
+    Sort? sortOrder, 
+  ) async {
+    final isar = await _db;
+    return buildDynamicQuery<Event>(
+      collection: isar.events,
+      filterGroup: FilterGroup.and([
+        if(titleFilter != null) IsarFilterHelper.buildStringFilterCondition(titleFilter, false),
+        if(dateFilter != null) IsarFilterHelper.buildNumFilterCondition(dateFilter)
+      ])
+    );
   }
 
   Future<void> deleteEvent(Id id) async{
