@@ -8,30 +8,43 @@ import 'package:mobile_app_template/data/local_storage/isar/helpers/isar_filter_
 import 'package:mobile_app_template/data/local_storage/isar/model/event_model.dart';
 import 'package:mobile_app_template/data/repositories/file_repository.dart';
 
-enum SortOrder {asc, desc}
+/// ### EventRepository
+/// Provides implementations for local storage CRUD operations ofr [Event] objects
+/// 
+/// ### Parameters
+/// - **[_db]**: a [Future] that resolves with [Isar] object that references the Isar database instance
+/// 
+/// ### Methods
+/// - **[addEvent]**: method for saving [Event] objects locally
+/// - **[getEvents]**: method for retrieving relevant [Event] objects
 
 class EventRepository {
   final Future<Isar> _db;
 
   EventRepository(this._db);
 
-  ///creates a new instance of event locally
-  ///saves corresponding image file and updates the saved event instance
-  ///event id is local only
-  ///rollbacks/deletes the saved image if operation fails
-  ///@param title is the title of the event to be saved
+  /// ### addEvent
+  /// Creates a new instance of an [Event] locally.
   ///
-  ///@param description is the description of the event to be saved
+  /// This method:
+  /// - Saves the corresponding image file
+  /// - Updates the saved event instance
+  /// - Uses a locally scoped event ID
+  /// - Performs a rollback by deleting the image if the operation fails
   ///
-  ///@param date is the date of the event
+  /// ### Parameters:
+  /// - **[title]** — The title of the event to be saved.
+  /// - **[description]** — The description of the event.
+  /// - **[date]** — The scheduled date of the event.
+  /// - **[timeInMinutes]** — The time of the event (hour:minute) converted to total minutes.
+  /// - **[image]** — The image data (e.g., bytes or file) to be saved locally.
   ///
-  ///@param timeInMinutes is the time of the event (hour: minute) converted to minutes
+  /// ### Throws:
+  /// - [Exception] if there is a failure while saving the image or writing to the local database.
   ///
-  ///@param image is the image datat to be saved locally
-  ///
-  ///@throws Exception when there is failure to save a file or write in local database
-  ///
-  ///@returns Future that resolves when the event fails/successfully saved in local database
+  /// ### Returns:
+  /// - A [Future] that completes when the event is successfully saved or fails with an exception.
+
   Future<void> addEvent(
     String title,
     String description,
@@ -71,10 +84,27 @@ class EventRepository {
     }
   }
 
-  ///@method getEvents
-  ///@description -generates returns @Event model documents from the local database
-  ///@param title -look for documents with @title property contains this string
-  ///@param date -sorts docume
+  /// ### getEvents
+  ///
+  /// Generates and returns a list of [Event] object from the local database
+  /// 
+  /// This method:
+  /// - filters documents based on the given filters
+  /// - sorts the documents
+  /// - applies pagination
+  /// 
+  ///  ### Parameters
+  /// 
+  /// - **[titleFilter]**: [DynamicIsarFilter] object that stores value and strategy for filtering the `title` property of [Event] object
+  /// - **[dateFilter]**: [DynamicIsarFilter] object that stores value and strategy for filtering the `date` property of [Event] object.
+  /// - **[sortOrder]**: [Sort] object that determines the sorting order of the returned documents
+  /// - **[sortBy]**: [EventSortBy] object that determines what property of [Event] object will be used for sorting.
+  /// Allowced values are: `EventSortBy.title` and `EventSortBy.date`
+  /// - **[offset]**: determines the number of skipped [Event] document. Defaults to `0`
+  /// - **[limit]**: determines maximum number of [Event] document that can be returned per request. Defaults to `10` 
+  /// 
+  /// ### Returns
+  /// A [Future] that resolves to a [List] of [Event] objects.
   Future<List<Event>> getEvents(
     DynamicIsarFilter<String>? titleFilter,
     DynamicIsarFilter<DateTime>? dateFilter,
@@ -144,7 +174,13 @@ class EventRepository {
   }
 }
 
-//determines what property will be used for sorting
+/// Determines the field of [Event] object to be used for sorting
+///```dart
+///enum EventSortBy {
+///title,
+///date
+///}
+///```
 enum EventSortBy {
   title,
   date
