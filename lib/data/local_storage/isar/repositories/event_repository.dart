@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import 'package:isar/isar.dart';
 import 'package:mobile_app_template/data/local_storage/isar/helpers/isar_filter_helper.dart';
+import 'package:mobile_app_template/data/local_storage/isar/helpers/isar_query_helper.dart';
 import 'package:mobile_app_template/data/local_storage/isar/model/event_model.dart';
 import 'package:mobile_app_template/data/repositories/file_repository.dart';
 
@@ -116,56 +117,16 @@ class EventRepository {
     }
   ) async{
     final isar = await _db;
-
-    final query = isar.events.where()
-    .filter()
-    .optional(
-      titleFilter != null && titleFilter.isStrategyValid(), 
-      (q){
-        final strategy = titleFilter!.strategy;
-        switch(strategy){
-          case FilterConditionType.startsWith:
-            return q.titleStartsWith(titleFilter.value);
-          case FilterConditionType.endsWith:
-            return q.titleEndsWith(titleFilter.value);
-          default:
-            return q.titleContains(titleFilter.value);
-        }
-      }
-    )
-    .optional(
-      dateFilter != null && dateFilter.isStrategyValid(), 
-      (q){
-        final strategy = dateFilter!.strategy;
-        switch(strategy){
-          case FilterConditionType.greaterThan:
-            return q.dateGreaterThan(dateFilter.value, include: dateFilter.include1);
-          case FilterConditionType.lessThan:
-            return q.dateGreaterThan(dateFilter.value, include: dateFilter.include1);
-          default:
-            return q.dateEqualTo(dateFilter.value);
-        }
-      }
+    final event = IsarQueryHelper.buildQuery(
+      collection: isar.events,
+      filters: [
+        if(titleFilter != null) titleFilter.generateFilterCondition(),
+        if(dateFilter != null) dateFilter.generateFilterCondition()
+      ]
     );
 
-    QueryBuilder<Event, Event, QAfterSortBy> sorted;
-    if(sortBy == EventSortBy.date){
-      if(sortOrder == Sort.desc){
-        sorted = query.sortByDateDesc();
-      }else{
-        sorted = query.sortByDate();
-      }
-    }else{
-      if(sortOrder == Sort.desc){
-        sorted = query.sortByTitleDesc();
-      }else{
-        sorted = query.sortByTitle();
-      }
-    }
-    return sorted
-      .offset(offset)
-      .limit(limit)
-      .findAll();
+    return event.findAll();
+
   }
 
   Future<void> deleteEvent(Id id) async{
