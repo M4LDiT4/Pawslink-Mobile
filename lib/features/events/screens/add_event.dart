@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get/instance_manager.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/widgets/buttons/form_button/form_button.dart';
+import 'package:mobile_app_template/core/widgets/dialogs/animated_dialog.dart';
+import 'package:mobile_app_template/core/widgets/dialogs/loading_dialog/loading_dialog.dart';
+
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
 import 'package:mobile_app_template/core/widgets/pickers/date_pickers/generic_date_picker.dart';
 import 'package:mobile_app_template/core/widgets/pickers/img_pickers/generic_img_picker.dart';
@@ -16,14 +19,23 @@ class AddEventScreen extends StatelessWidget {
   final _controller = Get.find<Addeventcontroller>();
   AddEventScreen({super.key});
 
-  Future<void> _showAnimatedDialog(BuildContext context) async{
-
+  void _handleOnSave(BuildContext context){
+    AnimatedDialog.show(
+      context, 
+      child: LoadingDialog(
+        successFuction: (){},
+        asyncFunction: _controller.saveEvent
+      ) 
+    );
   }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: (){
-        FocusScope.of(context).unfocus(); // Dismiss keyboard on tap outside
+        //Dismiss the keyboard when you tap outside
+        //necessary for screens with multilined text input widgets
+        FocusScope.of(context).unfocus();
       },
       child: Scaffold(
         appBar: const GenericAppbar(),
@@ -96,7 +108,7 @@ class AddEventScreen extends StatelessWidget {
                       child: const Text("cancel"),
                     ),
                     FormButton(
-                      onPressed: (){}, 
+                      onPressed: () => _handleOnSave(context), 
                       type: FormButtonType.confirm,
                       child: const Text("save"),
                     ),

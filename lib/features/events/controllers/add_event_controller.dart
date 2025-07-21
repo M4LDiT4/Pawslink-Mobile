@@ -1,9 +1,12 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:mobile_app_template/core/dependency_injection/dependency_injection.dart';
+import 'package:mobile_app_template/core/utils/http/response.dart';
 import 'package:mobile_app_template/core/widgets/pickers/date_pickers/generic_datepicker_controller.dart';
 import 'package:mobile_app_template/core/widgets/pickers/img_pickers/generic_img_picker_controller.dart';
 import 'package:mobile_app_template/core/widgets/pickers/time_pickers/generic_time_picker_controller.dart';
+import 'package:mobile_app_template/data/local_storage/isar/repositories/event_repository.dart';
 
 class Addeventcontroller extends GetxController{
   late GlobalKey<FormState> key = GlobalKey<FormState>();
@@ -14,6 +17,7 @@ class Addeventcontroller extends GetxController{
   late GenericTimePickerController timeController;
   late TextEditingController descriptionController;
   late GenericImgPickerController imgPickerController;
+  late EventRepository repo;
 
   @override
   void onInit() {
@@ -24,6 +28,7 @@ class Addeventcontroller extends GetxController{
     timeController = GenericTimePickerController();
     descriptionController = TextEditingController();
     imgPickerController = GenericImgPickerController();
+    repo = getIt.get<EventRepository>();
   }
 
   @override
@@ -46,5 +51,22 @@ class Addeventcontroller extends GetxController{
   }
 
   //define save operations here
+
+  bool validate(){
+    if(key.currentState!.validate() && imgPickerController.selectedImage != null){
+      return true;
+    }
+    return false;
+  }
+
+  Future<TResponse> saveEvent() async{
+    return repo.addEvent(
+      titleController.text, 
+      descriptionController.text, 
+      dateController.selectedDate!, 
+      timeController.selectedTimeInMinutes!, 
+      await imgPickerController.selectedImage!.readAsBytes()     
+    );
+  }
    
 }
