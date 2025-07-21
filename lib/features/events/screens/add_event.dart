@@ -1,7 +1,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/instance_manager.dart';
-import 'package:get/route_manager.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/widgets/buttons/form_button/form_button.dart';
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
@@ -16,6 +15,10 @@ import 'package:mobile_app_template/features/events/controllers/add_event_contro
 class AddEventScreen extends StatelessWidget {
   final _controller = Get.find<Addeventcontroller>();
   AddEventScreen({super.key});
+
+  Future<void> _showAnimatedDialog(BuildContext context) async{
+
+  }
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

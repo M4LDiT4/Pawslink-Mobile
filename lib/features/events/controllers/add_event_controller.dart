@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:mobile_app_template/core/widgets/pickers/date_pickers/generic_datepicker_controller.dart';
+import 'package:mobile_app_template/core/widgets/pickers/img_pickers/generic_img_picker_controller.dart';
 import 'package:mobile_app_template/core/widgets/pickers/time_pickers/generic_time_picker_controller.dart';
 
 class Addeventcontroller extends GetxController{
@@ -12,6 +13,7 @@ class Addeventcontroller extends GetxController{
   late GenericDatepickerController dateController;
   late GenericTimePickerController timeController;
   late TextEditingController descriptionController;
+  late GenericImgPickerController imgPickerController;
 
   @override
   void onInit() {
@@ -21,6 +23,7 @@ class Addeventcontroller extends GetxController{
     dateController = GenericDatepickerController();
     timeController = GenericTimePickerController();
     descriptionController = TextEditingController();
+    imgPickerController = GenericImgPickerController();
   }
 
   @override
@@ -41,4 +44,7 @@ class Addeventcontroller extends GetxController{
     timeController.reset();
     descriptionController.clear();
   }
+
+  //define save operations here
+   
 }

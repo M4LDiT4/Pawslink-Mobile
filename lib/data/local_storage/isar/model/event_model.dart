@@ -7,14 +7,21 @@ part 'event_model.g.dart';
 class Event {
   Id id = Isar.autoIncrement; //local identifier 
 
-  @Index(composite: [CompositeIndex('date')])
+  @Index(caseSensitive: false)
   late String title;
 
   late String description;
 
+  @Index(name: 'date_title', composite: [CompositeIndex('title')])
   late DateTime date;
 
   late int timeInMinutes;
   
   late String? imagePath;
 }
+
+enum IEventIndexNames {
+  dateTitle,
+  title
+}
+

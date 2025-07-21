@@ -4,8 +4,8 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:isar/isar.dart';
-import 'package:mobile_app_template/data/local_storage/isar/helpers/isar_filter_helper.dart';
-import 'package:mobile_app_template/data/local_storage/isar/helpers/isar_query_helper.dart';
+import 'package:mobile_app_template/core/utils/http/response.dart';
+import 'package:mobile_app_template/data/local_storage/isar/helpers/filter_helper.dart';
 import 'package:mobile_app_template/data/local_storage/isar/model/event_model.dart';
 import 'package:mobile_app_template/data/repositories/file_repository.dart';
 
@@ -46,7 +46,7 @@ class EventRepository {
   /// ### Returns:
   /// - A [Future] that completes when the event is successfully saved or fails with an exception.
 
-  Future<void> addEvent(
+  Future<TResponse> addEvent(
     String title,
     String description,
     DateTime date,
@@ -76,57 +76,86 @@ class EventRepository {
         savedEvent.imagePath = imageFile!.path;
         await isar.events.put(savedEvent);
       });
+      return TResponse(
+        success: true, 
+        statusCode: 200,
+        message: 'Event saved to local database successfully'
+      );
     }catch (e){
       //rollback the saved file if it exists
       if(imageFile != null){
         await LocalFileRepository.findAndDelete(imageFile!);
       }
-      rethrow; 
+      return TResponse(
+        success: false, 
+        statusCode: 400,
+        message: 'Failed to save the event to local database: ${e.toString()}'
+      ); 
     }
   }
 
-  /// ### getEvents
-  ///
-  /// Generates and returns a list of [Event] object from the local database
-  /// 
-  /// This method:
-  /// - filters documents based on the given filters
-  /// - sorts the documents
-  /// - applies pagination
-  /// 
-  ///  ### Parameters
-  /// 
-  /// - **[titleFilter]**: [DynamicIsarFilter] object that stores value and strategy for filtering the `title` property of [Event] object
-  /// - **[dateFilter]**: [DynamicIsarFilter] object that stores value and strategy for filtering the `date` property of [Event] object.
-  /// - **[sortOrder]**: [Sort] object that determines the sorting order of the returned documents
-  /// - **[sortBy]**: [EventSortBy] object that determines what property of [Event] object will be used for sorting.
-  /// Allowced values are: `EventSortBy.title` and `EventSortBy.date`
-  /// - **[offset]**: determines the number of skipped [Event] document. Defaults to `0`
-  /// - **[limit]**: determines maximum number of [Event] document that can be returned per request. Defaults to `10` 
-  /// 
-  /// ### Returns
-  /// A [Future] that resolves to a [List] of [Event] objects.
-  Future<List<Event>> getEvents(
-    DynamicIsarFilter<String>? titleFilter,
-    DynamicIsarFilter<DateTime>? dateFilter,
-    {
-      Sort sortOrder = Sort.asc,
-      EventSortBy sortBy = EventSortBy.title,
-      int offset = 0,
-      int limit = 10
+  Future<TResponse<List<Event>>> getEvents({
+    DynamicIsarFilter? filterString,
+    DynamicIsarFilter? filterDate,
+    EventSortBy sortBy = EventSortBy.date,
+    Sort sortOrder = Sort.asc,
+    int offset = 0,
+    int limit = 10 
+  }) async{
+    try{
+      final isar = await _db;
+      QueryBuilder<Event, Event, QWhere> whereQuery = isar.events.where();
+      QueryBuilder<Event, Event, QAfterFilterCondition> filtered = whereQuery.filter()
+      .optional(
+        filterString != null, 
+        (q) => q.titleContains(filterString!.value)
+      )
+      .optional(
+        filterDate != null, 
+        (q){
+          final strategy = filterDate!.strategy;
+          switch(strategy){
+            case FilterConditionType.greaterThan:
+              return q.dateGreaterThan(filterDate.value);
+            case FilterConditionType.lessThan:
+              return q.dateLessThan(filterDate.value);
+            default:
+              return q.dateEqualTo(filterDate.value);
+          }
+        }
+      );
+
+      QueryBuilder<Event, Event, QAfterSortBy> sorted;
+      if(sortBy == EventSortBy.title){
+        if(sortOrder == Sort.asc){
+          sorted = filtered.sortByTitle();
+        }else{
+          sorted = filtered.sortByTitleDesc();
+        }
+      }else{
+        if(sortOrder == Sort.asc){
+          sorted = filtered.sortByDate();
+        }else{
+          sorted = filtered.sortByDateDesc();
+        }
+      }
+
+      final result = await sorted.offset(offset).limit(limit).findAll();
+
+      return TResponse<List<Event>>(
+        success: true, 
+        statusCode: 200,
+        message: "Local Event Query Success",
+        data: result
+      );
+
+    }catch(e){
+      return TResponse(
+        success: false, 
+        statusCode: 400,
+        message: "Error querying events: ${e.toString()}"
+      );
     }
-  ) async{
-    final isar = await _db;
-    final event = IsarQueryHelper.buildQuery(
-      collection: isar.events,
-      filters: [
-        if(titleFilter != null) titleFilter.generateFilterCondition(),
-        if(dateFilter != null) dateFilter.generateFilterCondition()
-      ]
-    );
-
-    return event.findAll();
-
   }
 
   Future<void> deleteEvent(Id id) async{
