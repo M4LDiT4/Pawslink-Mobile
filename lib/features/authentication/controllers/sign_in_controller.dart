@@ -33,7 +33,6 @@ class SignInController extends GetxController{
         context, 
         child: LoadingDialog(
           asyncFunction: _signIn,
-          successFuction: _navigateToHome
         )
       );
     }

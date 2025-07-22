@@ -22,10 +22,7 @@ class AddEventScreen extends StatelessWidget {
   void _handleOnSave(BuildContext context){
     AnimatedDialog.show(
       context, 
-      child: LoadingDialog(
-        successFuction: (){},
-        asyncFunction: _controller.saveEvent
-      ) 
+      child: Text("text")
     );
   }
 

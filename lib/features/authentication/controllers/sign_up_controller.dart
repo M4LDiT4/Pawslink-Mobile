@@ -39,7 +39,6 @@ class SignUpControiller extends GetxController {
       AnimatedDialog.show(
         context, 
         child: LoadingDialog(
-          successFuction: _navigateToHome,
           asyncFunction: _registerUser,
         )
       );

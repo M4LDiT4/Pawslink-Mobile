@@ -7,6 +7,7 @@ import 'package:mobile_app_template/core/navigation/route_params/add_animal_summ
 import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
 import 'package:mobile_app_template/core/utils/colors/color_utils.dart';
 import 'package:mobile_app_template/core/utils/http/response.dart';
+import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/core/widgets/buttons/form_button/form_button.dart';
 import 'package:mobile_app_template/core/widgets/dialogs/animated_dialog.dart';
 import 'package:mobile_app_template/core/widgets/dialogs/loading_dialog/loading_dialog.dart';
@@ -102,18 +103,26 @@ class AddAnimalSummary extends StatelessWidget {
     TNavigationService.offAllNamed(TAppRoutes.home);
   }
 
-  void _showAnimatedDialog(BuildContext context){
-    AnimalApi().init();
-    AnimatedDialog.show(
-      context, 
-      child: LoadingDialog(
-        asyncFunction: _saveAnimal,
-        successMessage: "Animal added successfully!",
-        errorMessage: "Failed to add animal!",
-        loadingMessage: "Saving animal info...",
-        successFuction: _popUntilHome,
-      )
-    );
+  void _showAnimatedDialog(BuildContext context) async {
+    try{
+      AnimalApi().init();
+      final res = await AnimatedDialog.show(
+        context, 
+        child: LoadingDialog(
+          asyncFunction: _saveAnimal,
+          successMessage: "Animal added successfully!",
+          errorMessage: "Failed to add animal!",
+          loadingMessage: "Saving animal info...",
+        )
+      );
+
+      final result = res as TResponse;
+      if(result.isSuccess){
+        _popUntilHome();
+      }
+    }catch(e){
+      TLogger.error(e.toString());
+    }
   }
 
   @override

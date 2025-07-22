@@ -17,9 +17,6 @@ class AdminEventsScreens extends StatefulWidget {
 }
 
 class _AdminEventsScreensState extends State<AdminEventsScreens> {
-  late final double screenHeight;
-  late final double screenWidth;
-  late final bool isDarkMode;
 
   @override
   void initState() {
@@ -39,9 +36,9 @@ class _AdminEventsScreensState extends State<AdminEventsScreens> {
 
   @override
   Widget build(BuildContext context) {
-    screenHeight = TDeviceUtils.getScreenBodyHeight();
-    screenWidth = TDeviceUtils.getScreenWidth();
-    isDarkMode = TDeviceUtils.isDarkMode();
+    double screenHeight = TDeviceUtils.getScreenBodyHeight();
+    double screenWidth = TDeviceUtils.getScreenWidth();
+    bool isDarkMode = TDeviceUtils.isDarkMode();
 
     return SizedBox(
       height: screenHeight,
