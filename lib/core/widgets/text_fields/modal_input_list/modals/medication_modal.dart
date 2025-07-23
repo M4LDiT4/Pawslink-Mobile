@@ -41,7 +41,7 @@ class MedicationModal extends InputModalStrategy {
 
   void handleSave(){
     final bool isTitleValid = _formKey.currentState!.validate();
-    final bool isDateValid = _datePickerController.isValid();
+    final bool isDateValid = _datePickerController.isValid;
     if(isTitleValid && isDateValid){
       final item = ModalInputListItem(
         title: _titleController.text, 

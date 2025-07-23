@@ -38,7 +38,6 @@ class Addeventcontroller extends GetxController{
     dateController.dispose();
     timeController.dispose();
     descriptionController.dispose();
-    descriptionController.dispose();
     super.onClose();
   }
 
@@ -53,7 +52,13 @@ class Addeventcontroller extends GetxController{
   //define save operations here
 
   bool validate(){
-    if(key.currentState!.validate() && imgPickerController.selectedImage != null){
+    timeController.validate();
+    dateController.validate();
+    if(key.currentState!.validate() 
+      && imgPickerController.selectedImage != null
+      && dateController.isValid
+      && timeController.isValid
+    ){
       return true;
     }
     return false;

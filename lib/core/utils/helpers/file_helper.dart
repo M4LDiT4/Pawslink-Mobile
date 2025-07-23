@@ -6,7 +6,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobile_app_template/core/utils/helpers/app_exception.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class TFileHelpers {
   TFileHelpers._();

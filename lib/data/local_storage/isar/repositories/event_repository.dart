@@ -65,7 +65,7 @@ class EventRepository {
       
       await isar.writeTxn(() async{
         final id = await isar.events.put(event);
-        imageFile = await LocalFileRepository.saveFile(null, image, folders: [id.toString()]);
+        imageFile = await LocalFileRepository.saveFile(null, image, folders: [id.toString()], isPublic: false);
         if(imageFile == null){
           throw Exception("Failed to save file");
         }

@@ -1,12 +1,10 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
 import 'package:mobile_app_template/core/utils/http/response.dart';
 import 'package:mobile_app_template/core/widgets/dialogs/animated_dialog.dart';
 import 'package:mobile_app_template/core/widgets/dialogs/loading_dialog/loading_dialog.dart';
 import 'package:mobile_app_template/services/api/authentication.dart';
-import 'package:mobile_app_template/services/navigation/navigation_service.dart';
 
 class SignInController extends GetxController{
   final formkey = GlobalKey<FormState>();
@@ -23,9 +21,6 @@ class SignInController extends GetxController{
     return response;
   }
 
-  void _navigateToHome(){
-    TNavigationService.offAllNamed(TAppRoutes.home);
-  }
 
   void submit(BuildContext context) async{
     if(formkey.currentState!.validate()){

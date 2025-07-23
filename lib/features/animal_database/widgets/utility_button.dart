@@ -19,7 +19,7 @@ class UtilityButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPress, 
       style: ElevatedButton.styleFrom(
-        padding: EdgeInsets.all(TSizes.paddingmd),
+        padding: const EdgeInsets.all(TSizes.paddingmd),
         minimumSize: Size.zero,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         backgroundColor: TColorUtils.surface(),

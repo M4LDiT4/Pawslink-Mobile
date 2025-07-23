@@ -59,7 +59,7 @@ class GenericDatepickerController extends ChangeNotifier {
     return _errorMssg;
   }
 
-  bool isValid(){
+  bool get isValid{
     validate();
     return _selectedDate != null;
   }

@@ -4,6 +4,7 @@
 
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/rendering.dart';
 import 'package:path/path.dart' as p;
 
 import 'package:file_magic_number/file_magic_number.dart';
@@ -76,8 +77,12 @@ class LocalFileRepository {
   /// @param folders - a list of subfolders to create in the directory
   /// @param filename - the name of the file to be saved
   /// @returns the full path as a string
-  static String _buildPath(Directory dir, List<String> folders, String filename) {
-    return p.join(dir.path, folders.join('/'), filename);
+  static Future<String> _buildPath(Directory dir, List<String> folders, String filename) async{
+    final foldername = Directory(p.join(dir.path, folders.join('/')));
+    if(!await foldername.exists()){
+      foldername.create(recursive: true);
+    }
+    return p.join(foldername.path, filename);
   }
 
   //write any type Unt8List data to file
@@ -116,7 +121,7 @@ class LocalFileRepository {
     final dir = await _getDirectory(isPublic, type);
 
     final actualFilename = '${filename ?? DateTime.now().millisecondsSinceEpoch}.$extension';
-    final filePath = _buildPath(dir, folders, actualFilename);
+    final filePath = await _buildPath(dir, folders, actualFilename);
 
     final file = File(filePath);
 
@@ -151,7 +156,7 @@ class LocalFileRepository {
     }
     final actualFilename = filename ?? '${DateTime.now().millisecondsSinceEpoch}.txt'; // default to txt if no filename is provided
     final dir = await _getDirectory(isPublic, type);
-    final filePath = _buildPath(dir, folders, actualFilename);
+    final filePath = await _buildPath(dir, folders, actualFilename);
 
     final file = File(filePath);
     await file.writeAsString(data);
