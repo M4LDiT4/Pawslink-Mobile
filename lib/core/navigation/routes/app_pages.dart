@@ -14,6 +14,7 @@ import 'package:mobile_app_template/features/animal_database/screens/view_animal
 import 'package:mobile_app_template/features/authentication/presentation/sign_in.dart';
 import 'package:mobile_app_template/features/authentication/presentation/sign_up.dart';
 import 'package:mobile_app_template/features/events/screens/add_event.dart';
+import 'package:mobile_app_template/features/events/screens/view_events.dart';
 import 'package:mobile_app_template/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:mobile_app_template/features/onboarding/presentation/splash_screen.dart';
 import 'package:mobile_app_template/features/sample_feature/presentation/screens/sample_screen.dart';
@@ -93,5 +94,10 @@ class TAppPages {
       transition: Transition.leftToRightWithFade,
       binding:  AddEventControllerBinding()
     ),
+    GetPage(
+      name: TAppRoutes.viewEvents, 
+      page: ()=> const ViewEventsScreen(),
+      transition: Transition.leftToRightWithFade
+    )
   ];
 }

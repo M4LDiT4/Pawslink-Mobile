@@ -34,6 +34,10 @@ class _AdminEventsScreensState extends State<AdminEventsScreens> {
     TNavigationService.toNamed(TAppRoutes.addEvent);
   }
 
+  void _navigateToViewEvent(){
+    TNavigationService.toNamed(TAppRoutes.viewEvents);
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = TDeviceUtils.getScreenBodyHeight();
@@ -71,7 +75,7 @@ class _AdminEventsScreensState extends State<AdminEventsScreens> {
               children: [
                 AdminHomeActionButtons(
                   label: "View Events",
-                  onPress: () {},
+                  onPress: _navigateToViewEvent,
                 ),
                 AdminHomeActionButtons(
                   label: "Drafts",

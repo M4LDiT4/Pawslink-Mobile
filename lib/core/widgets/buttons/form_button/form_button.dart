@@ -11,11 +11,13 @@ class FormButton extends StatelessWidget {
   final VoidCallback onPressed;
   final Widget child;
   final FormButtonType type;
+  final bool widthFixed;
   FormButton({
     super.key,
     required this.onPressed,
     required this.child,
-    this.type = FormButtonType.confirm
+    this.type = FormButtonType.confirm,
+    this.widthFixed = false
   });
 
   final _baseStyle = ElevatedButton.styleFrom(
@@ -43,7 +45,7 @@ class FormButton extends StatelessWidget {
     return Padding(
       padding:const EdgeInsets.only(left: TSizes.paddingsm),
       child: SizedBox(
-        width: 136,
+        width: widthFixed? 136: null,
         height: 38,
         child: ElevatedButton(
           onPressed: onPressed, 
