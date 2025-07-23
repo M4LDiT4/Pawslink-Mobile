@@ -5,6 +5,7 @@
 import 'package:get/get.dart';
 import 'package:mobile_app_template/core/bindings/controllers/add_animal.dart';
 import 'package:mobile_app_template/core/bindings/controllers/add_event.dart';
+import 'package:mobile_app_template/core/bindings/controllers/view_event.dart';
 import 'package:mobile_app_template/features/animal_database/screens/add_animal/add_animal.dart';
 import 'package:mobile_app_template/features/animal_database/screens/add_animal/add_animal_summary.dart';
 import 'package:mobile_app_template/features/animal_database/screens/qr_code/generate_qr_code.dart';
@@ -96,8 +97,9 @@ class TAppPages {
     ),
     GetPage(
       name: TAppRoutes.viewEvents, 
-      page: ()=> const ViewEventsScreen(),
-      transition: Transition.leftToRightWithFade
+      page: ()=>  ViewEventsScreen(),
+      transition: Transition.leftToRightWithFade,
+      binding: ViewEventControllerAdminBinding()
     )
   ];
 }
