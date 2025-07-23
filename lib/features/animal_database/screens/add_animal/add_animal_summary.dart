@@ -106,18 +106,18 @@ class AddAnimalSummary extends StatelessWidget {
   void _showAnimatedDialog(BuildContext context) async {
     try{
       AnimalApi().init();
-      final res = await AnimatedDialog.show(
+      final result = await AnimatedDialog.show(
         context, 
         child: LoadingDialog(
           asyncFunction: _saveAnimal,
           successMessage: "Animal added successfully!",
           errorMessage: "Failed to add animal!",
           loadingMessage: "Saving animal info...",
-        )
+        ),
+        isCancellable: false
       );
 
-      final result = res as TResponse;
-      if(result.isSuccess){
+      if(result.isSuccessful){
         _popUntilHome();
       }
     }catch(e){

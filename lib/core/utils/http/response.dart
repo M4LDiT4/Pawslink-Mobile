@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 /// ## TResponse
@@ -94,8 +95,39 @@ class TResponse<T>{
       );
     }
   }
-  bool get isSuccess => success;
 
+  /// ## successful
+  /// Generates a successful response template
+  /// 
+  /// ### Parameters
+  /// - **[message]**: optional message for the successful response 
+  /// ### Returns
+  /// Successful [TResponse] object
+  factory TResponse.successful(String? message){
+    return TResponse<T>(
+      success: true,
+      statusCode: 200,
+      message: message
+    );
+  }
+
+  /// ## failed
+  /// Generates a failed response template
+  /// 
+  /// ### Parameters
+  /// - **[message]**: optional message for the failed response
+  /// ### Returns
+  /// Failed [TResponse] object
+  factory TResponse.failed(String? message){
+    return TResponse<T>(
+      success: false,
+      statusCode:400,
+      message: message
+    );
+  }
+
+  ///checks if the response is successful
+  bool get isSuccessful => success;
 
   ///presents the data in a easily readible [String] format
   @override

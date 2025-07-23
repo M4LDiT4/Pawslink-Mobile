@@ -13,18 +13,17 @@ import 'package:mobile_app_template/services/navigation/navigation_service.dart'
 enum ProcessStatus { loading, success, error }
 
 class LoadingDialog extends StatefulWidget {
-  final String loadingMessage; //custom loading message
-  final String errorMessage; //custom error message
-  final String successMessage; //custom success message
-  final Future<TResponse> Function()? asyncFunction; //async function to execute
+  final String loadingMessage; 
+  final String errorMessage; 
+  final String successMessage; 
+  final Future<TResponse> Function() asyncFunction; //async function to execute
 
-  //provide default values for the loadingMesage, errorMessage and successMessage on the constructor
   const LoadingDialog({
     super.key,
     this.loadingMessage = TText.processing,
     this.errorMessage =  TText.operationFailed,
     this.successMessage =  TText.operationSuccess,
-    this.asyncFunction,
+    required this.asyncFunction,
   });
 
   @override
@@ -45,7 +44,7 @@ class _LoadingDialogState extends State<LoadingDialog>{
   void initState() {
     super.initState();
     _executeAsyncFunction();
-    _errMessage = ""; // empty string by default
+    _errMessage = "";  
   }
 
   //executes the passed async function 
@@ -56,12 +55,8 @@ class _LoadingDialogState extends State<LoadingDialog>{
         _status = ProcessStatus.loading;
         _showActionButtons = false; //remove the action buttons from view if it is alread showing otherwise does nothing
       });
-      final response = await widget.asyncFunction?.call();
-      //if response is null or if response is not successful, throw an exception
-      //simple way of handling erratic requests and responses
-      if (response == null) {
-        throw TAppException(TText.nullResponse);
-      }
+      final response = await widget.asyncFunction.call();
+
       if (!response.success) {
         throw TAppException(response.message ?? TText.unknownError);
       }
@@ -70,8 +65,10 @@ class _LoadingDialogState extends State<LoadingDialog>{
         _status = ProcessStatus.success;
       });
 
+      //creates a delay before removing the dialog from the navigation stack
       await Future.delayed( const Duration(seconds: 3));
-      TNavigationService.back(result: TResponse(success: true, statusCode: 200));
+      //return a successful TResponse
+      TNavigationService.back(result: TResponse.successful(null));
     //will set the state of the dialog to error
     //catches all errors and modfiies the _errMessage based on the cause of the error encountered
     } catch (e, stackTrace) {
