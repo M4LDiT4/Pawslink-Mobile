@@ -6,7 +6,7 @@ import 'package:mobile_app_template/core/enums/animal_sex.dart';
 import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
 import 'package:mobile_app_template/core/utils/colors/color_utils.dart';
 import 'package:mobile_app_template/data/model/animal_profile_item.dart';
-import 'package:mobile_app_template/services/navigation_service.dart';
+import 'package:mobile_app_template/services/navigation/navigation_service.dart';
 
 class AnimalProfileListItem extends StatelessWidget {
   final AnimalProfile profile;

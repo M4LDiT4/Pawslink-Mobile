@@ -14,6 +14,9 @@ class IsarService {
    }
 
    Future<Isar> _init() async{
+      if(Isar.instanceNames.isNotEmpty) {
+        return Isar.getInstance()!;
+      }
       final dir = await getApplicationDocumentsDirectory();
       return await Isar.open(
          isarSchemas, 
@@ -22,7 +25,4 @@ class IsarService {
    }
 
    Future<Isar> get isar async => _isarFuture;
-   
-
-
 }

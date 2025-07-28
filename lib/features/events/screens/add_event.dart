@@ -1,9 +1,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/instance_manager.dart';
-import 'package:get/route_manager.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
+import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/core/widgets/buttons/form_button/form_button.dart';
+import 'package:mobile_app_template/core/widgets/dialogs/animated_dialog.dart';
+import 'package:mobile_app_template/core/widgets/dialogs/loading_dialog/loading_dialog.dart';
+
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
 import 'package:mobile_app_template/core/widgets/pickers/date_pickers/generic_date_picker.dart';
 import 'package:mobile_app_template/core/widgets/pickers/img_pickers/generic_img_picker.dart';
@@ -12,15 +15,34 @@ import 'package:mobile_app_template/core/widgets/text_fields/generic_text_field/
 import 'package:mobile_app_template/core/widgets/texts/section_title.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
 import 'package:mobile_app_template/features/events/controllers/add_event_controller.dart';
+import 'package:mobile_app_template/services/navigation/navigation_service.dart';
 
 class AddEventScreen extends StatelessWidget {
   final _controller = Get.find<Addeventcontroller>();
   AddEventScreen({super.key});
+
+  void _handleOnSave(BuildContext context) async {
+    if(_controller.validate()){
+      final result = await AnimatedDialog.show(
+        context,
+        child: LoadingDialog(asyncFunction: _controller.saveEvent)
+      );
+      TLogger.debug('result is ${result.isSuccessful}');
+      if(result.isSuccessful){
+        TNavigationService.back();
+      }
+    }else{
+      TLogger.warning("not valid");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: (){
-        FocusScope.of(context).unfocus(); // Dismiss keyboard on tap outside
+        //Dismiss the keyboard when you tap outside
+        //necessary for screens with multilined text input widgets
+        FocusScope.of(context).unfocus();
       },
       child: Scaffold(
         appBar: const GenericAppbar(),
@@ -30,7 +52,9 @@ class AddEventScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const GenericImagePicker(),
+                GenericImagePicker(
+                  controller: _controller.imgPickerController,
+                ),
                 const FixedSeparator(space: TSizes.spaceBetweenSections),
                 const SectionTitle(title: "Event Details"),
                 Form(
@@ -56,6 +80,7 @@ class AddEventScreen extends StatelessWidget {
                       ],
                     ),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         GenericDatePickerButton(
                           labelText: "Event Date",
@@ -93,7 +118,7 @@ class AddEventScreen extends StatelessWidget {
                       child: const Text("cancel"),
                     ),
                     FormButton(
-                      onPressed: (){}, 
+                      onPressed: () => _handleOnSave(context), 
                       type: FormButtonType.confirm,
                       child: const Text("save"),
                     ),

@@ -1,42 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
-import 'package:mobile_app_template/core/constants/lottie_strings.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/constants/text_strings.dart';
 import 'package:mobile_app_template/core/utils/helpers/app_exception.dart';
 import 'package:mobile_app_template/core/utils/http/response.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
+import 'package:mobile_app_template/core/widgets/dialogs/loading_dialog/lottie_error.dart';
+import 'package:mobile_app_template/core/widgets/dialogs/loading_dialog/lottie_loading.dart';
+import 'package:mobile_app_template/core/widgets/dialogs/loading_dialog/lottie_success.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
-import 'package:mobile_app_template/services/navigation_service.dart';
+import 'package:mobile_app_template/services/navigation/navigation_service.dart';
 
 enum ProcessStatus { loading, success, error }
 
 class LoadingDialog extends StatefulWidget {
-  final String loadingMessage; //custom loading message
-  final String errorMessage; //custom error message
-  final String successMessage; //custom success message
-  final Future<TResponse> Function()? asyncFunction; //async function to execute
-  final void Function() successFuction;
+  final String loadingMessage; 
+  final String errorMessage; 
+  final String successMessage; 
+  final Future<TResponse> Function() asyncFunction; //async function to execute
 
-  //provide default values for the loadingMesage, errorMessage and successMessage on the constructor
   const LoadingDialog({
     super.key,
     this.loadingMessage = TText.processing,
     this.errorMessage =  TText.operationFailed,
     this.successMessage =  TText.operationSuccess,
-    this.asyncFunction,
-    required this.successFuction
+    required this.asyncFunction,
   });
 
   @override
   State<LoadingDialog> createState() => _LoadingDialogState();
 }
 
-class _LoadingDialogState extends State<LoadingDialog> with TickerProviderStateMixin {
+class _LoadingDialogState extends State<LoadingDialog>{
   late ProcessStatus _status; //status of the execution of the async function
-  //animation controller for the lottie error and success gif
-  //necessary for stopping the animation and resetting of animation
-  late AnimationController _animationController; 
+
   //error message that will be displayed as the error info
   //populated per error
   late String _errMessage; 
@@ -47,9 +43,8 @@ class _LoadingDialogState extends State<LoadingDialog> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(vsync: this);
     _executeAsyncFunction();
-    _errMessage = ""; // empty string by default
+    _errMessage = "";  
   }
 
   //executes the passed async function 
@@ -58,15 +53,10 @@ class _LoadingDialogState extends State<LoadingDialog> with TickerProviderStateM
     try {
       setState(() {
         _status = ProcessStatus.loading;
-        _animationController.reset(); //resets the animation of the success or error message to make them reusable (e.g will replay from start even after it has already played)
         _showActionButtons = false; //remove the action buttons from view if it is alread showing otherwise does nothing
       });
-      final response = await widget.asyncFunction?.call();
-      //if response is null or if response is not successful, throw an exception
-      //simple way of handling erratic requests and responses
-      if (response == null) {
-        throw TAppException(TText.nullResponse);
-      }
+      final response = await widget.asyncFunction.call();
+
       if (!response.success) {
         throw TAppException(response.message ?? TText.unknownError);
       }
@@ -74,6 +64,11 @@ class _LoadingDialogState extends State<LoadingDialog> with TickerProviderStateM
       setState(() {
         _status = ProcessStatus.success;
       });
+
+      //creates a delay before removing the dialog from the navigation stack
+      await Future.delayed( const Duration(seconds: 3));
+      //return a successful TResponse
+      TNavigationService.back(result: TResponse.successful(null));
     //will set the state of the dialog to error
     //catches all errors and modfiies the _errMessage based on the cause of the error encountered
     } catch (e, stackTrace) {
@@ -81,61 +76,13 @@ class _LoadingDialogState extends State<LoadingDialog> with TickerProviderStateM
         //update the _errMessage based on the response
         _errMessage = e.toString();
         _status = ProcessStatus.error;
+        _showActionButtons = true;
       });
       TLogger.error("Error in LoadingDialog: $e"); // remove in production
       TLogger.debug("Stack trace: $stackTrace");
     }
   }
 
-  //renders the loading lottie gif
-  //repeats the gif
-  Widget _renderLoadingContent() {
-    return Lottie.asset(
-      TLottie.loading,
-      width: TSizes.iconxxl,
-      fit: BoxFit.fill,
-    );
-  }
-  //renders the error lottie gif
-  //only animates once
-  //needs the _animationController
-  Widget _renderErrorContent() {
-    return Lottie.asset(
-      TLottie.failed,
-      width: TSizes.iconxxl,
-      fit: BoxFit.fill,
-      controller: _animationController, //animation controller
-      onLoaded: (composition) {
-        _animationController
-          ..duration = composition.duration
-          ..forward().whenComplete(() { //executes a function when animation completes
-            setState(() {
-              _showActionButtons = true; //show the action buttons when the animation completes
-            });
-          });
-      },
-    );
-  }
-  //renders the success lottie gif
-  //only animates onces
-  //needs the _animalController
-  Widget _renderSuccessContent() {
-    return Column(
-      children: [
-        Lottie.asset(
-          TLottie.success,
-          width: TSizes.iconxxl,
-          fit: BoxFit.fill,
-          controller: _animationController,
-          onLoaded: (composition) {
-            _animationController
-              ..duration = composition.duration
-              ..forward().whenComplete(widget.successFuction); //executes the _popUntilHome function when the animation completes
-          },
-        ),
-      ],
-    );
-  }
 
   //makes the transition between the loadin, error and success lottie gifs to have a transition
   Widget _buildLoader() {
@@ -148,12 +95,12 @@ class _LoadingDialogState extends State<LoadingDialog> with TickerProviderStateM
   //returns the correct lottie gif based on the current status
   Widget _buildLoaderByStatus() {
     switch (_status) {
-      case ProcessStatus.loading:
-        return _renderLoadingContent();
       case ProcessStatus.success:
-        return _renderSuccessContent();
+        return const LottieSuccessAnimation();
       case ProcessStatus.error:
-        return _renderErrorContent();
+        return const LottieErrorAnimation();
+      default:
+        return const LottieLoadingAnimation();
     }
   }
 

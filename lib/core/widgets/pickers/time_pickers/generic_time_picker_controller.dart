@@ -68,4 +68,9 @@ class GenericTimePickerController extends ChangeNotifier {
     _errorMssg = null;
     notifyListeners();
   }
+
+  int? get selectedTimeInMinutes {
+    if (_selectedTime == null) return null;
+    return _selectedTime!.hour * 60 + _selectedTime!.minute;
+  }
 }

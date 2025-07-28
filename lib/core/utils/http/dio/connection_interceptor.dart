@@ -24,7 +24,8 @@ class ConnectionInterceptor extends Interceptor {
         ),
       );
 
-      handler.next(newError); // replaces the error
+      handler.reject(newError); // replaces the error
+      return; //prevents fall through of error 
     }
 
     // Always forward the error if it's not handled above

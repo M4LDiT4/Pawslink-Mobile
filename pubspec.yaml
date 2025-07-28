@@ -63,6 +63,8 @@ dependencies:
   pretty_qr_code: ^3.4.0
   isar: ^3.1.0+1
   isar_flutter_libs: ^3.1.0+1
+  get_it: ^8.0.3
+  file_magic_number: ^1.4.0
 
 dev_dependencies:
   flutter_test:
@@ -71,6 +73,7 @@ dev_dependencies:
   sqflite_common_ffi: ^2.3.0 
   isar_generator: ^3.1.0+1
   build_runner: ^2.4.13
+  mocktail: ^1.0.4
 
 flutter:
   uses-material-design: true

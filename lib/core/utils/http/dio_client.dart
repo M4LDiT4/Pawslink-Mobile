@@ -18,11 +18,9 @@ class DioHTTPHelper {
 
   factory DioHTTPHelper() => _instance;
 
-  DioHTTPHelper._internal() {
-    _init();
-  }
+  DioHTTPHelper._internal();
 
-  Future<void> _init() async {
+  Future<void> init() async {
     final cacheDir = await getTemporaryDirectory();
     final cacheOptions = CacheOptions(
       store: HiveCacheStore(cacheDir.path),
