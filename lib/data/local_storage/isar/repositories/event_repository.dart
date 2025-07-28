@@ -99,8 +99,8 @@ class EventRepository {
     DynamicIsarFilter? filterDate,
     EventSortBy sortBy = EventSortBy.date,
     Sort sortOrder = Sort.asc,
-    int offset = 0,
-    int limit = 10 
+    int pageNum = 1,
+    int itemsPerPage = 10
   }) async{
     try{
       final isar = await _db;
@@ -140,7 +140,9 @@ class EventRepository {
         }
       }
 
-      final result = await sorted.offset(offset).limit(limit).findAll();
+      final offset = pageNum * itemsPerPage;
+
+      final result = await sorted.offset(offset).limit(itemsPerPage).findAll();
 
       return TResponse<List<Event>>(
         success: true, 

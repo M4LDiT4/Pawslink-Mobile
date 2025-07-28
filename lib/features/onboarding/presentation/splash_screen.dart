@@ -58,7 +58,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
             child: Lottie.asset(
               width: 200,
               fit: BoxFit.fill,
-              TLottie.walkingWoman
+              TLottie.dogBegging
             ),
           )
         ],
