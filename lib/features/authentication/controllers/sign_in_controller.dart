@@ -12,7 +12,6 @@ class SignInController extends GetxController{
   final passwordController = TextEditingController();
 
   Future<TResponse> _signIn()async{
-    await TAuthenticationService().init();
     final response = await TAuthenticationService().signIn(
       usernameController.text,
       passwordController.text

@@ -1,19 +1,13 @@
-///@file ui_helpers.dart
-///@description : provides functions to generate auxiliary ui widgets
-///@usage : TUIHelpers.function();
-///@example : TUIHelpers.showAlert(title, message);
-///@note : usage of this helper class is highly encouraged
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+/// ## TUIHelpers
+/// Auxiliary class for generic UI 
 class TUIHelpers {
   TUIHelpers._();
-  
-  ///@description : shows alert widge
-  ///@args : {String} title -> title of the alert
-  ///@args : {String} message -> message of the alert
-  ///@return : {void}
+
   static void showAlert(String title, String message){
+    ///make this generic
     showDialog(
       context: Get.context!, 
       builder: (BuildContext context){
@@ -30,13 +24,16 @@ class TUIHelpers {
       }
     );
   }
-
-  ///@description: shows a snackbar ui given a message
-  ///@args : {String} message -> message of the snackbar
-  ///@return : {null}
+  /// Shows a snackbar ui given with a message
+  /// ### Parameters
+  /// - **[message]**: message to be displayed in the snackbar
+  /// ### Returns
+  /// [void]
   static void showSnackBar(String message){
     ScaffoldMessenger.of(Get.context!).showSnackBar(
-      SnackBar(content: Text(message))
+      SnackBar(
+        content: Text(message),
+      )
     );
   }  
 
