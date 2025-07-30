@@ -14,12 +14,12 @@ class ConnectionInterceptor extends Interceptor {
       final newError = DioException(
         requestOptions: err.requestOptions,
         type: DioExceptionType.unknown,
-        error: 'No internet connection',
+        error: 'Connection Error',
         response: Response(
           requestOptions: err.requestOptions,
           statusCode: 503,
           data: {
-            'error': 'No internet connection. Check your connection and try again',
+            'error': 'Problem connecting to the server',
           },
         ),
       );

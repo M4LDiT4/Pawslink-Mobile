@@ -56,7 +56,6 @@ class _LoadingDialogState extends State<LoadingDialog>{
         _showActionButtons = false; //remove the action buttons from view if it is alread showing otherwise does nothing
       });
       final response = await widget.asyncFunction.call();
-
       if (!response.success) {
         throw TAppException(response.message ?? TText.unknownError);
       }

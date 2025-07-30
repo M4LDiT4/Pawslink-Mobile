@@ -9,7 +9,7 @@ import 'package:mobile_app_template/core/utils/logger/logger.dart';
 
 class AnimalApi {
   final String _basePath = "animal-database";
-  final String _addAnimal = "add-animal";
+  final String _addAnimal = "animal";
 
   bool _isInitialized = false;
   late Uri _baseUri;
@@ -56,7 +56,7 @@ class AnimalApi {
       fromJson: DioHTTPHelper.defaultFromJson
     );
 
-    TLogger.info(response.toString());
+    TLogger.info('Response of add animal: ${response.toString()}');
 
     return response;
   }
