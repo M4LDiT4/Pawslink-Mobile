@@ -1,7 +1,8 @@
 import 'package:image_picker/image_picker.dart';
+import 'package:mobile_app_template/core/navigation/route_params/route_param_base_class.dart';
 import 'package:mobile_app_template/data/model/modal_input_list_item.dart';
 
-class AddAnimalSummaryParams {
+class AddAnimalSummaryParams extends RouteParamBaseClass{
   final String name;
   final String age;
   final String location;
@@ -33,7 +34,7 @@ class AddAnimalSummaryParams {
         traits = traits ?? [],
         vaccinations = vaccinations ?? [],
         medications = medications ?? [];
-
+  @override
   Map<String, dynamic> toMap() {
     return {
       'name': name,
