@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mobile_app_template/core/constants/lottie_strings.dart';
 import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
+import 'package:mobile_app_template/core/utils/internet_connection/connection_controller.dart';
 import 'package:mobile_app_template/services/local_storage/local_secure_storage.dart';
 import 'package:mobile_app_template/services/navigation/navigation_service.dart';
 
@@ -14,11 +17,13 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMixin {
   late final AnimationController _controller;
+  late final ConnectionController _connectionController;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(vsync: this);
+    _connectionController = Get.find<ConnectionController>();
     _checkAuthentication();
   }
 

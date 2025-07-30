@@ -97,4 +97,42 @@ class TUIHelpers {
       )
     );
   }
+
+  static void showStateSnackBar(String message, {
+    String title = "Notice",
+    SnackBarState state = SnackBarState.neutral,
+    Duration duration = const Duration(seconds: 3),
+  }) {
+    Color backgroundColor;
+    IconData icon;
+
+    switch (state) {
+      case SnackBarState.success:
+        backgroundColor = Colors.green;
+        icon = Icons.check_circle_outline;
+        break;
+      case SnackBarState.error:
+        backgroundColor = Colors.red;
+        icon = Icons.error_outline;
+        break;
+      default:
+        backgroundColor = Colors.blueGrey;
+        icon = Icons.info_outline;
+        break;
+    }
+
+    Get.snackbar(
+      title,
+      message,
+      backgroundColor: backgroundColor,
+      colorText: Colors.white,
+      icon: Icon(icon, color: Colors.white),
+      snackPosition: SnackPosition.BOTTOM,
+      duration: duration,
+      margin: const EdgeInsets.all(16),
+      borderRadius: 12,
+    );
+  }
 }
+
+enum SnackBarState { neutral, success, error }

@@ -1,13 +1,18 @@
 import 'dart:async';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:mobile_app_template/core/utils/helpers/ui_helpers.dart';
 
+/// ## ConnectionController
+/// Keeps track of the internet connection status of the application
 class ConnectionController extends GetxController {
   late final RxBool _hasInternetConnection;
   late final InternetConnectionChecker _internetConnectionChecker;
-  late final StreamSubscription<InternetConnectionStatus> _subscription;
+  //subscription for internet connection status 
+  late final StreamSubscription<InternetConnectionStatus> _connectionStatusSubscription;
+  //you can add subscription to changes in connection types to track changes in connection (e.g. wifi to mobile or none)
 
   @override
   void onInit(){
@@ -24,6 +29,12 @@ class ConnectionController extends GetxController {
   /// check if there is an internet connnection during app start up
   /// initialize the value of _hasInternetConnection
   Future<void> _checkIfConnectedOnStart()async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+    //if device is not connected to wifi or mobile data, assume it is not connected to the internet
+    if(!(connectivityResult.contains(ConnectivityResult.mobile) || connectivityResult.contains(ConnectivityResult.wifi))){
+      _hasInternetConnection.value = false;
+      return;
+    }
     final bool isConnected = await InternetConnectionChecker.instance.hasConnection;
     if(isConnected){
       _hasInternetConnection = true.obs;
@@ -34,24 +45,25 @@ class ConnectionController extends GetxController {
 
   ///attach a listener to the internet connection status
   void _internetConnectionListener() {
-    _subscription = _internetConnectionChecker.onStatusChange.listen((InternetConnectionStatus status){
+    _connectionStatusSubscription = _internetConnectionChecker.onStatusChange.listen((InternetConnectionStatus status){
       if(status == InternetConnectionStatus.connected){
         _hasInternetConnection.value = true;
-        TUIHelpers.showSnackBar("Internet Connnection restored");
+        TUIHelpers.showStateSnackBar("You are online", state: SnackBarState.success);
       }else{
         _hasInternetConnection.value = false;
-        TUIHelpers.showSnackBar("You are offline");
+        TUIHelpers.showStateSnackBar("You are offline", state: SnackBarState.neutral);
       }
     });
   }
 
   @override
   void onClose(){
-    _subscription.cancel();
+    _connectionStatusSubscription.cancel();
     _internetConnectionChecker.dispose();
     super.onClose();
   }
 
+  /// checks if device is connected to the internet
   bool get isConnected{
     return _hasInternetConnection.value;
   }

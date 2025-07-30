@@ -66,6 +66,7 @@ dependencies:
   get_it: ^8.0.3
   file_magic_number: ^1.4.0
   internet_connection_checker: ^3.0.1
+  connectivity_plus: ^6.1.4
 
 dev_dependencies:
   flutter_test:
