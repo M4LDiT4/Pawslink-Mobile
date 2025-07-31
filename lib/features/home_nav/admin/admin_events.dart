@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:isar/isar.dart';
 import 'package:mobile_app_template/core/constants/colors.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/dependency_injection/dependency_injection.dart';
 import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
 import 'package:mobile_app_template/core/utils/device/device_utility.dart';
 import 'package:mobile_app_template/core/widgets/buttons/admin/admin_home_actionbutton.dart';
-import 'package:mobile_app_template/data/local_storage/isar/database/isar_service.dart';
 import 'package:mobile_app_template/data/local_storage/isar/repositories/event_repository.dart';
 import 'package:mobile_app_template/services/navigation/navigation_service.dart';
 
@@ -21,7 +21,7 @@ class _AdminEventsScreensState extends State<AdminEventsScreens> {
   @override
   void initState() {
     super.initState();
-    getIt.registerLazySingleton<EventRepository>(()=>EventRepository(getIt.get<IsarService>().isar));
+    getIt.registerLazySingleton<EventRepository>(()=>EventRepository(getIt.get<Isar>()));
   }
 
   @override

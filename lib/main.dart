@@ -23,6 +23,7 @@ void main() async {
   // Initialize dio client
   await DioHTTPHelper().init();
   
+  //inject dio client to the auth service
   await TAuthenticationService().init(DioHTTPHelper());
 
   //setup up dedendency injection

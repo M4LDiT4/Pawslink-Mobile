@@ -33,20 +33,20 @@ class ModalInputListItem {
 }
 
 extension ModalInputToAnimalVax on ModalInputListItem {
-  AnimalVaccinations modalInputToAnimalVaxModel(){
+  AnimalVaccination modalInputToAnimalVaxModel(){
     DateTime date = data['date'];
     String description = data['description'];
-    return AnimalVaccinations()
+    return AnimalVaccination()
       ..vaxDate = date
       ..vaxFor = description;
   }
 }
 
 extension ModalInputToAnimalMed on ModalInputListItem{
-  AnimalMedications modalInputToAnimalMedModel(){
+  AnimalMedication modalInputToAnimalMedModel(){
     DateTime date = data['date'];
     String description = data['description'];
-    return AnimalMedications()
+    return AnimalMedication()
       ..medDate = date
       ..medFor = description;
     
