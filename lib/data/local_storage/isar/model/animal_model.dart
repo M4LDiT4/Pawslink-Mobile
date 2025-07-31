@@ -3,6 +3,7 @@ import 'package:isar/isar.dart';
 import 'package:mobile_app_template/core/enums/animal_sex.dart';
 import 'package:mobile_app_template/core/enums/animal_species.dart';
 import 'package:mobile_app_template/core/enums/animal_status.dart';
+import 'package:mobile_app_template/data/local_storage/isar/model/animal_med_history_model.dart';
 import 'package:mobile_app_template/data/local_storage/isar/model/animal_vax_history_model.dart';
 import 'package:mobile_app_template/data/local_storage/save_status.dart';
 
@@ -31,8 +32,10 @@ class Animal{
 
   late  List<String>? traitsAndPersonality;
 
-  final vaxHistory = IsarLinks<AnimalVaxModel>();
-  final medHistory = IsarLinks<AnimalVaxModel>();
+  late String imgUrl;
+
+  final vaxHistory = IsarLinks<AnimalVaccination>();
+  final medHistory = IsarLinks<AnimalMedication>();
 
   DateTime createdAt = DateTime.now();
   DateTime updatedAt = DateTime.now();

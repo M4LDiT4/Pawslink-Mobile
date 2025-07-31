@@ -16,8 +16,8 @@ class ViewAnimalSummaryScreen extends StatelessWidget {
     return [
       GenericDonutChartParams(value: 50, title: "Adopted", color: AnimalStatus.adopted.color),
       GenericDonutChartParams(value: 60, title: "Transient", color: AnimalStatus.transient.color),
-      GenericDonutChartParams(value: 20, title: "On Campus", color: AnimalStatus.onCampus.color),
-      GenericDonutChartParams(value: 10, title: "Rainbow Bridge", color: AnimalStatus.rainbowBridge.color),
+      GenericDonutChartParams(value: 20, title: "On Campus", color: AnimalStatus.on_campus.color),
+      GenericDonutChartParams(value: 10, title: "Rainbow Bridge", color: AnimalStatus.rainbow_bridge.color),
       GenericDonutChartParams(value: 4, title: "Owned", color: AnimalStatus.owned.color),
     ];
   }

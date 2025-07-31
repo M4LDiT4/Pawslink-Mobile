@@ -9,17 +9,17 @@ part of 'animal_med_history_model.dart';
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-extension GetAnimalMedModelCollection on Isar {
-  IsarCollection<AnimalMedModel> get animalMedModels => this.collection();
+extension GetAnimalMedicationCollection on Isar {
+  IsarCollection<AnimalMedication> get animalMedications => this.collection();
 }
 
-const AnimalMedModelSchema = CollectionSchema(
-  name: r'AnimalMedModel',
-  id: -5815324984570406894,
+const AnimalMedicationSchema = CollectionSchema(
+  name: r'AnimalMedication',
+  id: 3160208615764700326,
   properties: {
-    r'medData': PropertySchema(
+    r'medDate': PropertySchema(
       id: 0,
-      name: r'medData',
+      name: r'medDate',
       type: IsarType.dateTime,
     ),
     r'medFor': PropertySchema(
@@ -28,22 +28,22 @@ const AnimalMedModelSchema = CollectionSchema(
       type: IsarType.string,
     )
   },
-  estimateSize: _animalMedModelEstimateSize,
-  serialize: _animalMedModelSerialize,
-  deserialize: _animalMedModelDeserialize,
-  deserializeProp: _animalMedModelDeserializeProp,
+  estimateSize: _animalMedicationEstimateSize,
+  serialize: _animalMedicationSerialize,
+  deserialize: _animalMedicationDeserialize,
+  deserializeProp: _animalMedicationDeserializeProp,
   idName: r'id',
   indexes: {},
   links: {},
   embeddedSchemas: {},
-  getId: _animalMedModelGetId,
-  getLinks: _animalMedModelGetLinks,
-  attach: _animalMedModelAttach,
+  getId: _animalMedicationGetId,
+  getLinks: _animalMedicationGetLinks,
+  attach: _animalMedicationAttach,
   version: '3.1.0+1',
 );
 
-int _animalMedModelEstimateSize(
-  AnimalMedModel object,
+int _animalMedicationEstimateSize(
+  AnimalMedication object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -52,30 +52,30 @@ int _animalMedModelEstimateSize(
   return bytesCount;
 }
 
-void _animalMedModelSerialize(
-  AnimalMedModel object,
+void _animalMedicationSerialize(
+  AnimalMedication object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeDateTime(offsets[0], object.medData);
+  writer.writeDateTime(offsets[0], object.medDate);
   writer.writeString(offsets[1], object.medFor);
 }
 
-AnimalMedModel _animalMedModelDeserialize(
+AnimalMedication _animalMedicationDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = AnimalMedModel();
+  final object = AnimalMedication();
   object.id = id;
-  object.medData = reader.readDateTime(offsets[0]);
+  object.medDate = reader.readDateTime(offsets[0]);
   object.medFor = reader.readString(offsets[1]);
   return object;
 }
 
-P _animalMedModelDeserializeProp<P>(
+P _animalMedicationDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -91,31 +91,31 @@ P _animalMedModelDeserializeProp<P>(
   }
 }
 
-Id _animalMedModelGetId(AnimalMedModel object) {
+Id _animalMedicationGetId(AnimalMedication object) {
   return object.id;
 }
 
-List<IsarLinkBase<dynamic>> _animalMedModelGetLinks(AnimalMedModel object) {
+List<IsarLinkBase<dynamic>> _animalMedicationGetLinks(AnimalMedication object) {
   return [];
 }
 
-void _animalMedModelAttach(
-    IsarCollection<dynamic> col, Id id, AnimalMedModel object) {
+void _animalMedicationAttach(
+    IsarCollection<dynamic> col, Id id, AnimalMedication object) {
   object.id = id;
 }
 
-extension AnimalMedModelQueryWhereSort
-    on QueryBuilder<AnimalMedModel, AnimalMedModel, QWhere> {
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterWhere> anyId() {
+extension AnimalMedicationQueryWhereSort
+    on QueryBuilder<AnimalMedication, AnimalMedication, QWhere> {
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
 }
 
-extension AnimalMedModelQueryWhere
-    on QueryBuilder<AnimalMedModel, AnimalMedModel, QWhereClause> {
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterWhereClause> idEqualTo(
+extension AnimalMedicationQueryWhere
+    on QueryBuilder<AnimalMedication, AnimalMedication, QWhereClause> {
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterWhereClause> idEqualTo(
       Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
@@ -125,8 +125,8 @@ extension AnimalMedModelQueryWhere
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterWhereClause> idNotEqualTo(
-      Id id) {
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterWhereClause>
+      idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -148,9 +148,8 @@ extension AnimalMedModelQueryWhere
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterWhereClause> idGreaterThan(
-      Id id,
-      {bool include = false}) {
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterWhereClause>
+      idGreaterThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.greaterThan(lower: id, includeLower: include),
@@ -158,9 +157,8 @@ extension AnimalMedModelQueryWhere
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterWhereClause> idLessThan(
-      Id id,
-      {bool include = false}) {
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterWhereClause>
+      idLessThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.lessThan(upper: id, includeUpper: include),
@@ -168,7 +166,7 @@ extension AnimalMedModelQueryWhere
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterWhereClause> idBetween(
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterWhereClause> idBetween(
     Id lowerId,
     Id upperId, {
     bool includeLower = true,
@@ -185,10 +183,10 @@ extension AnimalMedModelQueryWhere
   }
 }
 
-extension AnimalMedModelQueryFilter
-    on QueryBuilder<AnimalMedModel, AnimalMedModel, QFilterCondition> {
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterFilterCondition> idEqualTo(
-      Id value) {
+extension AnimalMedicationQueryFilter
+    on QueryBuilder<AnimalMedication, AnimalMedication, QFilterCondition> {
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterFilterCondition>
+      idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -197,7 +195,7 @@ extension AnimalMedModelQueryFilter
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterFilterCondition>
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterFilterCondition>
       idGreaterThan(
     Id value, {
     bool include = false,
@@ -211,7 +209,7 @@ extension AnimalMedModelQueryFilter
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterFilterCondition>
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterFilterCondition>
       idLessThan(
     Id value, {
     bool include = false,
@@ -225,7 +223,8 @@ extension AnimalMedModelQueryFilter
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterFilterCondition> idBetween(
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterFilterCondition>
+      idBetween(
     Id lower,
     Id upper, {
     bool includeLower = true,
@@ -242,46 +241,46 @@ extension AnimalMedModelQueryFilter
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterFilterCondition>
-      medDataEqualTo(DateTime value) {
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterFilterCondition>
+      medDateEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'medData',
+        property: r'medDate',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterFilterCondition>
-      medDataGreaterThan(
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterFilterCondition>
+      medDateGreaterThan(
     DateTime value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'medData',
+        property: r'medDate',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterFilterCondition>
-      medDataLessThan(
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterFilterCondition>
+      medDateLessThan(
     DateTime value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'medData',
+        property: r'medDate',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterFilterCondition>
-      medDataBetween(
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterFilterCondition>
+      medDateBetween(
     DateTime lower,
     DateTime upper, {
     bool includeLower = true,
@@ -289,7 +288,7 @@ extension AnimalMedModelQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'medData',
+        property: r'medDate',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -298,7 +297,7 @@ extension AnimalMedModelQueryFilter
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterFilterCondition>
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterFilterCondition>
       medForEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -312,7 +311,7 @@ extension AnimalMedModelQueryFilter
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterFilterCondition>
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterFilterCondition>
       medForGreaterThan(
     String value, {
     bool include = false,
@@ -328,7 +327,7 @@ extension AnimalMedModelQueryFilter
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterFilterCondition>
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterFilterCondition>
       medForLessThan(
     String value, {
     bool include = false,
@@ -344,7 +343,7 @@ extension AnimalMedModelQueryFilter
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterFilterCondition>
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterFilterCondition>
       medForBetween(
     String lower,
     String upper, {
@@ -364,7 +363,7 @@ extension AnimalMedModelQueryFilter
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterFilterCondition>
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterFilterCondition>
       medForStartsWith(
     String value, {
     bool caseSensitive = true,
@@ -378,7 +377,7 @@ extension AnimalMedModelQueryFilter
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterFilterCondition>
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterFilterCondition>
       medForEndsWith(
     String value, {
     bool caseSensitive = true,
@@ -392,7 +391,7 @@ extension AnimalMedModelQueryFilter
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterFilterCondition>
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterFilterCondition>
       medForContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
@@ -403,7 +402,7 @@ extension AnimalMedModelQueryFilter
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterFilterCondition>
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterFilterCondition>
       medForMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
@@ -414,7 +413,7 @@ extension AnimalMedModelQueryFilter
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterFilterCondition>
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterFilterCondition>
       medForIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -424,7 +423,7 @@ extension AnimalMedModelQueryFilter
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterFilterCondition>
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterFilterCondition>
       medForIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
@@ -435,34 +434,36 @@ extension AnimalMedModelQueryFilter
   }
 }
 
-extension AnimalMedModelQueryObject
-    on QueryBuilder<AnimalMedModel, AnimalMedModel, QFilterCondition> {}
+extension AnimalMedicationQueryObject
+    on QueryBuilder<AnimalMedication, AnimalMedication, QFilterCondition> {}
 
-extension AnimalMedModelQueryLinks
-    on QueryBuilder<AnimalMedModel, AnimalMedModel, QFilterCondition> {}
+extension AnimalMedicationQueryLinks
+    on QueryBuilder<AnimalMedication, AnimalMedication, QFilterCondition> {}
 
-extension AnimalMedModelQuerySortBy
-    on QueryBuilder<AnimalMedModel, AnimalMedModel, QSortBy> {
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterSortBy> sortByMedData() {
+extension AnimalMedicationQuerySortBy
+    on QueryBuilder<AnimalMedication, AnimalMedication, QSortBy> {
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterSortBy>
+      sortByMedDate() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'medData', Sort.asc);
+      return query.addSortBy(r'medDate', Sort.asc);
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterSortBy>
-      sortByMedDataDesc() {
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterSortBy>
+      sortByMedDateDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'medData', Sort.desc);
+      return query.addSortBy(r'medDate', Sort.desc);
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterSortBy> sortByMedFor() {
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterSortBy>
+      sortByMedFor() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'medFor', Sort.asc);
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterSortBy>
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterSortBy>
       sortByMedForDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'medFor', Sort.desc);
@@ -470,40 +471,43 @@ extension AnimalMedModelQuerySortBy
   }
 }
 
-extension AnimalMedModelQuerySortThenBy
-    on QueryBuilder<AnimalMedModel, AnimalMedModel, QSortThenBy> {
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterSortBy> thenById() {
+extension AnimalMedicationQuerySortThenBy
+    on QueryBuilder<AnimalMedication, AnimalMedication, QSortThenBy> {
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterSortBy> thenByIdDesc() {
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterSortBy>
+      thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterSortBy> thenByMedData() {
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterSortBy>
+      thenByMedDate() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'medData', Sort.asc);
+      return query.addSortBy(r'medDate', Sort.asc);
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterSortBy>
-      thenByMedDataDesc() {
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterSortBy>
+      thenByMedDateDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'medData', Sort.desc);
+      return query.addSortBy(r'medDate', Sort.desc);
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterSortBy> thenByMedFor() {
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterSortBy>
+      thenByMedFor() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'medFor', Sort.asc);
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QAfterSortBy>
+  QueryBuilder<AnimalMedication, AnimalMedication, QAfterSortBy>
       thenByMedForDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'medFor', Sort.desc);
@@ -511,15 +515,16 @@ extension AnimalMedModelQuerySortThenBy
   }
 }
 
-extension AnimalMedModelQueryWhereDistinct
-    on QueryBuilder<AnimalMedModel, AnimalMedModel, QDistinct> {
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QDistinct> distinctByMedData() {
+extension AnimalMedicationQueryWhereDistinct
+    on QueryBuilder<AnimalMedication, AnimalMedication, QDistinct> {
+  QueryBuilder<AnimalMedication, AnimalMedication, QDistinct>
+      distinctByMedDate() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'medData');
+      return query.addDistinctBy(r'medDate');
     });
   }
 
-  QueryBuilder<AnimalMedModel, AnimalMedModel, QDistinct> distinctByMedFor(
+  QueryBuilder<AnimalMedication, AnimalMedication, QDistinct> distinctByMedFor(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'medFor', caseSensitive: caseSensitive);
@@ -527,21 +532,21 @@ extension AnimalMedModelQueryWhereDistinct
   }
 }
 
-extension AnimalMedModelQueryProperty
-    on QueryBuilder<AnimalMedModel, AnimalMedModel, QQueryProperty> {
-  QueryBuilder<AnimalMedModel, int, QQueryOperations> idProperty() {
+extension AnimalMedicationQueryProperty
+    on QueryBuilder<AnimalMedication, AnimalMedication, QQueryProperty> {
+  QueryBuilder<AnimalMedication, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
     });
   }
 
-  QueryBuilder<AnimalMedModel, DateTime, QQueryOperations> medDataProperty() {
+  QueryBuilder<AnimalMedication, DateTime, QQueryOperations> medDateProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'medData');
+      return query.addPropertyName(r'medDate');
     });
   }
 
-  QueryBuilder<AnimalMedModel, String, QQueryOperations> medForProperty() {
+  QueryBuilder<AnimalMedication, String, QQueryOperations> medForProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'medFor');
     });

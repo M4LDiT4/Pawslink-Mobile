@@ -1,5 +1,11 @@
+import 'package:bson/bson.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mobile_app_template/core/enums/animal_sex.dart';
+import 'package:mobile_app_template/core/enums/animal_species.dart';
+import 'package:mobile_app_template/core/enums/animal_status.dart';
+import 'package:mobile_app_template/core/extensions/string_extensions.dart';
 import 'package:mobile_app_template/core/navigation/route_params/route_param_base_class.dart';
+import 'package:mobile_app_template/data/local_storage/isar/model/animal_model.dart';
 import 'package:mobile_app_template/data/model/modal_input_list_item.dart';
 
 class AddAnimalSummaryParams extends RouteParamBaseClass{
@@ -49,6 +55,24 @@ class AddAnimalSummaryParams extends RouteParamBaseClass{
       'vaxHistory': vaccinations.map((item)=> item.getDataInMap()).toList(),
       'medHistory': medications.map((item)=> item.getDataInMap()).toList(),
     };
+  }
+
+  Animal toAnimal () {
+    Animal animal =  Animal()
+    ..bsonId = ObjectId().toString()
+    ..name = name
+    ..age = int.parse(age)
+    ..location = location
+    ..sex = sex.enumFromString<AnimalSex>(AnimalSex.values)
+    ..species = species.enumFromString<AnimalSpecies>(AnimalSpecies.values)
+    ..status = status.enumFromString<AnimalStatus>(AnimalStatus.values)
+    ..coatColor = coatColor
+    ..notes = notes
+    ..traitsAndPersonality = traits
+    ..createdAt = DateTime.now()
+    ..updatedAt = DateTime.now();
+
+    return animal;
   }
 
   XFile? getImage(){
