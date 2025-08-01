@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:isar/isar.dart';
 import 'package:mobile_app_template/core/navigation/route_params/add_animal_summary.dart';
 import 'package:mobile_app_template/core/utils/http/response.dart';
@@ -18,56 +19,78 @@ class AnimalRepository {
   AnimalRepository(this._db);
   //create crud operations for the local storage for animals
 
-  Future<TResponse> addAnimal(
-    AddAnimalSummaryParams params
-  ) async{
+  Future<TResponse> addAnimal(AddAnimalSummaryParams params) async {
     File? imageFile;
-    try{
-      Animal animal = params.toAnimal();
+    Uint8List? imageBytes;
+
+    try {
+      final animal = params.toAnimal();
       animal.saveStatus = SaveStatus.draft;
-      
-      final vaccinations = params.vaccinations.map((item) => item.modalInputToAnimalVaxModel()).toList();
-      final medications = params.medications.map((item)=> item.modalInputToAnimalMedModel()).toList();
+
+      final vaccinations = params.vaccinations
+          .map((item) => item.modalInputToAnimalVaxModel())
+          .toList();
+      final medications = params.medications
+          .map((item) => item.modalInputToAnimalMedModel())
+          .toList();
 
       animal.vaxHistory.addAll(vaccinations);
       animal.medHistory.addAll(medications);
 
-      await _db.animalMedications.putAll(medications);
-      await _db.animalVaccinations.putAll(vaccinations);
-      await animal.medHistory.save();
-      await animal.vaxHistory.save();
+      // Read image bytes before transaction if available
+      final XFile? selectedImage = params.getImage();
+      if (selectedImage != null) {
+        imageBytes = await selectedImage.readAsBytes();
+      }
 
-      await _db.writeTxn(() async{
+      await _db.writeTxn(() async {
+        // Save history first
+        await _db.animalMedications.putAll(medications);
+        await _db.animalVaccinations.putAll(vaccinations);
+
+        await animal.medHistory.save();
+        await animal.vaxHistory.save();
+
+        // Save the animal itself
         final id = await _db.animals.put(animal);
-        Uint8List? image = params.getImage() != null? await params.getImage()!.readAsBytes(): null;
-        if(image != null){
-          imageFile = await LocalFileRepository.saveFile(null, image, folders: [id.toString()], isPublic:false);
-          if(imageFile == null){
-            throw Exception('Failed to save image.');
+
+        if (imageBytes != null) {
+          // Save the image file
+          imageFile = await LocalFileRepository.saveFile(
+            null,
+            imageBytes,
+            folders: [id.toString()],
+            isPublic: false,
+          );
+
+          if (imageFile == null) {
+            throw Exception('Failed to save image file.');
           }
-          final savedAnimal = await _db.animals.get(id);
-          if(savedAnimal == null){
-            throw Exception('Failed to save animal with ID: ${id.toString()}');
-          }
-          savedAnimal.imgUrl = imageFile!.path;
-          await _db.animals.put(savedAnimal);
+
+          // Update animal with image path
+          animal.imgUrl = imageFile!.path;
+          await _db.animals.put(animal); // Safe because still in txn
         }
       });
 
       return TResponse(
-        success: true, 
+        success: true,
         statusCode: 200,
-        message: 'Animal save to local database successfully'
+        message: 'Animal saved to local database successfully',
       );
-    }catch(err){
-      if(imageFile != null){
+    } catch (err) {
+      // Clean up image if something failed
+      if (imageFile != null && await imageFile!.exists()) {
         await LocalFileRepository.findAndDelete(imageFile!);
       }
+
       return TResponse(
-        success: false, 
+        success: false,
         statusCode: 400,
-        message: 'Failed to save ${params.name} to the local database: ${err.toString()}'
+        message:
+            'Failed to save ${params.name} to the local database: ${err.toString()}',
       );
     }
   }
+
 }

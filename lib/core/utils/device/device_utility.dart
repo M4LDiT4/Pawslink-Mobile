@@ -5,10 +5,12 @@
 ///@note : usage of this function is highly recommended
 import 'dart:io';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class TDeviceUtils {
@@ -127,6 +129,16 @@ class TDeviceUtils {
 
   static double getScreenBodyHeight(){
     return getScreenHeight() - getAppBarHeight() - getBottomNavigationBarHeight();
+  }
+
+  static Future<bool> isConnectedToInternet() async{
+    final connectivityResult = await Connectivity().checkConnectivity();
+    if(!(connectivityResult.contains(ConnectivityResult.mobile) || connectivityResult.contains(ConnectivityResult.wifi))){
+      return false;
+    }
+    
+    final bool isConnected = await InternetConnectionChecker.instance.hasConnection;
+    return isConnected;
   }
 }
 

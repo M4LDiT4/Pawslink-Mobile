@@ -6,8 +6,8 @@ import 'package:mobile_app_template/core/dependency_injection/dependency_injecti
 import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
 import 'package:mobile_app_template/core/utils/device/device_utility.dart';
 import 'package:mobile_app_template/core/widgets/buttons/admin/admin_home_actionbutton.dart';
-import 'package:mobile_app_template/data/local_storage/isar/database/isar_service.dart';
 import 'package:mobile_app_template/data/local_storage/isar/repositories/animal_repository.dart';
+import 'package:mobile_app_template/services/api/animal_api.dart';
 import 'package:mobile_app_template/services/navigation/navigation_service.dart';
 
 class AnimalDatabaseScreen extends StatefulWidget {
@@ -21,12 +21,19 @@ class _AnimalDatabaseScreenState extends State<AnimalDatabaseScreen> {
   @override
   void initState(){
     super.initState();
+    //register the animal repository in the service locator
+    //inject the isar dependency
     getIt.registerLazySingleton(()=> AnimalRepository(getIt<Isar>()));
+
+    AnimalApi animalAPI = AnimalApi();
+    animalAPI.init();
+    getIt.registerLazySingleton(() => animalAPI);
   }
 
   @override
   void dispose(){
     getIt.unregister<AnimalRepository>();
+    getIt.unregister<AnimalApi>();
     super.dispose();
   }
 

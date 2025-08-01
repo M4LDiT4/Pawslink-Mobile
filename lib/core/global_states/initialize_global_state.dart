@@ -5,6 +5,8 @@ import 'package:mobile_app_template/core/utils/internet_connection/connection_co
 /// 
 /// Setup initial app-wide states
 /// - internet connection listener
-void initializeGlobalStates(){
-  Get.put(ConnectionController());
+Future<void> initializeGlobalStates() async{
+  final connectionController = ConnectionController();
+  await connectionController.init();
+  Get.put(connectionController);
 }

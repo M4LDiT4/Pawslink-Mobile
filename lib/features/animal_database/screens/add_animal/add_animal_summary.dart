@@ -3,21 +3,29 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/constants/text_strings.dart';
+import 'package:mobile_app_template/core/dependency_injection/dependency_injection.dart';
 import 'package:mobile_app_template/core/navigation/route_params/add_animal_summary.dart';
 import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
 import 'package:mobile_app_template/core/utils/colors/color_utils.dart';
+import 'package:mobile_app_template/core/utils/helpers/ui_helpers.dart';
 import 'package:mobile_app_template/core/utils/http/response.dart';
+import 'package:mobile_app_template/core/utils/internet_connection/connection_controller.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/core/widgets/buttons/form_button/form_button.dart';
 import 'package:mobile_app_template/core/widgets/dialogs/animated_dialog.dart';
 import 'package:mobile_app_template/core/widgets/dialogs/loading_dialog/loading_dialog.dart';
+import 'package:mobile_app_template/core/widgets/dialogs/save_to_drafts/save_to_drafts_dialog.dart';
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
+import 'package:mobile_app_template/data/local_storage/isar/repositories/animal_repository.dart';
 import 'package:mobile_app_template/data/model/modal_input_list_item.dart';
 import 'package:mobile_app_template/services/api/animal_api.dart';
 import 'package:mobile_app_template/services/navigation/navigation_service.dart';
 
 class AddAnimalSummary extends StatelessWidget {
   final AddAnimalSummaryParams params = Get.arguments as AddAnimalSummaryParams;
+  final AnimalApi _animalApi = getIt.get<AnimalApi>();
+  final AnimalRepository _animalRepository = getIt.get<AnimalRepository>();
+  final ConnectionController _connectionController = Get.find<ConnectionController>();
 
   AddAnimalSummary({super.key});
 
@@ -92,29 +100,16 @@ class AddAnimalSummary extends StatelessWidget {
     return _buildSection(title, children);
   }
 
-  Future<TResponse> _saveAnimal() async {
-    //please invoke AnimalApi().init()
-    //before using the api 
-    return  AnimalApi().addAnimal(params);
-  }
-
   //pops the getx navigation stack until the name route home is found
   void _popUntilHome() {
     TNavigationService.offAllNamed(TAppRoutes.home);
   }
 
-  void _showAnimatedDialog(BuildContext context) async {
+  void _saveAnimalOnCloud(BuildContext context) async {
     try{
-      AnimalApi().init();
       final result = await AnimatedDialog.show(
         context, 
-        child: LoadingDialog(
-          asyncFunction: _saveAnimal,
-          successMessage: "Animal added successfully!",
-          errorMessage: "Failed to add animal!",
-          loadingMessage: "Saving animal info...",
-        ),
-        isCancellable: false
+        child: _buildDialog(() => _animalApi.addAnimal(params))
       );
 
       if(result.isSuccessful){
@@ -122,6 +117,52 @@ class AddAnimalSummary extends StatelessWidget {
       }
     }catch(e){
       TLogger.error(e.toString());
+    }
+  }
+
+  LoadingDialog _buildDialog(Future<TResponse<dynamic>>  Function() asyncFunction){
+    return LoadingDialog(
+      asyncFunction: asyncFunction,
+      successMessage: "Animal added successfully!",
+      errorMessage: "Failed to add animal!",
+      loadingMessage: "Saving animal info...",
+    );
+  }
+
+  void _saveAnimalLocally(BuildContext context) async{
+    try{
+      final result = await AnimatedDialog.show(
+        context, 
+        child: _buildDialog(()=>_animalRepository.addAnimal(params))
+      );
+      if(result.isSuccessful){
+        _popUntilHome();
+      }else{
+        TUIHelpers.showStateSnackBar("Failed to save ${params.name}", state: SnackBarState.error);
+        TNavigationService.back();
+      }
+
+    }catch(err){
+      TLogger.error(err.toString());
+    }
+  }
+  void _handleSave(BuildContext context) async{
+    if(_connectionController.isConnected){
+      _saveAnimalOnCloud(context);
+    }else{
+      final response = await AnimatedDialog.show(
+        context, 
+        child:const SaveToDraftsDialog()
+      );
+      final saveToDrafts = response.isSuccessful;
+
+      if(!context.mounted) return;
+
+      if(saveToDrafts){
+        _saveAnimalLocally(context);
+      }else{
+        TUIHelpers.showStateSnackBar("No internet connection. Try Again later");
+      }
     }
   }
 
@@ -156,7 +197,7 @@ class AddAnimalSummary extends StatelessWidget {
             Align(
               alignment: Alignment.centerRight,
               child: FormButton(
-                onPressed: (){_showAnimatedDialog(context);}, 
+                onPressed: (){_handleSave(context);}, 
                 type: FormButtonType.confirm,
                 child: const Text(TText.confirm),
               )

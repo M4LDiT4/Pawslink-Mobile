@@ -23,7 +23,7 @@ class AnimalApi {
 
   factory AnimalApi() => _instance;
 
-  Future<void> init() async {
+  void init()  {
     final ip = dotenv.env['LOCALHOST_IP_ADDRESS'];
     if(ip == null) throw TAppException("Missing LOCALHOST_IP_ADDRESS in .env");
     if(!_isInitialized){
