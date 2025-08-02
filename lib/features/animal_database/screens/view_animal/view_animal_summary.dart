@@ -6,7 +6,7 @@ import 'package:mobile_app_template/core/enums/animal_status.dart';
 import 'package:mobile_app_template/core/widgets/charts/generic_donut_chart.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
 import 'package:mobile_app_template/features/animal_database/widgets/view_animal_profile_slider/view_animal_profile_slider.dart';
-import 'package:mobile_app_template/features/animal_database/widgets/view_animal_summary_card.dart';
+import 'package:mobile_app_template/features/animal_database/widgets/view_animal_summary_card/view_animal_summary_card.dart';
 import 'package:mobile_app_template/features/animal_database/widgets/view_animal_summary_listtile.dart';
 
 class ViewAnimalSummaryScreen extends StatelessWidget {

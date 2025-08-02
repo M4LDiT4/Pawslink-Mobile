@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:isar/isar.dart';
+import 'package:mobile_app_template/core/enums/animal_species.dart';
+import 'package:mobile_app_template/core/enums/animal_status.dart';
 import 'package:mobile_app_template/core/navigation/route_params/add_animal_summary.dart';
 import 'package:mobile_app_template/core/utils/http/response.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
@@ -194,6 +196,48 @@ class AnimalRepository {
     }
   }
 
+  Future<TResponse<int>> getAnimalByStatusCoount(AnimalStatus status) async{
+    try{
+      final result = await _db.animals.where()
+        .filter()
+        .statusEqualTo(status)
+        .count();
+
+      return TResponse(
+        success: true, 
+        statusCode: 200,
+        data: result
+      );
+    }catch(err){
+      TLogger.error(err.toString());
+      return TResponse(
+        success: false, 
+        statusCode: 400,
+        data: null
+      );
+    }
+  }
+
+  Future<TResponse<int>> getAnimalBySpeciesCount(AnimalSpecies species) async {
+    try{
+      final result = await _db.animals.where().filter()
+        .speciesEqualTo(species)
+        .count();
+      
+      return TResponse(
+        success: true, 
+        statusCode: 200,
+        data: result
+      );
+    }catch(err){
+      TLogger.error(err.toString());
+      return TResponse(
+        success: false, 
+        statusCode: 400,
+        data: null
+      );
+    }
+  }
 }
 
 enum AnimalSortBy{
