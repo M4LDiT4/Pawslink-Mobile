@@ -17,7 +17,7 @@ class TAuthenticationService {
   //secure storage
   LocalSecureStorageService secureStorageService = LocalSecureStorageService();
 
-  final DioHTTPHelper _dio = DioHTTPHelper(); 
+  late final DioHTTPHelper _dio; 
 
   //singleton
   TAuthenticationService._internal();
@@ -27,10 +27,11 @@ class TAuthenticationService {
 
   factory TAuthenticationService() => _instance;
 
-  Future<void> init() async {
+  Future<void> init(DioHTTPHelper httpService) async {
     final ip = dotenv.env['LOCALHOST_IP_ADDRESS'];
     if(ip == null) throw throw TAppException('Missing LOCALHOST_IP_ADDRESS in .env');
     _baseUri = Uri.parse('http://$ip:8000/auth');
+    _dio = httpService;
   }
 
   Future<TResponse> signIn(String username, String password) async{

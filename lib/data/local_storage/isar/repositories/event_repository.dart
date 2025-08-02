@@ -20,7 +20,7 @@ import 'package:mobile_app_template/data/repositories/file_repository.dart';
 /// - **[getEvents]**: method for retrieving relevant [Event] objects
 
 class EventRepository {
-  final Future<Isar> _db;
+  final Isar _db;
 
   EventRepository(this._db);
 
@@ -55,7 +55,6 @@ class EventRepository {
   ) async{
     File? imageFile;
     try{
-      final isar = await _db;
       final event = Event()
         ..title = title
         ..description = description
@@ -63,18 +62,18 @@ class EventRepository {
         ..timeInMinutes = timeInMinutes
         ..imagePath = null; // Initialize with null, will be set later
       
-      await isar.writeTxn(() async{
-        final id = await isar.events.put(event);
+      await _db.writeTxn(() async{
+        final id = await _db.events.put(event);
         imageFile = await LocalFileRepository.saveFile(null, image, folders: [id.toString()], isPublic: false);
         if(imageFile == null){
           throw Exception("Failed to save file");
         }
-        final savedEvent = await isar.events.get(id);
+        final savedEvent = await _db.events.get(id);
         if (savedEvent == null) {
           throw Exception("Failed to save event with ID: $id");
         }
         savedEvent.imagePath = imageFile!.path;
-        await isar.events.put(savedEvent);
+        await _db.events.put(savedEvent);
       });
       return TResponse(
         success: true, 
@@ -103,8 +102,7 @@ class EventRepository {
     int itemsPerPage = 10
   }) async{
     try{
-      final isar = await _db;
-      QueryBuilder<Event, Event, QWhere> whereQuery = isar.events.where();
+      QueryBuilder<Event, Event, QWhere> whereQuery = _db.events.where();
       QueryBuilder<Event, Event, QAfterFilterCondition> filtered = whereQuery.filter()
       .optional(
         filterString != null, 
@@ -161,8 +159,7 @@ class EventRepository {
   }
 
   Future<void> deleteEvent(Id id) async{
-    final isar = await _db;
-    await isar.writeTxn(() => isar.events.delete(id));
+    await _db.writeTxn(() => _db.events.delete(id));
   }
 }
 

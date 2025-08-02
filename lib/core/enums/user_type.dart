@@ -1,1 +1,1 @@
-enum UseRole {visitor, normalUser, admin, superAdmin}
+enum UseRole {visitor, normal_user, admin, super_admin}

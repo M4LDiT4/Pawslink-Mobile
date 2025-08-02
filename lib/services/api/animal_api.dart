@@ -9,7 +9,7 @@ import 'package:mobile_app_template/core/utils/logger/logger.dart';
 
 class AnimalApi {
   final String _basePath = "animal-database";
-  final String _addAnimal = "add-animal";
+  final String _addAnimal = "animal";
 
   bool _isInitialized = false;
   late Uri _baseUri;
@@ -23,7 +23,7 @@ class AnimalApi {
 
   factory AnimalApi() => _instance;
 
-  Future<void> init() async {
+  void init()  {
     final ip = dotenv.env['LOCALHOST_IP_ADDRESS'];
     if(ip == null) throw TAppException("Missing LOCALHOST_IP_ADDRESS in .env");
     if(!_isInitialized){
@@ -56,7 +56,7 @@ class AnimalApi {
       fromJson: DioHTTPHelper.defaultFromJson
     );
 
-    TLogger.info(response.toString());
+    TLogger.info('Response of add animal: ${response.toString()}');
 
     return response;
   }
