@@ -65,8 +65,9 @@ class AddAnimalController extends GetxController {
   }
 
   void handleSubmit(){
-
-    if(formKey.currentState!.validate()){
+    bool isFormValid = formKey.currentState!.validate();
+    bool isImageValid = imgPickerController.validate();
+    if(isFormValid && isImageValid){
       final params = AddAnimalSummaryParams(
         name: nameController.text , 
         age: ageController.text, 
