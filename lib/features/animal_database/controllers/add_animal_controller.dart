@@ -78,7 +78,8 @@ class AddAnimalController extends GetxController {
         notes: notesController.getStringValues(),
         traits: traitsController.getStringValues(),
         vaccinations: vaxController.getValue(),
-        medications: medController.getValue()
+        medications: medController.getValue(),
+        animalImage: imgPickerController.selectedImage
       );
       TNavigationService.toNamed(TAppRoutes.addAnimalSummary, arguments: params);
     }

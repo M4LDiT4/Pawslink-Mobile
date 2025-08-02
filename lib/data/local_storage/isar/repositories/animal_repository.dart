@@ -6,6 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:isar/isar.dart';
 import 'package:mobile_app_template/core/navigation/route_params/add_animal_summary.dart';
 import 'package:mobile_app_template/core/utils/http/response.dart';
+import 'package:mobile_app_template/core/utils/logger/logger.dart';
+import 'package:mobile_app_template/data/local_storage/isar/helpers/filter_helper.dart';
 import 'package:mobile_app_template/data/local_storage/isar/model/animal_med_history_model.dart';
 import 'package:mobile_app_template/data/local_storage/isar/model/animal_model.dart';
 import 'package:mobile_app_template/data/local_storage/isar/model/animal_vax_history_model.dart';
@@ -69,9 +71,12 @@ class AnimalRepository {
 
           // Update animal with image path
           animal.imgUrl = imageFile!.path;
-          await _db.animals.put(animal); // Safe because still in txn
         }
+        await _db.animals.put(animal);
       });
+
+      final newAnimalList = await  getAnimals();
+      TLogger.info('Current animal count: ${newAnimalList.data!.length}');
 
       return TResponse(
         success: true,
@@ -93,4 +98,106 @@ class AnimalRepository {
     }
   }
 
+  Future<TResponse<List<Animal>>> getAnimals(
+    {
+      DynamicIsarFilter? name,
+      DynamicIsarFilter? location,
+      DynamicIsarFilter? age,
+      DynamicIsarFilter? species,
+      DynamicIsarFilter? status,
+      DynamicIsarFilter? sex,
+      AnimalSortBy sortBy = AnimalSortBy.updatedAt,
+      Sort sortOrder = Sort.asc,
+      int pageNum = 1,
+      int itemsPerPage = 10
+    }
+  ) async {
+    try{
+      QueryBuilder<Animal, Animal, QWhere> whereQuery = _db.animals.where();
+      QueryBuilder<Animal, Animal, QAfterFilterCondition> filtered = whereQuery.filter()
+      .optional(
+        name != null,
+        (q) => q.nameContains(name!.value)
+      )
+      .optional(
+        location != null, 
+        (q) => q.locationContains(location!.value)
+      )
+      .optional(
+        age != null, 
+        (q){
+          final strategy = age!.strategy;
+          switch(strategy){
+            case FilterConditionType.greaterThan:
+              return q.ageGreaterThan(age.value);
+            case FilterConditionType.lessThan:
+              return q.ageLessThan(age.value);
+            default:
+              return q.ageEqualTo(age.value);
+          }
+        }
+      )
+      .optional(
+        species != null, 
+        (q) => q.speciesEqualTo(species!.value)
+      )
+      .optional(
+        status != null, 
+        (q) => q.statusEqualTo(status!.value)
+      )
+      .optional(
+        sex != null, 
+        (q) => q.sexEqualTo(sex!.value)
+      );
+
+      QueryBuilder<Animal, Animal, QAfterSortBy> sorted;
+      
+      if(sortOrder == Sort.asc){
+        switch(sortBy){
+          case AnimalSortBy.name:
+            sorted = filtered.sortByName();
+            break;
+          case AnimalSortBy.age:
+            sorted = filtered.sortByAge();
+            break;
+          default:
+            sorted = filtered.sortByUpdatedAt();
+            break;
+        }
+      }else{
+        switch(sortBy){
+          case AnimalSortBy.name:
+            sorted = filtered.sortByNameDesc();
+            break;
+          case AnimalSortBy.age:
+            sorted = filtered.sortByAgeDesc();
+            break;
+          default:
+            sorted = filtered.sortByUpdatedAtDesc();
+            break;
+        }
+      }
+
+      final offset = (pageNum -1) * itemsPerPage;
+      
+      final result = await sorted.offset(offset).limit(itemsPerPage).findAll();
+
+      return TResponse<List<Animal>>(
+        success: true, 
+        statusCode: 200,
+        message: 'Local Animal Query Success',
+        data: result
+      );
+
+    }catch(err){
+      return TResponse.failed(err.toString());
+    }
+  }
+
+}
+
+enum AnimalSortBy{
+  name,
+  age,
+  updatedAt
 }

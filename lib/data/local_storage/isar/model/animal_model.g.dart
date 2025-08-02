@@ -138,7 +138,12 @@ int _animalEstimateSize(
       }
     }
   }
-  bytesCount += 3 + object.imgUrl.length * 3;
+  {
+    final value = object.imgUrl;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   bytesCount += 3 + object.location.length * 3;
   bytesCount += 3 + object.name.length * 3;
   {
@@ -206,7 +211,7 @@ Animal _animalDeserialize(
   object.coatColor = reader.readStringList(offsets[2]);
   object.createdAt = reader.readDateTime(offsets[3]);
   object.id = id;
-  object.imgUrl = reader.readString(offsets[4]);
+  object.imgUrl = reader.readStringOrNull(offsets[4]);
   object.location = reader.readString(offsets[5]);
   object.name = reader.readString(offsets[6]);
   object.notes = reader.readStringList(offsets[7]);
@@ -242,7 +247,7 @@ P _animalDeserializeProp<P>(
     case 3:
       return (reader.readDateTime(offset)) as P;
     case 4:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 5:
       return (reader.readString(offset)) as P;
     case 6:
@@ -925,8 +930,24 @@ extension AnimalQueryFilter on QueryBuilder<Animal, Animal, QFilterCondition> {
     });
   }
 
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'imgUrl',
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'imgUrl',
+      ));
+    });
+  }
+
   QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -939,7 +960,7 @@ extension AnimalQueryFilter on QueryBuilder<Animal, Animal, QFilterCondition> {
   }
 
   QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -954,7 +975,7 @@ extension AnimalQueryFilter on QueryBuilder<Animal, Animal, QFilterCondition> {
   }
 
   QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -969,8 +990,8 @@ extension AnimalQueryFilter on QueryBuilder<Animal, Animal, QFilterCondition> {
   }
 
   QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -2884,7 +2905,7 @@ extension AnimalQueryProperty on QueryBuilder<Animal, Animal, QQueryProperty> {
     });
   }
 
-  QueryBuilder<Animal, String, QQueryOperations> imgUrlProperty() {
+  QueryBuilder<Animal, String?, QQueryOperations> imgUrlProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'imgUrl');
     });

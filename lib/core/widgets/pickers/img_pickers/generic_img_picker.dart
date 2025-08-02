@@ -31,7 +31,7 @@ class _GenericImagePicker extends State<GenericImagePicker> {
   Future<void> _pickImage(ImageSource source) async {
     final pickedFile = await _picker.pickImage(source: source);
     if (pickedFile != null) {
-      _controller.selectedImage = File(pickedFile.path); // Triggers AnimatedBuilder
+      _controller.selectedImage = XFile(pickedFile.path); // Triggers AnimatedBuilder
     }
 
     if (!mounted) return;
@@ -95,7 +95,7 @@ class _GenericImagePicker extends State<GenericImagePicker> {
                   : Stack(
                       children: [
                         AspectRatioImage.file(
-                          image,
+                          File(image.path),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         Positioned(

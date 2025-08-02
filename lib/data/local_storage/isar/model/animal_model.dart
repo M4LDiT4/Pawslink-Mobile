@@ -32,7 +32,7 @@ class Animal{
 
   late  List<String>? traitsAndPersonality;
 
-  late String imgUrl;
+  late String? imgUrl;
 
   final vaxHistory = IsarLinks<AnimalVaccination>();
   final medHistory = IsarLinks<AnimalMedication>();

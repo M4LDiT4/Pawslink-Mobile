@@ -102,7 +102,7 @@ class AddAnimalSummary extends StatelessWidget {
 
   //pops the getx navigation stack until the name route home is found
   void _popUntilHome() {
-    TNavigationService.offAllNamed(TAppRoutes.home);
+    TNavigationService.until(TAppRoutes.home);
   }
 
   void _saveAnimalOnCloud(BuildContext context) async {

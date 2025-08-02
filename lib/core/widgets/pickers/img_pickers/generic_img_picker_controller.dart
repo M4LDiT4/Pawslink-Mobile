@@ -1,20 +1,17 @@
-
-import 'dart:io';
-
 import 'package:flutter/widgets.dart';
+import 'package:image_picker/image_picker.dart';
 
 class GenericImgPickerController extends ChangeNotifier {
-  File? _selectedImage;
+  XFile? _selectedImage;
 
 
   GenericImgPickerController();
 
-  GenericImgPickerController setInitialValue(File? imgFile){
+  GenericImgPickerController setInitialValue(XFile? imgFile){
     _selectedImage = imgFile;
     return this;
   }
-
-  set selectedImage (File? imgFile){
+  set selectedImage (XFile? imgFile){
     _selectedImage = imgFile;
     notifyListeners();
   }
@@ -24,6 +21,6 @@ class GenericImgPickerController extends ChangeNotifier {
     notifyListeners();
   }
 
-  File? get selectedImage => _selectedImage;
+  XFile? get selectedImage => _selectedImage;
 
 }

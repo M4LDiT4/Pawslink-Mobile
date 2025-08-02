@@ -30,7 +30,7 @@ void main() async {
   await setupDependencyInjection();
 
   //initialize global states
-  initializeGlobalStates();
+  await initializeGlobalStates();
   
   runApp(const App());
 }

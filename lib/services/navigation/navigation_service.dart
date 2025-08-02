@@ -32,4 +32,11 @@ class TNavigationService {
     Get.back(result: result);
   }
 
+  /// Go back until route is found or only one item in the nav stack remains
+  static void until(String routeName){
+    Get.until((route){
+      return route.settings.name == routeName || route.isFirst;
+    });
+  }
+
 }
