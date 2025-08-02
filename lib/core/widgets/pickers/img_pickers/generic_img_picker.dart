@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mobile_app_template/core/constants/colors.dart';
+import 'package:mobile_app_template/core/enums/widget_status.dart';
 import 'package:mobile_app_template/core/widgets/buttons/secondary_elevated_button.dart';
 import 'package:mobile_app_template/core/widgets/image/aspectratio_image.dart';
 import 'package:mobile_app_template/core/widgets/pickers/img_pickers/generic_img_picker_controller.dart';
@@ -8,10 +10,14 @@ import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
 
 class GenericImagePicker extends StatefulWidget {
   final GenericImgPickerController? controller;
+  final bool isRequired;
+  final String errMessage;
 
   const GenericImagePicker({
     super.key,
     this.controller,
+    this.isRequired = false,
+    this.errMessage = 'Required'
   });
 
   @override
@@ -26,6 +32,8 @@ class _GenericImagePicker extends State<GenericImagePicker> {
   void initState() {
     super.initState();
     _controller = widget.controller ?? GenericImgPickerController();
+    _controller.isRequired = widget.isRequired;
+    _controller.errorMessage = widget.errMessage;
   }
 
   Future<void> _pickImage(ImageSource source) async {
@@ -70,57 +78,65 @@ class _GenericImagePicker extends State<GenericImagePicker> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
+        AnimatedBuilder(
+          animation: _controller, 
+          builder: (context, _){
+            return Container(
           constraints: const BoxConstraints(minHeight: 200),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             color: Colors.grey[100],
+            border: Border.all(
+              color: _controller.status == WidgetStatus.error? TColors.error : Colors.transparent,
+              width: 2
+            )
           ),
-          child: AnimatedBuilder(
-            animation: _controller,
-            builder: (context, _) {
-              final image = _controller.selectedImage;
-              return image == null
-                  ? const Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.image, size: 60, color: Colors.grey),
-                          SizedBox(height: 8),
-                          Text("No image selected"),
-                        ],
+          child: _controller.selectedImage == null?
+            Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.image, size: 60, color: Colors.grey),
+                  const SizedBox(height: 8),
+                  Text(
+                    style: TextStyle(
+                      color: _controller.status == WidgetStatus.error? TColors.error: TColors.textDark 
+                    ),
+                    _controller.status == WidgetStatus.error? _controller.errorMessage: "No image selected"
+                  ),
+                ],
+              ),
+            )
+            : Stack(
+                children: [
+                  AspectRatioImage.file(
+                    File(_controller.selectedImage!.path),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  Positioned(
+                    top: 4,
+                    right: 4,
+                    child: GestureDetector(
+                      onTap: _removeImage,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.black54,
+                        ),
+                        padding: const EdgeInsets.all(4),
+                        child: const Icon(
+                          Icons.close,
+                          color: Colors.white,
+                          size: 20,
+                        ),
                       ),
-                    )
-                  : Stack(
-                      children: [
-                        AspectRatioImage.file(
-                          File(image.path),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        Positioned(
-                          top: 4,
-                          right: 4,
-                          child: GestureDetector(
-                            onTap: _removeImage,
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.black54,
-                              ),
-                              padding: const EdgeInsets.all(4),
-                              child: const Icon(
-                                Icons.close,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-            },
-          ),
+                    ),
+                  ),
+                ],
+              )
+            );
+          }
         ),
         const FixedSeparator(space: 8),
         SecondaryElevatedButton(

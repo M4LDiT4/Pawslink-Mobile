@@ -72,6 +72,7 @@ class AddAnimalScreeen extends StatelessWidget {
             children: [
               GenericImagePicker(
                 controller: controller.imgPickerController,
+                isRequired: true,
               ),
               const FixedSeparator(space: TSizes.spaceBetweenSections),
               _buildSection(
