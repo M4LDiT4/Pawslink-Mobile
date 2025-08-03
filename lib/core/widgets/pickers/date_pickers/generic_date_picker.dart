@@ -17,6 +17,7 @@ class GenericDatePickerButton extends StatefulWidget {
     this.suffixText,
     this.controller,
     this.isRequired = false,
+    this.enabled = true,
   });
 
   final String labelText;
@@ -29,6 +30,7 @@ class GenericDatePickerButton extends StatefulWidget {
   final String? suffixText;
   final GenericDatepickerController? controller;
   final bool isRequired;
+  final bool enabled;
 
   @override
   State<GenericDatePickerButton> createState() => _GenericDatePickerButtonState();
@@ -40,12 +42,31 @@ class _GenericDatePickerButtonState extends State<GenericDatePickerButton> {
   @override
   void initState() {
     super.initState();
-    _controller = widget.controller ?? GenericDatepickerController()
+    _controller = _setUpController();
+  }
+
+  GenericDatepickerController _setUpController() {
+    if(widget.controller != null) {
+      final ctrlr = widget.controller!;
+      ctrlr.initialDate(widget.initialDate);
+      ctrlr.isRequired(widget.isRequired);
+      ctrlr.errorText(widget.errorText);
+      return ctrlr;
+    }
+    return GenericDatepickerController()
       ..initialDate(widget.initialDate)
       ..isRequired(widget.isRequired)
       ..errorText(widget.errorText);
   }
 
+  @override
+  void didUpdateWidget(covariant GenericDatePickerButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _controller.isRequired(widget.isRequired);
+    if(!widget.isRequired){
+      _controller.reset();
+    }
+  }
   OutlineInputBorder _buildBorder(Color color) {
     return OutlineInputBorder(
       borderRadius: BorderRadius.circular(8.0),
@@ -67,6 +88,9 @@ class _GenericDatePickerButtonState extends State<GenericDatePickerButton> {
   }
 
   Future<void> _pickDate(BuildContext context) async {
+    FocusScope.of(context).requestFocus(FocusNode());
+    FocusScope.of(context).unfocus();
+    if(!widget.enabled) return;
     final now = DateTime.now();
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -114,6 +138,7 @@ class _GenericDatePickerButtonState extends State<GenericDatePickerButton> {
                 children: [
                   InputDecorator(
                     decoration: InputDecoration(
+                      enabled: widget.enabled,
                       labelText: hasDate ? widget.labelText : null,
                       errorText: _controller.getErrorMessage(),
                       enabledBorder: _buildBorder(Colors.grey.shade400),

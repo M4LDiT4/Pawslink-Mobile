@@ -1,9 +1,11 @@
 
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile_app_template/core/navigation/route_params/add_animal_summary.dart';
 import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
 import 'package:mobile_app_template/core/widgets/dropdowns/generic_dropdown_controller.dart';
+import 'package:mobile_app_template/core/widgets/pickers/date_pickers/generic_datepicker_controller.dart';
 import 'package:mobile_app_template/core/widgets/pickers/img_pickers/generic_img_picker_controller.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/modal_input_list_controller.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/multivalue_text_input/multivalue_textinput_controller.dart';
@@ -22,6 +24,7 @@ class AddAnimalController extends GetxController {
   late GenericDropdownController sexController;
   late GenericDropdownController speciesController;
   late GenericDropdownController statusController;
+  late GenericDatepickerController sterilizationDateController;
 
   //complex input controllers
   late MultiValueTextfieldController coatColorController;
@@ -29,6 +32,8 @@ class AddAnimalController extends GetxController {
   late MultiValueTextfieldController traitsController;
   late ModalInputListController vaxController;
   late ModalInputListController medController;
+
+  final RxBool _isSterilized = false.obs;
 
   @override
   void onInit(){
@@ -46,6 +51,7 @@ class AddAnimalController extends GetxController {
     statusController = GenericDropdownController();
     imgPickerController = GenericImgPickerController();
     formKey = GlobalKey<FormState>();
+    sterilizationDateController = GenericDatepickerController();
   }
 
   @override
@@ -67,7 +73,8 @@ class AddAnimalController extends GetxController {
   void handleSubmit(){
     bool isFormValid = formKey.currentState!.validate();
     bool isImageValid = imgPickerController.validate();
-    if(isFormValid && isImageValid){
+    bool isSterilizationValid = sterilizationDateController.validate();
+    if(isFormValid && isImageValid && isSterilizationValid){
       final params = AddAnimalSummaryParams(
         name: nameController.text , 
         age: ageController.text, 
@@ -84,5 +91,12 @@ class AddAnimalController extends GetxController {
       );
       TNavigationService.toNamed(TAppRoutes.addAnimalSummary, arguments: params);
     }
+  }
+
+  bool get isSterilized => _isSterilized.value;
+
+  void setIsSterilized(bool? value){
+    if(value == null) return;
+    _isSterilized.value = value;
   }
 }
