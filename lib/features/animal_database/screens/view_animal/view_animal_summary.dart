@@ -5,6 +5,7 @@ import 'package:mobile_app_template/core/enums/animal_sex.dart';
 import 'package:mobile_app_template/core/enums/animal_status.dart';
 import 'package:mobile_app_template/core/widgets/charts/generic_donut_chart.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
+import 'package:mobile_app_template/features/animal_database/widgets/general_summary_card/general_summary_card.dart';
 import 'package:mobile_app_template/features/animal_database/widgets/view_animal_profile_slider/view_animal_profile_slider.dart';
 import 'package:mobile_app_template/features/animal_database/widgets/view_animal_summary_card/view_animal_summary_card.dart';
 import 'package:mobile_app_template/features/animal_database/widgets/view_animal_summary_listtile.dart';
@@ -38,24 +39,7 @@ class ViewAnimalSummaryScreen extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ViewAnimalSummaryCard(
-              title: "General", 
-              valueList: valueList, 
-              rightChild: const Column(
-                children: [
-                  ViewAnimalSummaryListtile(
-                    leadingImgPath: TImages.catIcon, 
-                    title: "100", 
-                    subtitle: "cats",
-                  ),
-                  ViewAnimalSummaryListtile(
-                    leadingImgPath: TImages.dogIcon, 
-                    title: "100", 
-                    subtitle: "dogs"
-                  ),
-                ],
-              )
-            ),
+            const GeneralSummaryCard(title: "General Summary"),
             ViewAnimalSummaryCard(
               title: "Dog Summary", 
               valueList: _generateTempList(),

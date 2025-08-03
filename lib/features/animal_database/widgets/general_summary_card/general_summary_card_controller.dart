@@ -28,6 +28,7 @@ class GeneralSummaryCardController extends ChangeNotifier {
   void _initialize() {
     _cloudRepo = getIt.get<AnimalApi>();
     _localRepo = getIt.get<AnimalRepository>();
+    getGeneralAnimalSummaryData();
   }
   void _setLoading(){
     if(_status != WidgetStatus.loading){
@@ -172,11 +173,6 @@ class GeneralSummaryCardController extends ChangeNotifier {
       GenericDonutChartParams(
         value: transietCount.toDouble(), 
         title: "Transient", 
-        color: AnimalStatus.adopted.color
-      ),
-      GenericDonutChartParams(
-        value: adoptedCount.toDouble(), 
-        title: "Adopted", 
         color: AnimalStatus.transient.color
       ),
       GenericDonutChartParams(
