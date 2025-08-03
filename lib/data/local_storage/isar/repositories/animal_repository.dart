@@ -16,6 +16,8 @@ import 'package:mobile_app_template/data/local_storage/isar/model/animal_vax_his
 import 'package:mobile_app_template/data/local_storage/save_status.dart';
 import 'package:mobile_app_template/data/model/modal_input_list_item.dart';
 import 'package:mobile_app_template/data/repositories/file_repository.dart';
+import 'package:mobile_app_template/features/animal_database/widgets/animal_summary_card/animal_species_summary.dart';
+import 'package:mobile_app_template/features/animal_database/widgets/general_summary_card/general_animal_summary.dart';
 
 class AnimalRepository {
   final Isar _db;
@@ -238,6 +240,54 @@ class AnimalRepository {
       );
     }
   }
+  Future<TResponse<GeneralAnimalSummary>> getGeneralAnimalSummaryData() async {
+    try{
+      final results = await Future.wait([
+        getAnimalByStatusCoount(AnimalStatus.adopted),
+        getAnimalByStatusCoount(AnimalStatus.on_campus),
+        getAnimalByStatusCoount(AnimalStatus.owned),
+        getAnimalByStatusCoount(AnimalStatus.transient),
+        getAnimalByStatusCoount(AnimalStatus.rainbow_bridge),
+        getAnimalBySpeciesCount(AnimalSpecies.cat),
+        getAnimalBySpeciesCount(AnimalSpecies.dog)
+      ]);
+
+      final generalSummary = GeneralAnimalSummary()
+        ..adopted = results[0].data ?? 0
+        ..onCampus = results[1].data ?? 0
+        ..owned = results[2].data ?? 0
+        ..transient = results[3].data ?? 0
+        ..rainbowBridge = results[4].data ?? 0
+        ..cat = results[5].data ?? 0
+        ..dog = results[6].data ?? 0;
+
+      return TResponse(
+        success: true, 
+        statusCode: 200, 
+        data: generalSummary
+      );
+    }catch(err){
+      TLogger.error(err.toString());
+      return TResponse(
+        success: false, 
+        statusCode: 400,
+        message: 'Failed to get general animal summary data',
+        data: GeneralAnimalSummary()
+      );
+    }
+  }
+
+  // Future<TResponse<AnimalSpeciesSummary>> getAnimalSpeciesSummaryData (AnimalSpecies species) async {
+  //   try{
+  //     final animalsBySpecies = await _db.animals.where()
+  //       .filter()
+  //       .speciesEqualTo(species);
+  //     //filter neutered and spayed here
+  //   }catch(err){
+
+  //   }
+  // }
+
 }
 
 enum AnimalSortBy{

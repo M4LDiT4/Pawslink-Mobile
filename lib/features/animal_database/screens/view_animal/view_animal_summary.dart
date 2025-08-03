@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app_template/core/constants/image_strings.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/enums/animal_sex.dart';
-import 'package:mobile_app_template/core/enums/animal_status.dart';
 import 'package:mobile_app_template/core/widgets/charts/generic_donut_chart.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
 import 'package:mobile_app_template/features/animal_database/widgets/general_summary_card/general_summary_card.dart';
@@ -13,15 +12,6 @@ import 'package:mobile_app_template/features/animal_database/widgets/view_animal
 class ViewAnimalSummaryScreen extends StatelessWidget {
   const ViewAnimalSummaryScreen({super.key});
 
-  List<GenericDonutChartParams> _generateGeneralSummaryList(){
-    return [
-      GenericDonutChartParams(value: 50, title: "Adopted", color: AnimalStatus.adopted.color),
-      GenericDonutChartParams(value: 60, title: "Transient", color: AnimalStatus.transient.color),
-      GenericDonutChartParams(value: 20, title: "On Campus", color: AnimalStatus.on_campus.color),
-      GenericDonutChartParams(value: 10, title: "Rainbow Bridge", color: AnimalStatus.rainbow_bridge.color),
-      GenericDonutChartParams(value: 4, title: "Owned", color: AnimalStatus.owned.color),
-    ];
-  }
 
   List<GenericDonutChartParams> _generateTempList(){
     return [
@@ -32,7 +22,6 @@ class ViewAnimalSummaryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final valueList = _generateGeneralSummaryList();
     return SingleChildScrollView(
       child: Padding(
         padding:const EdgeInsets.only(left: TSizes.defaultScreenPadding, right: TSizes.defaultScreenPadding, bottom: TSizes.paddingxxl),

@@ -97,7 +97,7 @@ class TAppPages {
     ),
     GetPage(
       name: TAppRoutes.viewEvents, 
-      page: ()=>  ViewEventsScreen(),
+      page: ()=>  const ViewEventsScreen(),
       transition: Transition.leftToRightWithFade,
       binding: ViewEventControllerAdminBinding()
     )
