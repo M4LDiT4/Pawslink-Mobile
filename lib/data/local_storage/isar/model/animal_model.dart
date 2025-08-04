@@ -34,6 +34,8 @@ class Animal{
 
   late String? imgUrl;
 
+  late DateTime? sterilizationDate;
+
 
   final vaxHistory = IsarLinks<AnimalVaccination>();
   final medHistory = IsarLinks<AnimalMedication>();

@@ -15,6 +15,7 @@ class AddAnimalSummaryParams extends RouteParamBaseClass{
   final String sex;
   final String species;
   final String status;
+  DateTime? sterilizationDate;
   final List<String> coatColor;
   final List<String> notes;
   final List<String> traits;
@@ -29,6 +30,7 @@ class AddAnimalSummaryParams extends RouteParamBaseClass{
     required this.sex,
     required this.species,
     required this.status,
+    this.sterilizationDate,
     List<String>? coatColor,
     List<String>? notes,
     List<String>? traits,
@@ -54,6 +56,7 @@ class AddAnimalSummaryParams extends RouteParamBaseClass{
       'traitsAndPersonality': traits,
       'vaxHistory': vaccinations.map((item)=> item.getDataInMap()).toList(),
       'medHistory': medications.map((item)=> item.getDataInMap()).toList(),
+      // add sterilization date
     };
   }
 
@@ -71,7 +74,8 @@ class AddAnimalSummaryParams extends RouteParamBaseClass{
     ..traitsAndPersonality = traits
     ..createdAt = DateTime.now()
     ..updatedAt = DateTime.now()
-    ..imgUrl = null;
+    ..imgUrl = null
+    ..sterilizationDate = sterilizationDate;
 
     return animal;
   }
