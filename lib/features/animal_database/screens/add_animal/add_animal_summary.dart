@@ -7,6 +7,7 @@ import 'package:mobile_app_template/core/dependency_injection/dependency_injecti
 import 'package:mobile_app_template/core/navigation/route_params/add_animal_summary.dart';
 import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
 import 'package:mobile_app_template/core/utils/colors/color_utils.dart';
+import 'package:mobile_app_template/core/utils/formatters/formatter.dart';
 import 'package:mobile_app_template/core/utils/helpers/ui_helpers.dart';
 import 'package:mobile_app_template/core/utils/http/response.dart';
 import 'package:mobile_app_template/core/utils/internet_connection/connection_controller.dart';
@@ -187,6 +188,12 @@ class AddAnimalSummary extends StatelessWidget {
               _buildInfoTile(TText.sex, params.sex, Iconsax.user),
               _buildInfoTile(TText.species, params.species, Iconsax.category),
               _buildInfoTile(TText.status, params.status, Iconsax.status),
+              _buildInfoTile(
+                params.sex.toLowerCase() == "male"? "Neutered" : "Spayed", 
+                params.sterilizationDate == null? "No"
+                  : "Yes (${TFormatter.formatDate(params.sterilizationDate!)})", 
+                Iconsax.scissor
+              )
             ]),
             _buildSectionWithList(TText.coatColor, params.coatColor, Icons.color_lens),
             _buildSectionWithList(TText.traitsAndPersonality, params.traits, Icons.tag),

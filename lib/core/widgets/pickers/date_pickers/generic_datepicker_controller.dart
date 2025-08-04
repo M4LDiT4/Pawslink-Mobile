@@ -39,20 +39,15 @@ class GenericDatepickerController extends ChangeNotifier {
     }
   }
 
-  void validate(){
-    if(!_isRequired){
-      return;
+  bool validate(){
+    bool valid = isValid;
+    if(valid){
+      _errorMssg = null;
+    } else {
+      _errorMssg = _errorText ?? "Invalid date";
     }
-    if(_selectedDate == null){
-      _errorMssg = _errorText??"Required";
-      notifyListeners();
-    }else{
-      if(_errorMssg !=null){
-        _errorMssg = null;
-        notifyListeners();
-        
-      }
-    }
+    notifyListeners();
+    return valid;
   }
 
   String? getErrorMessage(){
@@ -60,7 +55,9 @@ class GenericDatepickerController extends ChangeNotifier {
   }
 
   bool get isValid{
-    validate();
+    if(!_isRequired){
+      return true;
+    }
     return _selectedDate != null;
   }
 

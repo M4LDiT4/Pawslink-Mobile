@@ -11,6 +11,7 @@ enum WidgetStatus {
   validating,
   disabled,
   error,
+  loading,
 }
 
 
@@ -32,6 +33,8 @@ extension WidgetStatusColorExtension on WidgetStatus {
         return isDark ? Colors.grey[800]! : Colors.grey[400]!;
       case WidgetStatus.error:
         return isDark ? Colors.redAccent[100]! : Colors.redAccent;
-    }
+      default:
+        return (isDark ? TColors.info : TColors.info).withAlpha(TNumberHelper.getAlphaWithOpacity(0.6));
+    } 
   }
 }

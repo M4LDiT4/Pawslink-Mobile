@@ -81,13 +81,18 @@ const AnimalSchema = CollectionSchema(
       type: IsarType.string,
       enumMap: _AnimalstatusEnumValueMap,
     ),
-    r'traitsAndPersonality': PropertySchema(
+    r'sterilizationDate': PropertySchema(
       id: 12,
+      name: r'sterilizationDate',
+      type: IsarType.dateTime,
+    ),
+    r'traitsAndPersonality': PropertySchema(
+      id: 13,
       name: r'traitsAndPersonality',
       type: IsarType.stringList,
     ),
     r'updatedAt': PropertySchema(
-      id: 13,
+      id: 14,
       name: r'updatedAt',
       type: IsarType.dateTime,
     )
@@ -195,8 +200,9 @@ void _animalSerialize(
   writer.writeString(offsets[9], object.sex.name);
   writer.writeString(offsets[10], object.species.name);
   writer.writeString(offsets[11], object.status.name);
-  writer.writeStringList(offsets[12], object.traitsAndPersonality);
-  writer.writeDateTime(offsets[13], object.updatedAt);
+  writer.writeDateTime(offsets[12], object.sterilizationDate);
+  writer.writeStringList(offsets[13], object.traitsAndPersonality);
+  writer.writeDateTime(offsets[14], object.updatedAt);
 }
 
 Animal _animalDeserialize(
@@ -226,8 +232,9 @@ Animal _animalDeserialize(
   object.status =
       _AnimalstatusValueEnumMap[reader.readStringOrNull(offsets[11])] ??
           AnimalStatus.transient;
-  object.traitsAndPersonality = reader.readStringList(offsets[12]);
-  object.updatedAt = reader.readDateTime(offsets[13]);
+  object.sterilizationDate = reader.readDateTimeOrNull(offsets[12]);
+  object.traitsAndPersonality = reader.readStringList(offsets[13]);
+  object.updatedAt = reader.readDateTime(offsets[14]);
   return object;
 }
 
@@ -267,8 +274,10 @@ P _animalDeserializeProp<P>(
       return (_AnimalstatusValueEnumMap[reader.readStringOrNull(offset)] ??
           AnimalStatus.transient) as P;
     case 12:
-      return (reader.readStringList(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 13:
+      return (reader.readStringList(offset)) as P;
+    case 14:
       return (reader.readDateTime(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -2084,6 +2093,78 @@ extension AnimalQueryFilter on QueryBuilder<Animal, Animal, QFilterCondition> {
   }
 
   QueryBuilder<Animal, Animal, QAfterFilterCondition>
+      sterilizationDateIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'sterilizationDate',
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition>
+      sterilizationDateIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'sterilizationDate',
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> sterilizationDateEqualTo(
+      DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'sterilizationDate',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition>
+      sterilizationDateGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'sterilizationDate',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> sterilizationDateLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'sterilizationDate',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> sterilizationDateBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'sterilizationDate',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition>
       traitsAndPersonalityIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -2621,6 +2702,18 @@ extension AnimalQuerySortBy on QueryBuilder<Animal, Animal, QSortBy> {
     });
   }
 
+  QueryBuilder<Animal, Animal, QAfterSortBy> sortBySterilizationDate() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'sterilizationDate', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterSortBy> sortBySterilizationDateDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'sterilizationDate', Sort.desc);
+    });
+  }
+
   QueryBuilder<Animal, Animal, QAfterSortBy> sortByUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'updatedAt', Sort.asc);
@@ -2767,6 +2860,18 @@ extension AnimalQuerySortThenBy on QueryBuilder<Animal, Animal, QSortThenBy> {
     });
   }
 
+  QueryBuilder<Animal, Animal, QAfterSortBy> thenBySterilizationDate() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'sterilizationDate', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterSortBy> thenBySterilizationDateDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'sterilizationDate', Sort.desc);
+    });
+  }
+
   QueryBuilder<Animal, Animal, QAfterSortBy> thenByUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'updatedAt', Sort.asc);
@@ -2861,6 +2966,12 @@ extension AnimalQueryWhereDistinct on QueryBuilder<Animal, Animal, QDistinct> {
     });
   }
 
+  QueryBuilder<Animal, Animal, QDistinct> distinctBySterilizationDate() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'sterilizationDate');
+    });
+  }
+
   QueryBuilder<Animal, Animal, QDistinct> distinctByTraitsAndPersonality() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'traitsAndPersonality');
@@ -2950,6 +3061,13 @@ extension AnimalQueryProperty on QueryBuilder<Animal, Animal, QQueryProperty> {
   QueryBuilder<Animal, AnimalStatus, QQueryOperations> statusProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'status');
+    });
+  }
+
+  QueryBuilder<Animal, DateTime?, QQueryOperations>
+      sterilizationDateProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'sterilizationDate');
     });
   }
 

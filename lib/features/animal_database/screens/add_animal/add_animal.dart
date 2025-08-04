@@ -9,6 +9,7 @@ import 'package:mobile_app_template/core/utils/device/device_utility.dart';
 import 'package:mobile_app_template/core/widgets/buttons/form_button/form_button.dart';
 import 'package:mobile_app_template/core/widgets/dropdowns/generic_dropdown.dart';
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
+import 'package:mobile_app_template/core/widgets/pickers/date_pickers/generic_date_picker.dart';
 import 'package:mobile_app_template/core/widgets/pickers/img_pickers/generic_img_picker.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/modals/medication_modal.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/modals/vaccination_modal.dart';
@@ -140,6 +141,23 @@ class AddAnimalScreeen extends StatelessWidget {
                 ], 
                 TText.basicInformation, 
                 context
+              ),
+              const FixedSeparator(space: TSizes.spaceBetweenSections),
+                Obx(()=> Row(
+                  children: [
+                    const Text("Neutered/Spayed?"),
+                    Checkbox(
+                      value: controller.isSterilized, 
+                      onChanged: controller.setIsSterilized
+                    ),
+                    GenericDatePickerButton(
+                      labelText: "Pick Date",
+                      enabled: controller.isSterilized,
+                      controller: controller.sterilizationDateController,
+                      isRequired: controller.isSterilized,
+                    )
+                  ],
+                )
               ),
               const FixedSeparator(space: TSizes.spaceBetweenSections),
               MultivalueTextInput(

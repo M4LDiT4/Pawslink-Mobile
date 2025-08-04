@@ -4,6 +4,9 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:isar/isar.dart';
+import 'package:mobile_app_template/core/enums/animal_sex.dart';
+import 'package:mobile_app_template/core/enums/animal_species.dart';
+import 'package:mobile_app_template/core/enums/animal_status.dart';
 import 'package:mobile_app_template/core/navigation/route_params/add_animal_summary.dart';
 import 'package:mobile_app_template/core/utils/http/response.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
@@ -14,6 +17,8 @@ import 'package:mobile_app_template/data/local_storage/isar/model/animal_vax_his
 import 'package:mobile_app_template/data/local_storage/save_status.dart';
 import 'package:mobile_app_template/data/model/modal_input_list_item.dart';
 import 'package:mobile_app_template/data/repositories/file_repository.dart';
+import 'package:mobile_app_template/features/animal_database/widgets/animal_summary_card/animal_species_summary.dart';
+import 'package:mobile_app_template/features/animal_database/widgets/general_summary_card/general_animal_summary.dart';
 
 class AnimalRepository {
   final Isar _db;
@@ -190,7 +195,137 @@ class AnimalRepository {
       );
 
     }catch(err){
-      return TResponse.failed(err.toString());
+      TLogger.error('failed to get animals${err.toString()}');
+      return TResponse<List<Animal>>(
+        success: false, 
+        statusCode: 400,
+        message: 'Failed to get animals from local database',
+        data: []
+      );
+    }
+  }
+
+  Future<TResponse<int>> getAnimalByStatusCoount(AnimalStatus status) async{
+    try{
+      final result = await _db.animals.where()
+        .filter()
+        .statusEqualTo(status)
+        .count();
+
+      return TResponse(
+        success: true, 
+        statusCode: 200,
+        data: result
+      );
+    }catch(err){
+      TLogger.error(err.toString());
+      return TResponse(
+        success: false, 
+        statusCode: 400,
+        data: null
+      );
+    }
+  }
+
+  Future<TResponse<int>> getAnimalBySpeciesCount(AnimalSpecies species) async {
+    try{
+      final result = await _db.animals.where().filter()
+        .speciesEqualTo(species)
+        .count();
+      
+      return TResponse(
+        success: true, 
+        statusCode: 200,
+        data: result
+      );
+    }catch(err){
+      TLogger.error(err.toString());
+      return TResponse(
+        success: false, 
+        statusCode: 400,
+        data: null
+      );
+    }
+  }
+  Future<TResponse<GeneralAnimalSummary>> getGeneralAnimalSummaryData() async {
+    try{
+      final results = await Future.wait([
+        getAnimalByStatusCoount(AnimalStatus.adopted),
+        getAnimalByStatusCoount(AnimalStatus.on_campus),
+        getAnimalByStatusCoount(AnimalStatus.owned),
+        getAnimalByStatusCoount(AnimalStatus.transient),
+        getAnimalByStatusCoount(AnimalStatus.rainbow_bridge),
+        getAnimalBySpeciesCount(AnimalSpecies.cat),
+        getAnimalBySpeciesCount(AnimalSpecies.dog)
+      ]);
+
+      final generalSummary = GeneralAnimalSummary()
+        ..adopted = results[0].data ?? 0
+        ..onCampus = results[1].data ?? 0
+        ..owned = results[2].data ?? 0
+        ..transient = results[3].data ?? 0
+        ..rainbowBridge = results[4].data ?? 0
+        ..cat = results[5].data ?? 0
+        ..dog = results[6].data ?? 0;
+
+      return TResponse(
+        success: true, 
+        statusCode: 200, 
+        data: generalSummary
+      );
+    }catch(err){
+      TLogger.error(err.toString());
+      return TResponse(
+        success: false, 
+        statusCode: 400,
+        message: 'Failed to get general animal summary data',
+        data: GeneralAnimalSummary()
+      );
+    }
+  }
+
+  Future<TResponse<AnimalSpeciesSummary>> getAnimalSpeciesSummaryData (AnimalSpecies species) async {
+    try{
+      final animalsBySpeciesQuery = _db.animals.where()
+        .filter()
+        .speciesEqualTo(species);
+      
+      final speciesSpecificFemaleQuery = animalsBySpeciesQuery
+        .sexEqualTo(AnimalSex.female);
+
+      final speciesSpecificMaleQuery = animalsBySpeciesQuery
+        .sexEqualTo(AnimalSex.male);
+
+      final speciesSpecificNeuteredQuery = speciesSpecificMaleQuery
+        .sterilizationDateIsNotNull();
+
+      final speciesSpecificSpayedQuery = speciesSpecificFemaleQuery
+        .sterilizationDateIsNotNull();
+
+      final results = await Future.wait([
+        speciesSpecificMaleQuery.count(),
+        speciesSpecificFemaleQuery.count(),
+        speciesSpecificNeuteredQuery.count(),
+        speciesSpecificSpayedQuery.count()
+      ]);
+
+      return TResponse(
+        statusCode: 200,
+        success: true,
+        data: AnimalSpeciesSummary()
+          ..maleCount = results[0]
+          ..femaleCount = results[1]
+          ..neuteredCount = results[2]
+          ..spayedCount = results[3]
+      );
+    }catch(err){
+      TLogger.error(err.toString());
+      return TResponse(
+        success: false,
+        statusCode: 400,
+        message: 'Failed to get animal species summary data',
+        data: AnimalSpeciesSummary()
+      );
     }
   }
 
