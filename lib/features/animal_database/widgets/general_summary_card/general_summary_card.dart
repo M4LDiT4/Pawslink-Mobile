@@ -7,6 +7,8 @@ import 'package:mobile_app_template/core/enums/widget_status.dart';
 import 'package:mobile_app_template/core/widgets/charts/generic_donut_chart.dart';
 import 'package:mobile_app_template/core/widgets/containers/generic_expansion_tile.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
+import 'package:mobile_app_template/features/animal_database/widgets/animal_summary_card/animal_species_summary_card.dart';
+import 'package:mobile_app_template/features/animal_database/widgets/donut_label.dart';
 import 'package:mobile_app_template/features/animal_database/widgets/general_summary_card/general_summary_card_controller.dart';
 import 'package:mobile_app_template/features/animal_database/widgets/view_animal_summary_listtile.dart';
 
@@ -92,26 +94,12 @@ class _GeneralSummaryCardState extends State<GeneralSummaryCard> {
                   ],
                 ),
           ),
-          const FixedSeparator(space: TSizes.defaultScreenPadding),
-          Wrap(
+          const FixedSeparator(space: TSizes.spaceBetweenItems),
+          if(_controlller.status == WidgetStatus.idle) Wrap(
             spacing: TSizes.spaceBetweenItems,
             runSpacing: TSizes.spaceBetweenItems/2,
             children: _controlller.getDonutValues().map((item){
-              return Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 12,
-                    height: 12,
-                    margin: const EdgeInsets.only(right: 6),
-                    decoration: BoxDecoration(
-                      color:  item.color,
-                      shape:  BoxShape.circle
-                    ),
-                  ),
-                  Text(item.title)
-                ],
-              );
+              return DonutLabel(item: item);
             }).toList(),
           )
         ],
@@ -119,3 +107,4 @@ class _GeneralSummaryCardState extends State<GeneralSummaryCard> {
     );
   }
 }
+

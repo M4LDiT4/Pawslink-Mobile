@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:isar/isar.dart';
+import 'package:mobile_app_template/core/enums/animal_sex.dart';
 import 'package:mobile_app_template/core/enums/animal_species.dart';
 import 'package:mobile_app_template/core/enums/animal_status.dart';
 import 'package:mobile_app_template/core/navigation/route_params/add_animal_summary.dart';
@@ -194,7 +195,13 @@ class AnimalRepository {
       );
 
     }catch(err){
-      return TResponse.failed(err.toString());
+      TLogger.error('failed to get animals${err.toString()}');
+      return TResponse<List<Animal>>(
+        success: false, 
+        statusCode: 400,
+        message: 'Failed to get animals from local database',
+        data: []
+      );
     }
   }
 
@@ -277,16 +284,50 @@ class AnimalRepository {
     }
   }
 
-  // Future<TResponse<AnimalSpeciesSummary>> getAnimalSpeciesSummaryData (AnimalSpecies species) async {
-  //   try{
-  //     final animalsBySpecies = await _db.animals.where()
-  //       .filter()
-  //       .speciesEqualTo(species);
-  //     //filter neutered and spayed here
-  //   }catch(err){
+  Future<TResponse<AnimalSpeciesSummary>> getAnimalSpeciesSummaryData (AnimalSpecies species) async {
+    try{
+      final animalsBySpeciesQuery = _db.animals.where()
+        .filter()
+        .speciesEqualTo(species);
+      
+      final speciesSpecificFemaleQuery = animalsBySpeciesQuery
+        .sexEqualTo(AnimalSex.female);
 
-  //   }
-  // }
+      final speciesSpecificMaleQuery = animalsBySpeciesQuery
+        .sexEqualTo(AnimalSex.male);
+
+      final speciesSpecificNeuteredQuery = speciesSpecificMaleQuery
+        .sterilizationDateIsNotNull();
+
+      final speciesSpecificSpayedQuery = speciesSpecificFemaleQuery
+        .sterilizationDateIsNotNull();
+
+      final results = await Future.wait([
+        speciesSpecificMaleQuery.count(),
+        speciesSpecificFemaleQuery.count(),
+        speciesSpecificNeuteredQuery.count(),
+        speciesSpecificSpayedQuery.count()
+      ]);
+
+      return TResponse(
+        statusCode: 200,
+        success: true,
+        data: AnimalSpeciesSummary()
+          ..maleCount = results[0]
+          ..femaleCount = results[1]
+          ..neuteredCount = results[2]
+          ..spayedCount = results[3]
+      );
+    }catch(err){
+      TLogger.error(err.toString());
+      return TResponse(
+        success: false,
+        statusCode: 400,
+        message: 'Failed to get animal species summary data',
+        data: AnimalSpeciesSummary()
+      );
+    }
+  }
 
 }
 
