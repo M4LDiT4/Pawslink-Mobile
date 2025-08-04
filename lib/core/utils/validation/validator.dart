@@ -20,9 +20,9 @@ class TValidator{
       return 'Password is required';
     }
 
-    final passwordRegex = RegExp(r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$');
+    final passwordRegex = RegExp(r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$');
     if (!passwordRegex.hasMatch(value)) {
-      return 'Password must be at least 8 characters long,\ninclude upper/lowercase letters, a number, and a symbol';
+      return 'Password must be at least 8 characters long,\ninclude upper/lowercase letters, and a number';
     }
 
     return null;

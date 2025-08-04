@@ -28,9 +28,9 @@ class TAuthenticationService {
   factory TAuthenticationService() => _instance;
 
   Future<void> init(DioHTTPHelper httpService) async {
-    final ip = dotenv.env['LOCALHOST_IP_ADDRESS'];
-    if(ip == null) throw throw TAppException('Missing LOCALHOST_IP_ADDRESS in .env');
-    _baseUri = Uri.parse('http://$ip:8000/auth');
+    final backendUrl = dotenv.env['BACKEND_URL'];
+    if(backendUrl == null) throw throw TAppException('Missing LOCALHOST_IP_ADDRESS in .env');
+    _baseUri = Uri.parse('${backendUrl}auth');
     _dio = httpService;
   }
 
