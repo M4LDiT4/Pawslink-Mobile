@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
+import 'package:mobile_app_template/core/utils/helpers/ui_helpers.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/services/navigation/navigation_service.dart';
 
@@ -128,6 +129,7 @@ class AuthInterceptor extends Interceptor {
             type: DioExceptionType.badResponse,
           ),
         );
+        TUIHelpers.showStateSnackBar("Session expired. Please log in again.");
         TNavigationService.offAllNamed(TAppRoutes.login);
         return;
       }
