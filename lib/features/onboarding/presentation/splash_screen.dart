@@ -15,27 +15,37 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMixin {
-  late final AnimationController _controller;
   late final ConnectionController _connectionController;
+  late final AnimationController _animationController;
+  bool _canMoveOn = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this);
     _connectionController = Get.find<ConnectionController>();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkAuthentication();
+    _animationController = AnimationController(vsync: this);
+    _animationController.addStatusListener((status){
+      if(_animationController.isCompleted && !_canMoveOn){
+        _canMoveOn = true;
+        _animationController.repeat();
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _checkAuthentication();
+        });
+      }
     });
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
   void _checkAuthentication() async{
     final accessToken = await LocalSecureStorageService().getData(LocalSecureStorageService.accessToken);
+    while(!_canMoveOn){
+      continue;
+    }
     if(accessToken == null){
       TNavigationService.offAllNamed(TAppRoutes.login);
     }else{
@@ -64,7 +74,12 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
             child: Lottie.asset(
               width: 200,
               fit: BoxFit.fill,
-              TLottie.dogBegging
+              TLottie.dogBegging,
+              controller: _animationController,
+              onLoaded: (composition){
+                _animationController.duration = composition.duration;
+                _animationController.forward();
+              }
             ),
           )
         ],
