@@ -2,10 +2,12 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:mobile_app_template/core/utils/logger/logger.dart';
 
 class ConnectionInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
+    TLogger.error("Failed with error: ${err.response?.statusCode} ${err.message}");
     if (err.type == DioExceptionType.connectionTimeout ||
         err.type == DioExceptionType.receiveTimeout ||
         err.type == DioExceptionType.sendTimeout ||

@@ -27,7 +27,7 @@ class AnimalApi {
     final backendUrl = dotenv.env['BACKEND_URL'];
     if(backendUrl == null) throw TAppException("Missing LOCALHOST_IP_ADDRESS in .env");
     if(!_isInitialized){
-      _baseUri = Uri.parse('$backendUrl/$_basePath');
+      _baseUri = Uri.parse('$backendUrl$_basePath');
       _dio = DioHTTPHelper();
       _isInitialized = true;
     }

@@ -1,7 +1,6 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
 import 'package:mobile_app_template/core/utils/helpers/ui_helpers.dart';
 import 'package:mobile_app_template/core/utils/http/response.dart';
