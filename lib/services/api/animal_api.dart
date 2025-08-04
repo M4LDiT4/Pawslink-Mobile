@@ -24,10 +24,10 @@ class AnimalApi {
   factory AnimalApi() => _instance;
 
   void init()  {
-    final ip = dotenv.env['LOCALHOST_IP_ADDRESS'];
-    if(ip == null) throw TAppException("Missing LOCALHOST_IP_ADDRESS in .env");
+    final backendUrl = dotenv.env['BACKEND_URL'];
+    if(backendUrl == null) throw TAppException("Missing LOCALHOST_IP_ADDRESS in .env");
     if(!_isInitialized){
-      _baseUri = Uri.parse('http://$ip:8000/$_basePath');
+      _baseUri = Uri.parse('$backendUrl/$_basePath');
       _dio = DioHTTPHelper();
       _isInitialized = true;
     }

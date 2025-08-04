@@ -23,7 +23,9 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     super.initState();
     _controller = AnimationController(vsync: this);
     _connectionController = Get.find<ConnectionController>();
-    _checkAuthentication();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkAuthentication();
+    });
   }
 
   @override
