@@ -37,62 +37,67 @@ const AnimalSchema = CollectionSchema(
       name: r'createdAt',
       type: IsarType.dateTime,
     ),
-    r'imgUrl': PropertySchema(
+    r'imgPath': PropertySchema(
       id: 4,
+      name: r'imgPath',
+      type: IsarType.string,
+    ),
+    r'imgUrl': PropertySchema(
+      id: 5,
       name: r'imgUrl',
       type: IsarType.string,
     ),
     r'location': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'location',
       type: IsarType.string,
     ),
     r'name': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'name',
       type: IsarType.string,
     ),
     r'notes': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'notes',
       type: IsarType.stringList,
     ),
     r'saveStatus': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'saveStatus',
       type: IsarType.string,
       enumMap: _AnimalsaveStatusEnumValueMap,
     ),
     r'sex': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'sex',
       type: IsarType.string,
       enumMap: _AnimalsexEnumValueMap,
     ),
     r'species': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'species',
       type: IsarType.string,
       enumMap: _AnimalspeciesEnumValueMap,
     ),
     r'status': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'status',
       type: IsarType.string,
       enumMap: _AnimalstatusEnumValueMap,
     ),
     r'sterilizationDate': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'sterilizationDate',
       type: IsarType.dateTime,
     ),
     r'traitsAndPersonality': PropertySchema(
-      id: 13,
+      id: 14,
       name: r'traitsAndPersonality',
       type: IsarType.stringList,
     ),
     r'updatedAt': PropertySchema(
-      id: 14,
+      id: 15,
       name: r'updatedAt',
       type: IsarType.dateTime,
     )
@@ -144,6 +149,12 @@ int _animalEstimateSize(
     }
   }
   {
+    final value = object.imgPath;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.imgUrl;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -192,17 +203,18 @@ void _animalSerialize(
   writer.writeString(offsets[1], object.bsonId);
   writer.writeStringList(offsets[2], object.coatColor);
   writer.writeDateTime(offsets[3], object.createdAt);
-  writer.writeString(offsets[4], object.imgUrl);
-  writer.writeString(offsets[5], object.location);
-  writer.writeString(offsets[6], object.name);
-  writer.writeStringList(offsets[7], object.notes);
-  writer.writeString(offsets[8], object.saveStatus.name);
-  writer.writeString(offsets[9], object.sex.name);
-  writer.writeString(offsets[10], object.species.name);
-  writer.writeString(offsets[11], object.status.name);
-  writer.writeDateTime(offsets[12], object.sterilizationDate);
-  writer.writeStringList(offsets[13], object.traitsAndPersonality);
-  writer.writeDateTime(offsets[14], object.updatedAt);
+  writer.writeString(offsets[4], object.imgPath);
+  writer.writeString(offsets[5], object.imgUrl);
+  writer.writeString(offsets[6], object.location);
+  writer.writeString(offsets[7], object.name);
+  writer.writeStringList(offsets[8], object.notes);
+  writer.writeString(offsets[9], object.saveStatus.name);
+  writer.writeString(offsets[10], object.sex.name);
+  writer.writeString(offsets[11], object.species.name);
+  writer.writeString(offsets[12], object.status.name);
+  writer.writeDateTime(offsets[13], object.sterilizationDate);
+  writer.writeStringList(offsets[14], object.traitsAndPersonality);
+  writer.writeDateTime(offsets[15], object.updatedAt);
 }
 
 Animal _animalDeserialize(
@@ -217,24 +229,25 @@ Animal _animalDeserialize(
   object.coatColor = reader.readStringList(offsets[2]);
   object.createdAt = reader.readDateTime(offsets[3]);
   object.id = id;
-  object.imgUrl = reader.readStringOrNull(offsets[4]);
-  object.location = reader.readString(offsets[5]);
-  object.name = reader.readString(offsets[6]);
-  object.notes = reader.readStringList(offsets[7]);
+  object.imgPath = reader.readStringOrNull(offsets[4]);
+  object.imgUrl = reader.readStringOrNull(offsets[5]);
+  object.location = reader.readString(offsets[6]);
+  object.name = reader.readString(offsets[7]);
+  object.notes = reader.readStringList(offsets[8]);
   object.saveStatus =
-      _AnimalsaveStatusValueEnumMap[reader.readStringOrNull(offsets[8])] ??
+      _AnimalsaveStatusValueEnumMap[reader.readStringOrNull(offsets[9])] ??
           SaveStatus.draft;
-  object.sex = _AnimalsexValueEnumMap[reader.readStringOrNull(offsets[9])] ??
+  object.sex = _AnimalsexValueEnumMap[reader.readStringOrNull(offsets[10])] ??
       AnimalSex.male;
   object.species =
-      _AnimalspeciesValueEnumMap[reader.readStringOrNull(offsets[10])] ??
+      _AnimalspeciesValueEnumMap[reader.readStringOrNull(offsets[11])] ??
           AnimalSpecies.dog;
   object.status =
-      _AnimalstatusValueEnumMap[reader.readStringOrNull(offsets[11])] ??
+      _AnimalstatusValueEnumMap[reader.readStringOrNull(offsets[12])] ??
           AnimalStatus.transient;
-  object.sterilizationDate = reader.readDateTimeOrNull(offsets[12]);
-  object.traitsAndPersonality = reader.readStringList(offsets[13]);
-  object.updatedAt = reader.readDateTime(offsets[14]);
+  object.sterilizationDate = reader.readDateTimeOrNull(offsets[13]);
+  object.traitsAndPersonality = reader.readStringList(offsets[14]);
+  object.updatedAt = reader.readDateTime(offsets[15]);
   return object;
 }
 
@@ -256,28 +269,30 @@ P _animalDeserializeProp<P>(
     case 4:
       return (reader.readStringOrNull(offset)) as P;
     case 5:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 6:
       return (reader.readString(offset)) as P;
     case 7:
-      return (reader.readStringList(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 8:
+      return (reader.readStringList(offset)) as P;
+    case 9:
       return (_AnimalsaveStatusValueEnumMap[reader.readStringOrNull(offset)] ??
           SaveStatus.draft) as P;
-    case 9:
+    case 10:
       return (_AnimalsexValueEnumMap[reader.readStringOrNull(offset)] ??
           AnimalSex.male) as P;
-    case 10:
+    case 11:
       return (_AnimalspeciesValueEnumMap[reader.readStringOrNull(offset)] ??
           AnimalSpecies.dog) as P;
-    case 11:
+    case 12:
       return (_AnimalstatusValueEnumMap[reader.readStringOrNull(offset)] ??
           AnimalStatus.transient) as P;
-    case 12:
-      return (reader.readDateTimeOrNull(offset)) as P;
     case 13:
-      return (reader.readStringList(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 14:
+      return (reader.readStringList(offset)) as P;
+    case 15:
       return (reader.readDateTime(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -288,27 +303,33 @@ const _AnimalsaveStatusEnumValueMap = {
   r'draft': r'draft',
   r'permanent': r'permanent',
   r'temporary': r'temporary',
+  r'synced': r'synced',
 };
 const _AnimalsaveStatusValueEnumMap = {
   r'draft': SaveStatus.draft,
   r'permanent': SaveStatus.permanent,
   r'temporary': SaveStatus.temporary,
+  r'synced': SaveStatus.synced,
 };
 const _AnimalsexEnumValueMap = {
   r'male': r'male',
   r'female': r'female',
+  r'unknown': r'unknown',
 };
 const _AnimalsexValueEnumMap = {
   r'male': AnimalSex.male,
   r'female': AnimalSex.female,
+  r'unknown': AnimalSex.unknown,
 };
 const _AnimalspeciesEnumValueMap = {
   r'dog': r'dog',
   r'cat': r'cat',
+  r'unknown': r'unknown',
 };
 const _AnimalspeciesValueEnumMap = {
   r'dog': AnimalSpecies.dog,
   r'cat': AnimalSpecies.cat,
+  r'unknown': AnimalSpecies.unknown,
 };
 const _AnimalstatusEnumValueMap = {
   r'transient': r'transient',
@@ -316,6 +337,7 @@ const _AnimalstatusEnumValueMap = {
   r'adopted': r'adopted',
   r'on_campus': r'on_campus',
   r'owned': r'owned',
+  r'unknown': r'unknown',
 };
 const _AnimalstatusValueEnumMap = {
   r'transient': AnimalStatus.transient,
@@ -323,6 +345,7 @@ const _AnimalstatusValueEnumMap = {
   r'adopted': AnimalStatus.adopted,
   r'on_campus': AnimalStatus.on_campus,
   r'owned': AnimalStatus.owned,
+  r'unknown': AnimalStatus.unknown,
 };
 
 Id _animalGetId(Animal object) {
@@ -935,6 +958,152 @@ extension AnimalQueryFilter on QueryBuilder<Animal, Animal, QFilterCondition> {
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgPathIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'imgPath',
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgPathIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'imgPath',
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgPathEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'imgPath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgPathGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'imgPath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgPathLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'imgPath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgPathBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'imgPath',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgPathStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'imgPath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgPathEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'imgPath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgPathContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'imgPath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgPathMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'imgPath',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgPathIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'imgPath',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgPathIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'imgPath',
+        value: '',
       ));
     });
   }
@@ -2618,6 +2787,18 @@ extension AnimalQuerySortBy on QueryBuilder<Animal, Animal, QSortBy> {
     });
   }
 
+  QueryBuilder<Animal, Animal, QAfterSortBy> sortByImgPath() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'imgPath', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterSortBy> sortByImgPathDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'imgPath', Sort.desc);
+    });
+  }
+
   QueryBuilder<Animal, Animal, QAfterSortBy> sortByImgUrl() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'imgUrl', Sort.asc);
@@ -2776,6 +2957,18 @@ extension AnimalQuerySortThenBy on QueryBuilder<Animal, Animal, QSortThenBy> {
     });
   }
 
+  QueryBuilder<Animal, Animal, QAfterSortBy> thenByImgPath() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'imgPath', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterSortBy> thenByImgPathDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'imgPath', Sort.desc);
+    });
+  }
+
   QueryBuilder<Animal, Animal, QAfterSortBy> thenByImgUrl() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'imgUrl', Sort.asc);
@@ -2911,6 +3104,13 @@ extension AnimalQueryWhereDistinct on QueryBuilder<Animal, Animal, QDistinct> {
     });
   }
 
+  QueryBuilder<Animal, Animal, QDistinct> distinctByImgPath(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'imgPath', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<Animal, Animal, QDistinct> distinctByImgUrl(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -3013,6 +3213,12 @@ extension AnimalQueryProperty on QueryBuilder<Animal, Animal, QQueryProperty> {
   QueryBuilder<Animal, DateTime, QQueryOperations> createdAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'createdAt');
+    });
+  }
+
+  QueryBuilder<Animal, String?, QQueryOperations> imgPathProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'imgPath');
     });
   }
 

@@ -1,5 +1,6 @@
 enum SaveStatus {
   draft,
   permanent,
-  temporary
+  temporary,
+  synced,
 }

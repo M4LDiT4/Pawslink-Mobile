@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_template/core/constants/text_strings.dart';
 
-enum AnimalStatus { transient, rainbow_bridge, adopted, on_campus, owned }
+enum AnimalStatus { transient, rainbow_bridge, adopted, on_campus, owned, unknown }
 
 extension AnimalStatusExtension on AnimalStatus {
   String get label {
@@ -16,6 +16,8 @@ extension AnimalStatusExtension on AnimalStatus {
         return TText.owned;
       case AnimalStatus.rainbow_bridge:
         return TText.rainbowBridge;
+      default:
+        return 'unknown';
     }
   }
 }
@@ -33,6 +35,8 @@ extension AnimalStatusColorExtension on AnimalStatus {
         return Colors.purple;
       case AnimalStatus.rainbow_bridge:
         return Colors.grey;
+      default:
+        return const Color(0xFFE0E0E0);
     }
   }
 }

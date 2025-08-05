@@ -1,28 +1,18 @@
-
 import 'package:isar/isar.dart';
 import 'package:mobile_app_template/data/local_storage/isar/database/isar_collections.dart';
 import 'package:path_provider/path_provider.dart';
 
 class IsarService {
-   static final IsarService _instance = IsarService._internal();
-   late final Future<Isar> _isarFuture;
-   
-   factory IsarService() => _instance;
+  final Isar _isar;
 
-   IsarService._internal(){
-      _isarFuture = _init();
-   }
+  IsarService._(this._isar);
 
-   Future<Isar> _init() async{
-      if(Isar.instanceNames.isNotEmpty) {
-        return Isar.getInstance()!;
-      }
-      final dir = await getApplicationDocumentsDirectory();
-      return await Isar.open(
-         isarSchemas, 
-         directory: dir.path
-      );
-   }
+  static Future<IsarService> create() async {
+    final dir = await getApplicationDocumentsDirectory();
+    final isar = Isar.getInstance() ??
+        await Isar.open(isarSchemas, directory: dir.path);
+    return IsarService._(isar);
+  }
 
-   Future<Isar> get isar async => _isarFuture;
+  Isar get isar => _isar;
 }
