@@ -16,6 +16,7 @@ import 'package:mobile_app_template/features/animal_database/widgets/view_animal
 class AnimalSpeciesSummaryCard extends StatefulWidget {
   final String title;
   final AnimalSpecies species;
+
   const AnimalSpeciesSummaryCard({
     super.key,
      required this.title,
@@ -34,82 +35,125 @@ class _AnimalSummaryCardState extends State<AnimalSpeciesSummaryCard> {
   void initState() {
     super.initState();
     _controller = AnimalSpeciesSummaryCardController(species: widget.species);
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      if(!_controller.hasLoaded){
+        _controller.loadInitialData();
+      }
+    });
   }
+
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: _controller, 
-      builder: (context, _) => GenericExpansionTile( 
+      animation: _controller,
+      builder: (context, _) => GenericExpansionTile(
         title: widget.title,
         children: [
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 500),
             switchInCurve: Curves.easeIn,
             switchOutCurve: Curves.easeOut,
-            transitionBuilder: (child, animation){
+            transitionBuilder: (child, animation) {
               return FadeTransition(
                 opacity: animation,
                 child: child,
               );
             },
-            child: _controller.status == WidgetStatus.error?
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(_controller.errorMessage, style: const TextStyle(color: Colors.red)),
-              ],
-            ):
-            _controller.status == WidgetStatus.loading?
-            Row(
-              key: const ValueKey('loader'),
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Lottie.asset(
-                  width: 180,
-                  TLottie.catLoader,
-                )
-              ],
-            ):
-            Row(
-              key: const ValueKey('data'),
-              children: [
-                Expanded(
-                  child: GenericDonutChart(
-                    valueList: _controller.getDonutValues(),
-                  ),
-                ),
-                Expanded(
-                  child:Column(
-                    children: [
-                      ViewAnimalSummaryListtile(
-                        leadingImgPath: TImages.spayed, 
-                        title: "spayed", 
-                        subtitle: _controller.spayedCount.toString()
-                      ),
-                      ViewAnimalSummaryListtile(
-                        leadingImgPath: TImages.neutered, 
-                        title: "neutered", 
-                        subtitle: _controller.neuteredCount.toString()
-                      ),
-                    ],
-                  ) 
-                )
-              ],
-            )
+            child: _buildContent(),
           ),
           const FixedSeparator(space: TSizes.spaceBetweenItems),
-          if(_controller.status == WidgetStatus.idle)Wrap(
-            spacing: TSizes.spaceBetweenItems,
-            runSpacing: TSizes.spaceBetweenItems/2,
-            children: _controller.getDonutValues().map((item){
-              return DonutLabel(item: item);
-            }).toList()
-          )
-        ]
-      )
+          if (_controller.status == WidgetStatus.idle && _controller.hasDataToDisplay)
+            Wrap(
+              spacing: TSizes.spaceBetweenItems,
+              runSpacing: TSizes.spaceBetweenItems / 2,
+              children: _controller.getDonutValues().map((item) {
+                return DonutLabel(item: item);
+              }).toList(),
+            ),
+        ],
+      ),
     );
   }
-}
 
-class WidgeStatus {
+  Widget _buildContent() {
+    if (_controller.status == WidgetStatus.error) {
+      return _buildErrorContent();
+    }
+
+    if (_controller.status == WidgetStatus.loading) {
+      return _buildLoadingContent();
+    }
+
+    if (!_controller.hasDataToDisplay) {
+      return _buildEmptyContent();
+    }
+
+    return _buildDataContent();
+  }
+
+  Widget _buildErrorContent() {
+    return Row(
+      key: const ValueKey('error'),
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          _controller.errorMessage,
+          style: const TextStyle(color: Colors.red),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEmptyContent() {
+    return const Row(
+      key: ValueKey('empty'),
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text("No data to display"),
+      ],
+    );
+  }
+
+  Widget _buildLoadingContent() {
+    return Row(
+      key: const ValueKey('loader'),
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Lottie.asset(
+          width: 80,
+          TLottie.rotatingCat,
+        )
+      ],
+    );
+  }
+
+  Widget _buildDataContent() {
+    return Row(
+      key: const ValueKey('data'),
+      children: [
+        Expanded(
+          child: GenericDonutChart(
+            valueList: _controller.getDonutValues(),
+          ),
+        ),
+        Expanded(
+          child: Column(
+            children: [
+              ViewAnimalSummaryListtile(
+                leadingImgPath: TImages.spayed,
+                title: _controller.spayedCount.toString(),
+                subtitle: "spayed",
+              ),
+              ViewAnimalSummaryListtile(
+                leadingImgPath: TImages.neutered,
+                title: _controller.neuteredCount.toString(),
+                subtitle: "neutered",
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
 }

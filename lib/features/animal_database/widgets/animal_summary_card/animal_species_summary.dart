@@ -13,4 +13,9 @@ class AnimalSpeciesSummary {
       GenericDonutChartParams(value: maleCount.toDouble(), title: "Male", color: AnimalSex.male.color)
     ];
   }
+
+  /// check if there is data to display
+  /// if all counts are zero, return false
+  /// otherwise return true
+  bool get hasData => femaleCount > 0 || maleCount > 0 || spayedCount > 0 || neuteredCount > 0;
 }
