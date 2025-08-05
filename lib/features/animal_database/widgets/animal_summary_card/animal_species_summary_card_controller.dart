@@ -18,6 +18,9 @@ class AnimalSpeciesSummaryCardController extends ChangeNotifier {
   late AnimalRepository _localRepo;
   late AnimalApi _cloudRepo;
 
+  //controller states
+  bool _hasLoaded = false;
+
   AnimalSpeciesSummary _summary = AnimalSpeciesSummary();
 
   AnimalSpeciesSummaryCardController({
@@ -25,7 +28,9 @@ class AnimalSpeciesSummaryCardController extends ChangeNotifier {
   }) {
     _species = species;
     _errorMessage = "Failed to query ${species.name} animal data";
-    _initialize();
+    _cloudRepo = getIt.get<AnimalApi>();
+    _localRepo = getIt.get<AnimalRepository>();
+    _setLoading();
   }
 
   void _setLoading(){
@@ -35,11 +40,11 @@ class AnimalSpeciesSummaryCardController extends ChangeNotifier {
     }
   }
 
-  void _initialize() async {
-    _setLoading();
-    _cloudRepo = getIt.get<AnimalApi>();
-    _localRepo = getIt.get<AnimalRepository>();
-    getAnimalSpeciesSummaryData();
+  void loadInitialData() async {
+    // set the has loaded flag to true
+    // helps in preventing loading side effects
+    _hasLoaded = true;
+    await getAnimalSpeciesSummaryData();
   }
 
   Future<void> getAnimalSpeciesSummaryData() async {
@@ -52,7 +57,6 @@ class AnimalSpeciesSummaryCardController extends ChangeNotifier {
       }else {
         _status = WidgetStatus.error;
       }
-
       notifyListeners();
     }catch(err){
       TLogger.error(err.toString());
@@ -76,4 +80,8 @@ class AnimalSpeciesSummaryCardController extends ChangeNotifier {
   List<GenericDonutChartParams> getDonutValues() {
     return _summary.toDonutChartParams();
   }
+
+  bool get hasDataToDisplay => _summary.hasData;
+
+  bool get hasLoaded => _hasLoaded;
 }

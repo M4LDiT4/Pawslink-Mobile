@@ -39,4 +39,14 @@ class GeneralAnimalSummary {
       ),
     ];
   }
+
+  bool hasData() {
+    return adopted > 0 ||
+        onCampus > 0 ||
+        owned > 0 ||
+        transient > 0 ||
+        rainbowBridge > 0 ||
+        cat > 0 ||
+        dog > 0;
+  }
 }

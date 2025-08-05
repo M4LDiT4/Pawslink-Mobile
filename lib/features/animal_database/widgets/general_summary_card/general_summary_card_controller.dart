@@ -8,20 +8,27 @@ import 'package:mobile_app_template/features/animal_database/widgets/general_sum
 import 'package:mobile_app_template/services/api/animal_api.dart';
 
 class GeneralSummaryCardController extends ChangeNotifier {
-  WidgetStatus _status = WidgetStatus.idle;
-  late AnimalApi _cloudRepo;
-  late AnimalRepository _localRepo; 
   GeneralAnimalSummary _animalSummary = GeneralAnimalSummary();
   final String _errorMessage = "Failed to query general animal data";
 
-  GeneralSummaryCardController(){
-    _initialize();
-  }
+  // repositories
+  late AnimalApi _cloudRepo;
+  late AnimalRepository _localRepo; 
 
-  void _initialize() {
+  //controller states
+  WidgetStatus _status = WidgetStatus.idle;
+  bool _hasLoaded = false;
+
+  GeneralSummaryCardController(){
     _cloudRepo = getIt.get<AnimalApi>();
     _localRepo = getIt.get<AnimalRepository>();
-    getGeneralAnimalSummaryData();
+    _setLoading();
+  }
+
+
+  void loadInitialData() async {
+    _hasLoaded = true;
+    await getGeneralAnimalSummaryData();
   }
   void _setLoading(){
     if(_status != WidgetStatus.loading){
@@ -92,5 +99,11 @@ class GeneralSummaryCardController extends ChangeNotifier {
     }
     return _animalSummary.toDonutChartParams();
   }
+
+  bool get hasDataToDisplay {
+    return _animalSummary.hasData();
+  }
+
+  bool get hasLoaded => _hasLoaded;
 }
 
