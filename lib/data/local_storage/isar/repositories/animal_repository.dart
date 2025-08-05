@@ -20,12 +20,48 @@ import 'package:mobile_app_template/data/repositories/file_repository.dart';
 import 'package:mobile_app_template/features/animal_database/widgets/animal_summary_card/animal_species_summary.dart';
 import 'package:mobile_app_template/features/animal_database/widgets/general_summary_card/general_animal_summary.dart';
 
+
+///## AnimalRepository
+/// This repository handles all CRUD operations for animals in the local Isar database.
+/// It provides methods to add, retrieve, and summarize animal data.
+/// It also includes methods to filter and sort animals based on various criteria.
 class AnimalRepository {
   final Isar _db;
   
   AnimalRepository(this._db);
   //create crud operations for the local storage for animals
 
+  /// Adds a new animal to the local database.
+  ///  ### Parameters:
+  /// - **[params]**: The parameters required to create a new animal.
+  ///  ### Returns:
+  /// - A [TResponse] indicating success or failure of the operation.
+  /// ### Throws:
+  /// - Throws an exception if the image file cannot be saved or if any other error occurs
+  /// during the transaction.
+  /// ### Note:
+  /// - The method reads the image bytes before starting the transaction to ensure the file is saved
+  /// correctly. If the image file is not available, it skips saving the image.
+  /// - If an error occurs during the transaction, it cleans up any saved image files to
+  /// prevent orphaned files in the local storage.
+  /// - The method returns a [TResponse] with a success status and a message indicating
+  /// the result of the operation.
+  /// - After saving, it retrieves the updated list of animals and logs the current count.
+  /// - The method also saves the vaccination and medication history for the animal.
+  /// - The animal's save status is set to draft initially.
+  /// - The method supports adding vaccinations and medications as part of the animal's history.
+  /// - It uses the `LocalFileRepository` to save the image file in a specific folder structure
+  /// based on the animal's ID.
+  /// - The method returns a [TResponse] with the newly added animal's data.
+  /// - If the operation fails, it returns a [TResponse] with an error message
+  /// and cleans up any saved image files.
+  /// - The method is asynchronous and returns a [Future<TResponse>].
+  /// - The method uses the `AddAnimalSummaryParams` to convert the input into an
+  /// `Animal` object and its associated history models.
+  /// - The method handles image files using the `ImagePicker` package to allow users to
+  /// select an image from their device.
+  /// - The method uses the `LocalFileRepository` to handle file operations such as saving
+  /// and deleting files in the local storage.
   Future<TResponse> addAnimal(AddAnimalSummaryParams params) async {
     File? imageFile;
     Uint8List? imageBytes;
