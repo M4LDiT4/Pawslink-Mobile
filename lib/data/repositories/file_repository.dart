@@ -321,4 +321,24 @@ class LocalFileRepository {
 
     await deleteFile(file.path); //delete file if file is found
   }
+
+
+  /// Saves a binary file safely inside an isolate.
+  /// 
+  /// ⚠️ This method must be passed a full absolute path and cannot use 
+  /// path_provider or platform-dependent logic.
+  /// 
+  /// **Parameters:**
+  /// - `path`: Full file path including filename and extension
+  /// - `data`: Binary data to write
+  /// 
+  /// **Returns:** A [File] object of the saved file
+  /// 
+  /// **Throws:** [FileSystemException] if the write fails
+  static File saveFileInIsolateSafe(String path, Uint8List data) {
+    final file = File(path);
+    file.writeAsBytesSync(data, flush: true);
+    return file;
+  }
+
 }

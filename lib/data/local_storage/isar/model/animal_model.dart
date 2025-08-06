@@ -32,9 +32,9 @@ class Animal{
 
   late  List<String>? traitsAndPersonality;
 
-  late String? imgUrl; //url of the image from the internet
+  String? profileImgUrl;
 
-  late String? imgPath; //path to the image stored locally
+  List<String>? imgUrls = [];
 
   late DateTime? sterilizationDate;
 
@@ -71,8 +71,8 @@ extension AnimalMapper on Animal {
       ..coatColor = (map['coatColor'] as List?)?.cast<String>() ?? []
       ..notes = (map['notes'] as List?)?.cast<String>() ?? []
       ..traitsAndPersonality = (map['traitsAndPersonality'] as List?)?.cast<String>() ?? []
-      ..imgUrl = map['imgUrl']
-      ..imgPath = null
+      ..imgUrls = map['imgUrl']
+      ..profileImgUrl = null
       ..createdAt = DateTime.tryParse(map['createdAt'] ?? '') ?? DateTime.now()
       ..updatedAt = DateTime.tryParse(map['updatedAt'] ?? '') ?? DateTime.now()
       ..saveStatus = SaveStatus.synced; // Assuming data from server is already synced

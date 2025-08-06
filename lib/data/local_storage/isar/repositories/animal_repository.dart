@@ -111,7 +111,7 @@ class AnimalRepository {
           }
 
           // Update animal with image path
-          animal.imgUrl = imageFile!.path;
+          animal.profileImgUrl = imageFile!.path;
         }
         await _db.animals.put(animal);
       });
