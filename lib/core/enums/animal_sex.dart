@@ -45,3 +45,21 @@ extension AnimalSexWidgetExtension on AnimalSex {
     }
   }
 }
+
+AnimalSex animalSexFromString(String string) {
+  final lower = string.trim().toLowerCase();
+
+  if (lower == TText.male.toLowerCase()) {
+    return AnimalSex.male;
+  } else if (lower == TText.female.toLowerCase()) {
+    return AnimalSex.female;
+  } else if (lower == TText.unknown.toLowerCase()) {
+    return AnimalSex.unknown;
+  } else {
+    throw UnsupportedError(
+      "Expects one of: [${TText.male}, ${TText.female}, ${TText.unknown}] but got: '$string'"
+    );
+  }
+}
+
+

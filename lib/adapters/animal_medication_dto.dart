@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:mobile_app_template/core/utils/helpers/list_helpers.dart';
 import 'package:mobile_app_template/models/local_animal_medication_record.dart';
 
 /// ## AnimalMedicationAdopter
@@ -17,7 +18,7 @@ import 'package:mobile_app_template/models/local_animal_medication_record.dart';
 ///   are required fields that describe the medication details.
 /// - `notes` is an optional field that can store additional information about the medication.
 
-class AnimalMedicationAdapter {
+class AnimalMedicationDTO {
   int? localId;
   String? remoteId;
 
@@ -33,7 +34,7 @@ class AnimalMedicationAdapter {
   String prescribedBy;
   List<String> notes;
 
-  AnimalMedicationAdapter({
+  AnimalMedicationDTO({
     this.localId,
     this.remoteId,
     this.localAnimalId,
@@ -48,8 +49,8 @@ class AnimalMedicationAdapter {
     this.notes = const [],
   });
 
-  factory AnimalMedicationAdapter.fromLocalMedicationHistory(LocalAnimalMedicationRecord localMedHist){
-    return AnimalMedicationAdapter(
+  factory AnimalMedicationDTO.fromLocalMedicationHistory(LocalAnimalMedicationRecord localMedHist){
+    return AnimalMedicationDTO(
       localId: localMedHist.id,
       medicationName: localMedHist.medicationName, 
       dosage: localMedHist.dosage, 
@@ -85,5 +86,18 @@ class AnimalMedicationAdapter {
       'prescribedBy': prescribedBy,
       'notes': jsonEncode(notes)
     };
+  }
+
+  factory AnimalMedicationDTO.fromMap(Map<String, dynamic> map) {
+    return AnimalMedicationDTO(
+      medicationName: map['medicationName'] ?? '',
+      dosage: map['dosage'] ?? '',
+      route: map['route'] ?? '',
+      dateGiven: DateTime.parse(map['dateGiven']),
+      durationInDays: map['durationInDays'] ?? 0,
+      reason: map['reason'] ?? '',
+      prescribedBy: map['prescribedBy'] ?? '',
+      notes: TListHelpers.parseStringList(map['notes'])
+    );
   }
 }

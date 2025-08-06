@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:mobile_app_template/adapters/animal_medication_adapter.dart';
-import 'package:mobile_app_template/adapters/animal_vaccination_adapter.dart';
+import 'package:mobile_app_template/adapters/animal_medication_dto.dart';
+import 'package:mobile_app_template/adapters/animal_vaccination_dto.dart';
 import 'package:mobile_app_template/core/enums/animal_sex.dart';
 import 'package:mobile_app_template/core/enums/animal_species.dart';
 import 'package:mobile_app_template/core/enums/animal_status.dart';
-import 'package:mobile_app_template/data/local_storage/isar/model/animal_vax_history_model.dart';
+import 'package:mobile_app_template/core/utils/helpers/list_helpers.dart';
 import 'package:mobile_app_template/models/local_animal_model.dart';
 
 /// ## AnimalAdapter
@@ -25,7 +25,7 @@ import 'package:mobile_app_template/models/local_animal_model.dart';
 /// - `status`, `species`, and `sex` are enums that can be used to represent the animal's status, species 
 /// - `medicationHistory` is the list of [AnimalMedicationAdapter] the animal have. Defaults to empty array
 /// - `vaccinationHistory is the list of [AnimalVaccinationAdapter] the animal have. Defaults to an empty array
-class AnimalAdapter {
+class AnimalDTO {
   int? localId;
   String? remoteId;
   String name;
@@ -48,10 +48,10 @@ class AnimalAdapter {
   String? profileImagePath;
 
   //health history
-  List<AnimalMedicationAdapter> medicationHistory;
-  List<AnimalVaccinationAdapter> vaccinationHistory;
+  List<AnimalMedicationDTO> medicationHistory;
+  List<AnimalVaccinationDTO> vaccinationHistory;
 
-  AnimalAdapter({
+  AnimalDTO({
     this.remoteId,
     this.localId,
     required this.name,
@@ -74,28 +74,38 @@ class AnimalAdapter {
 
   /// removes the current value of the `vaccinationHistory` and replaces it with `vaxList`
   /// ### Parameters
-  /// - **[vaxList]** - new list of [AnimalVaccinationAdapter] that will replace the current `vaccinationHistory`
-  void setVaccinationHistory(List<AnimalVaccinationAdapter> vaxList){
+  /// - **[vaxList]** - new list of [AnimalVaccinationDTO] that will replace the current `vaccinationHistory`
+  void setVaccinationHistory(List<AnimalVaccinationDTO> vaxList){
     vaccinationHistory = vaxList;
   }
 
   /// inserts new items to the `vaccinationHistory`
   /// ### Paramters
-  /// - **[vaxList]** - list of [AnimalVaccinationAdapter] that will be added to the current `vaccinationHistory`
-  void insertVaccinationHisory(List<AnimalVaccinationAdapter> vaxList){
+  /// - **[vaxList]** - list of [AnimalVaccinationDTO] that will be added to the current `vaccinationHistory`
+  void insertVaccinationHisory(List<AnimalVaccinationDTO> vaxList){
     vaccinationHistory.addAll(vaxList);
   }
 
-  void setMedicationHistory(List<AnimalMedicationAdapter> medList){
+  /// removes the current value of the `medicationHistory` and replaces it with `medList`
+  /// ### Parameters
+  /// - **[medList]**: new [List] of [AnimalMedicationDTO] that will replace the current `medicationHistory`
+  void setMedicationHistory(List<AnimalMedicationDTO> medList){
     medicationHistory = medList;
   }
 
-  void insertMedicaitonHistory(List<AnimalMedicationAdapter> medList){
+  /// inserts new items to the `medicationHistory
+  /// ### Parameters
+  /// - **[medList]**: a [List] of [AnimalMedicationDTO] that will be added to the current `medicationHistory`
+  void insertMedicaitonHistory(List<AnimalMedicationDTO> medList){
     medicationHistory.addAll(medList);
   }
 
-  factory AnimalAdapter.fromLocalAnimalModel(LocalAnimalModel localAnimal){
-    return AnimalAdapter(
+  /// Factory method to generate [AnimalDTO] from the [LocalAnimalModel]
+  /// ### Parameters
+  /// - **[localAnimal]**: instance of local data of type [LocalAnimalModel] that will be converted
+  /// to [AnimalAdapter]
+  factory AnimalDTO.fromLocalAnimalModel(LocalAnimalModel localAnimal){
+    return AnimalDTO(
       localId: localAnimal.id,
       name: localAnimal.name, 
       age: localAnimal.age,
@@ -110,14 +120,14 @@ class AnimalAdapter {
       profileImagePath: localAnimal.profileImagePath,
       
       medicationHistory: localAnimal.medicationHistory.map(
-        (item)=> AnimalMedicationAdapter.fromLocalMedicationHistory(item)
+        (item)=> AnimalMedicationDTO.fromLocalMedicationHistory(item)
       ).toList(),
       vaccinationHistory: localAnimal.vaccinationHistory.map(
-        (item)=> AnimalVaccinationAdapter.fromLocalAnimalVaccinationRecord(item)
+        (item)=> AnimalVaccinationDTO.fromLocalAnimalVaccinationRecord(item)
       ).toList()
     );
   }
-
+  /// Converts [AnimalAdapter] to [LocalAnimalModel]
   LocalAnimalModel toLocalAnimalModel(){
     final animal = LocalAnimalModel()
       ..name = name
@@ -149,7 +159,7 @@ class AnimalAdapter {
       'name': name,
       'sex': sex.label,
       'status': status.label,
-      'species': status.label,
+      'species': species.label,
       'location': location,
       'coatColor': jsonEncode(coatColor),
       'notes': jsonEncode(notes),
@@ -171,8 +181,37 @@ class AnimalAdapter {
     }
 
     if(sterilizationDate != null){
-      animal['sterilizationDate'] = sterilizationDate;
+      animal['sterilizationDate'] = sterilizationDate!.toIso8601String();
     }
+
+    return animal;
+  }
+
+  factory AnimalDTO.fromMap(Map<String, dynamic> animalJSON){
+
+    final medicationRecordList = (jsonDecode(animalJSON['medicationHistory'] ?? "[]") as List)
+      .map(
+        (item) => AnimalMedicationDTO.fromMap(item)
+      ).toList();
+    
+    final vaccinationRecordList = (jsonDecode(animalJSON['vaccinationHistory']?? '[]') as List)
+      .map(
+        (item) => AnimalVaccinationDTO.fromMap(item)
+      ).toList();
+
+    final animal = AnimalDTO(
+      name: animalJSON['name'] as String,
+      age: animalJSON['age'] != null? animalJSON['age'] as int: null,
+      sex: animalSexFromString(animalJSON['sex']),
+      status: animalStatusFromString(animalJSON['status'] as String),
+      species: animalSpeciesFromString(animalJSON['species'] as String),
+      location: animalJSON['location'],
+      coatColor: TListHelpers.parseStringList(animalJSON['coatColor'] ?? '[]'),
+      notes: TListHelpers.parseStringList(animalJSON['notes']?? '[]'),
+      traitsAndPersonality: TListHelpers.parseStringList(animalJSON['traitsAndPersonality'] ?? '[]'),
+      medicationHistory: medicationRecordList,
+      vaccinationHistory: vaccinationRecordList
+    );
 
     return animal;
   }

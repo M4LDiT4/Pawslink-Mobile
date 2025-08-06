@@ -1,8 +1,9 @@
 import 'dart:convert';
 
+import 'package:mobile_app_template/core/utils/helpers/list_helpers.dart';
 import 'package:mobile_app_template/models/local_animal_vaccination_history.dart';
 
-class AnimalVaccinationAdapter {
+class AnimalVaccinationDTO {
   int? localId;
   String? remoteId;
 
@@ -19,7 +20,7 @@ class AnimalVaccinationAdapter {
   String route;
   List<String> notes;
 
-  AnimalVaccinationAdapter({
+  AnimalVaccinationDTO({
     this.localId,
     this.remoteId,
     this.animalLocalId,
@@ -35,8 +36,8 @@ class AnimalVaccinationAdapter {
     this.notes = const []
   });
 
-  factory AnimalVaccinationAdapter.fromLocalAnimalVaccinationRecord(LocalAnimalVaccinationRecord localVax){
-    return AnimalVaccinationAdapter(
+  factory AnimalVaccinationDTO.fromLocalAnimalVaccinationRecord(LocalAnimalVaccinationRecord localVax){
+    return AnimalVaccinationDTO(
       localId: localVax.id,
       vaccineName: localVax.vaccineName, 
       dateGiven: localVax.dateGiven, 
@@ -79,5 +80,19 @@ class AnimalVaccinationAdapter {
     }
 
     return animalVaxRecord;
+  }
+
+  factory AnimalVaccinationDTO.fromMap(Map<String, dynamic> map) {
+    return AnimalVaccinationDTO(
+      vaccineName: map['vaccineName'] ?? '',
+      dateGiven: DateTime.parse(map['dateGiven']),
+      doseNumber: map['doesNumber'] ?? 0,
+      nextDueDate: map['nextDueDate'] != null ? DateTime.parse(map['nextDueDate']) : null,
+      administeredBy: map['administeredBy'] ?? '',
+      batchNumber: map['batchNumber'] ?? 0,
+      expiryDate: DateTime.parse(map['expiryDate']),
+      route: map['route'] ?? '',
+      notes: TListHelpers.parseStringList(map['notes']),
+    );
   }
 }

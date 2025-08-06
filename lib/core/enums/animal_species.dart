@@ -14,3 +14,19 @@ extension AnimalSpeciesExtension on AnimalSpecies{
     }
   }
 }
+
+AnimalSpecies animalSpeciesFromString(String string) {
+  final lower = string.trim().toLowerCase();
+
+  if (lower == TText.dog.toLowerCase()) {
+    return AnimalSpecies.dog;
+  } else if (lower == TText.cat.toLowerCase()) {
+    return AnimalSpecies.cat;
+  } else if (lower == TText.unknown.toLowerCase()) {
+    return AnimalSpecies.unknown;
+  } else {
+    throw UnsupportedError(
+      "Expects one of: [${TText.dog}, ${TText.cat}, ${TText.unknown}] but got: '$string'"
+    );
+  }
+}
