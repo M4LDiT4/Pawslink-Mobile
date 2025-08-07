@@ -1,11 +1,10 @@
 import 'dart:convert';
 
+import 'package:mobile_app_template/adapters/base_dto.dart';
 import 'package:mobile_app_template/core/utils/helpers/list_helpers.dart';
 import 'package:mobile_app_template/models/local_animal_vaccination_history.dart';
 
-class AnimalVaccinationDTO {
-  int? localId;
-  String? remoteId;
+class AnimalVaccinationDTO extends BaseDto<LocalAnimalVaccinationRecord> {
 
   int? animalLocalId;
   String? animalRemoteId;
@@ -21,8 +20,8 @@ class AnimalVaccinationDTO {
   List<String> notes;
 
   AnimalVaccinationDTO({
-    this.localId,
-    this.remoteId,
+    super.localId,
+    super.remoteId,
     this.animalLocalId,
     this.animalRemoteId,
     required this.vaccineName,
@@ -51,7 +50,8 @@ class AnimalVaccinationDTO {
     );
   }
 
-  LocalAnimalVaccinationRecord toLocalAnimalVaccinationRecord(){
+  @override
+  LocalAnimalVaccinationRecord toLocalModel(){
     return LocalAnimalVaccinationRecord()
       ..vaccineName = vaccineName
       ..dateGiven = dateGiven
@@ -64,6 +64,7 @@ class AnimalVaccinationDTO {
       ..notes = notes;
   }
 
+  @override
   Map<String, dynamic> toMap(){
     final Map<String, dynamic> animalVaxRecord =  {
       "vaccineName" : vaccineName,

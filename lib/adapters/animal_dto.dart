@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:mobile_app_template/adapters/animal_medication_dto.dart';
 import 'package:mobile_app_template/adapters/animal_vaccination_dto.dart';
+import 'package:mobile_app_template/adapters/base_dto.dart';
 import 'package:mobile_app_template/core/enums/animal_sex.dart';
 import 'package:mobile_app_template/core/enums/animal_species.dart';
 import 'package:mobile_app_template/core/enums/animal_status.dart';
@@ -25,9 +26,7 @@ import 'package:mobile_app_template/models/local_animal_model.dart';
 /// - `status`, `species`, and `sex` are enums that can be used to represent the animal's status, species 
 /// - `medicationHistory` is the list of [AnimalMedicationAdapter] the animal have. Defaults to empty array
 /// - `vaccinationHistory is the list of [AnimalVaccinationAdapter] the animal have. Defaults to an empty array
-class AnimalDTO {
-  int? localId;
-  String? remoteId;
+class AnimalDTO extends BaseDto{
   String name;
   AnimalSex sex;
   int? age;
@@ -52,8 +51,8 @@ class AnimalDTO {
   List<AnimalVaccinationDTO> vaccinationHistory;
 
   AnimalDTO({
-    this.remoteId,
-    this.localId,
+    super.remoteId,
+    super.localId,
     required this.name,
     required this.sex,
     this.age,
@@ -128,8 +127,10 @@ class AnimalDTO {
     );
   }
   /// Converts [AnimalAdapter] to [LocalAnimalModel]
-  LocalAnimalModel toLocalAnimalModel(){
+  @override
+  LocalAnimalModel toLocalModel(){
     final animal = LocalAnimalModel()
+      ..remoteId = remoteId
       ..name = name
       ..sex = sex
       ..age = age
@@ -144,16 +145,19 @@ class AnimalDTO {
       ..imagePaths = imagePaths;
 
     animal.medicationHistory.addAll(medicationHistory.map(
-      (item) => item.toLocalMedicationRecord()
+      (item) => item.toLocalModel()
     ).toList());
 
     animal.vaccinationHistory.addAll(vaccinationHistory.map(
-        (item) => item.toLocalAnimalVaccinationRecord()
+        (item) => item.toLocalModel()
       ).toList()
     );
     return animal;
   }
-
+  @override
+  /// Converts [AnimalDTO] to [Map] of key type [String] and value type [dynamic]
+  /// ### Notes:
+  /// - use this representation for API requests like form data or JSON
   Map<String, dynamic> toMap(){
     final Map<String, dynamic> animal = {
       'name': name,
@@ -184,9 +188,14 @@ class AnimalDTO {
       animal['sterilizationDate'] = sterilizationDate!.toIso8601String();
     }
 
+    if(remoteId != null){
+      animal['_id'] = remoteId;
+    }
+
     return animal;
   }
 
+  /// Converts [Map] of key type [String] and value type [dynamic] to [AnimalDTO]
   factory AnimalDTO.fromMap(Map<String, dynamic> animalJSON){
 
     final medicationRecordList = (jsonDecode(animalJSON['medicationHistory'] ?? "[]") as List)
@@ -200,6 +209,7 @@ class AnimalDTO {
       ).toList();
 
     final animal = AnimalDTO(
+      remoteId: animalJSON['_id'],
       name: animalJSON['name'] as String,
       age: animalJSON['age'] != null? animalJSON['age'] as int: null,
       sex: animalSexFromString(animalJSON['sex']),

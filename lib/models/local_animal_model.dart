@@ -9,6 +9,7 @@ import 'package:mobile_app_template/models/local_animal_vaccination_history.dart
 @collection 
 class LocalAnimalModel {
   Id id = Isar.autoIncrement;
+  late String? remoteId; //if null then it is saved only locally, otherwise there is a cloud copy of this
   late String name;
   late int? age;
   @Enumerated(EnumType.name)

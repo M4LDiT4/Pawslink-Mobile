@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:mobile_app_template/adapters/base_dto.dart';
 import 'package:mobile_app_template/core/utils/helpers/list_helpers.dart';
 import 'package:mobile_app_template/models/local_animal_medication_record.dart';
 
@@ -18,9 +19,7 @@ import 'package:mobile_app_template/models/local_animal_medication_record.dart';
 ///   are required fields that describe the medication details.
 /// - `notes` is an optional field that can store additional information about the medication.
 
-class AnimalMedicationDTO {
-  int? localId;
-  String? remoteId;
+class AnimalMedicationDTO extends BaseDto<LocalAnimalMedicationRecord>{
 
   int? localAnimalId;
   String? remoteAnimalId;
@@ -35,8 +34,8 @@ class AnimalMedicationDTO {
   List<String> notes;
 
   AnimalMedicationDTO({
-    this.localId,
-    this.remoteId,
+    super.localId,
+    super.remoteId,
     this.localAnimalId,
     this.remoteAnimalId,
     required this.medicationName,
@@ -63,7 +62,8 @@ class AnimalMedicationDTO {
     );
   }
 
-  LocalAnimalMedicationRecord toLocalMedicationRecord(){
+  @override
+  LocalAnimalMedicationRecord toLocalModel(){
     return LocalAnimalMedicationRecord()
       ..medicationName = medicationName
       ..dosage = dosage
@@ -74,7 +74,7 @@ class AnimalMedicationDTO {
       ..prescribedBy = prescribedBy
       ..notes = notes;
   }
-
+  @override
   Map<String, dynamic> toMap(){
     return {
       'medicationName': medicationName,
