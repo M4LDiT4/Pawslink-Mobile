@@ -1,8 +1,8 @@
-import 'package:mobile_app_template/adapters/base_dto.dart';
+import 'package:mobile_app_template/domain/entities/base_dto.dart';
 import 'package:mobile_app_template/core/enums/database_actions.dart';
 import 'package:mobile_app_template/core/enums/database_collections.dart';
 import 'package:mobile_app_template/core/utils/helpers/enum_helper.dart';
-import 'package:mobile_app_template/models/local_activity_log.dart';
+import 'package:mobile_app_template/domain/models/local_activity_log.dart';
 
 
 class ActivityLogDTO extends BaseDto<LocalActivityLog> {

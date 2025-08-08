@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:mobile_app_template/core/dependency_injection/dependency_injection.dart';
 import 'package:mobile_app_template/data/local_storage/isar/model/event_model.dart';
-import 'package:mobile_app_template/data/local_storage/isar/repositories/event_repository.dart';
+import 'package:mobile_app_template/domain/repositories/event_repository.dart';
 
 class ViewEventController extends GetxController {
   /// pre: [EventRepository] is present in the [getIt] service locator

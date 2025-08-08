@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:mobile_app_template/core/utils/http/response.dart';
+import 'package:mobile_app_template/network/response.dart';
 
 class THttpHelper {
   THttpHelper._();

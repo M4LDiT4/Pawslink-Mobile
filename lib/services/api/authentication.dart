@@ -1,7 +1,7 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mobile_app_template/core/utils/helpers/app_exception.dart';
-import 'package:mobile_app_template/core/utils/http/dio_client.dart';
-import 'package:mobile_app_template/core/utils/http/response.dart';
+import 'package:mobile_app_template/network/dio/dio_client.dart';
+import 'package:mobile_app_template/network/response.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/services/local_storage/local_secure_storage.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_app_template/adapters/base_dto.dart';
+import 'package:mobile_app_template/domain/entities/base_dto.dart';
 import 'package:mobile_app_template/core/utils/helpers/number_helpers.dart';
-import 'package:mobile_app_template/models/local_event.dart';
+import 'package:mobile_app_template/domain/models/local_event.dart';
 
 class EventDTO extends BaseDto<LocalEvent> {
   String eventName;

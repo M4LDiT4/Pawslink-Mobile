@@ -1,13 +1,13 @@
 import 'dart:convert';
 
-import 'package:mobile_app_template/adapters/animal_medication_dto.dart';
-import 'package:mobile_app_template/adapters/animal_vaccination_dto.dart';
-import 'package:mobile_app_template/adapters/base_dto.dart';
+import 'package:mobile_app_template/domain/entities/animal_medication_dto.dart';
+import 'package:mobile_app_template/domain/entities/animal_vaccination_dto.dart';
+import 'package:mobile_app_template/domain/entities/base_dto.dart';
 import 'package:mobile_app_template/core/enums/animal_sex.dart';
 import 'package:mobile_app_template/core/enums/animal_species.dart';
 import 'package:mobile_app_template/core/enums/animal_status.dart';
 import 'package:mobile_app_template/core/utils/helpers/list_helpers.dart';
-import 'package:mobile_app_template/models/local_animal_model.dart';
+import 'package:mobile_app_template/domain/models/local_animal_model.dart';
 
 /// ## AnimalAdapter
 /// This class is used to represent an animal in the application.

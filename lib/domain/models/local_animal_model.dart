@@ -3,8 +3,8 @@ import 'package:isar/isar.dart';
 import 'package:mobile_app_template/core/enums/animal_sex.dart';
 import 'package:mobile_app_template/core/enums/animal_species.dart';
 import 'package:mobile_app_template/core/enums/animal_status.dart';
-import 'package:mobile_app_template/models/local_animal_medication_record.dart';
-import 'package:mobile_app_template/models/local_animal_vaccination_history.dart';
+import 'package:mobile_app_template/domain/models/local_animal_medication_record.dart';
+import 'package:mobile_app_template/domain/models/local_animal_vaccination_history.dart';
 
 @collection 
 class LocalAnimalModel {

@@ -2,11 +2,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:mobile_app_template/core/dependency_injection/dependency_injection.dart';
-import 'package:mobile_app_template/core/utils/http/response.dart';
+import 'package:mobile_app_template/network/response.dart';
 import 'package:mobile_app_template/core/widgets/pickers/date_pickers/generic_datepicker_controller.dart';
 import 'package:mobile_app_template/core/widgets/pickers/img_pickers/generic_img_picker_controller.dart';
 import 'package:mobile_app_template/core/widgets/pickers/time_pickers/generic_time_picker_controller.dart';
-import 'package:mobile_app_template/data/local_storage/isar/repositories/event_repository.dart';
+import 'package:mobile_app_template/domain/repositories/event_repository.dart';
 
 class Addeventcontroller extends GetxController{
   late GlobalKey<FormState> key = GlobalKey<FormState>();

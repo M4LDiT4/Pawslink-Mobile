@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:mobile_app_template/adapters/base_dto.dart';
+import 'package:mobile_app_template/domain/entities/base_dto.dart';
 import 'package:mobile_app_template/core/utils/helpers/list_helpers.dart';
-import 'package:mobile_app_template/models/local_animal_vaccination_history.dart';
+import 'package:mobile_app_template/domain/models/local_animal_vaccination_history.dart';
 
 class AnimalVaccinationDTO extends BaseDto<LocalAnimalVaccinationRecord> {
 

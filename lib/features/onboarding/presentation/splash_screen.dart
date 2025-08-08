@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mobile_app_template/core/constants/lottie_strings.dart';
 import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
-import 'package:mobile_app_template/core/utils/internet_connection/connection_controller.dart';
+import 'package:mobile_app_template/network/internet_connection/connection_controller.dart';
 import 'package:mobile_app_template/services/local_storage/local_secure_storage.dart';
 import 'package:mobile_app_template/services/navigation/navigation_service.dart';
 

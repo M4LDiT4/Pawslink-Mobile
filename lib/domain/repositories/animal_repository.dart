@@ -8,7 +8,7 @@ import 'package:mobile_app_template/core/enums/animal_sex.dart';
 import 'package:mobile_app_template/core/enums/animal_species.dart';
 import 'package:mobile_app_template/core/enums/animal_status.dart';
 import 'package:mobile_app_template/core/navigation/route_params/add_animal_summary.dart';
-import 'package:mobile_app_template/core/utils/http/response.dart';
+import 'package:mobile_app_template/network/response.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/data/local_storage/isar/helpers/filter_helper.dart';
 import 'package:mobile_app_template/data/local_storage/isar/model/animal_med_history_model.dart';
@@ -16,7 +16,7 @@ import 'package:mobile_app_template/data/local_storage/isar/model/animal_model.d
 import 'package:mobile_app_template/data/local_storage/isar/model/animal_vax_history_model.dart';
 import 'package:mobile_app_template/data/local_storage/save_status.dart';
 import 'package:mobile_app_template/data/model/modal_input_list_item.dart';
-import 'package:mobile_app_template/data/repositories/file_repository.dart';
+import 'package:mobile_app_template/domain/repositories/file_repository.dart';
 import 'package:mobile_app_template/features/animal_database/widgets/animal_summary_card/animal_species_summary.dart';
 import 'package:mobile_app_template/features/animal_database/widgets/general_summary_card/general_animal_summary.dart';
 

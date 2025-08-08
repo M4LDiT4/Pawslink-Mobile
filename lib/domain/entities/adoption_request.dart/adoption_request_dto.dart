@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:mobile_app_template/adapters/base_dto.dart';
+import 'package:mobile_app_template/domain/entities/base_dto.dart';
 import 'package:mobile_app_template/core/enums/adoption_request.dart';
-import 'package:mobile_app_template/models/local_adoption_request.dart';
+import 'package:mobile_app_template/domain/models/local_adoption_request.dart';
 
 class AdoptionRequestDTO extends BaseDto<LocalAdoptionRequest> {
   String animalId; // this is not nullable as the data should be from the cloud database

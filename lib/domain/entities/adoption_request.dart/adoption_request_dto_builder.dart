@@ -1,4 +1,4 @@
-import 'package:mobile_app_template/adapters/adoption_request.dart/adoption_request_dto.dart';
+import 'package:mobile_app_template/domain/entities/adoption_request.dart/adoption_request_dto.dart';
 import 'package:mobile_app_template/core/enums/adoption_request.dart';
 
 class AdoptionRequestBuilder {

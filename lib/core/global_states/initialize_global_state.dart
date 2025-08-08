@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:mobile_app_template/core/utils/internet_connection/connection_controller.dart';
+import 'package:mobile_app_template/network/internet_connection/connection_controller.dart';
 /// ## initializeGlobalStates
 /// Author: Jonathan Calugas
 /// 
