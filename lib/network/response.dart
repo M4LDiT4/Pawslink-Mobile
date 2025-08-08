@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:get/get_connect/connect.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
+import 'package:dio/dio.dart' as dio;
 
 /// ## TResponse
 /// Custom class for storing responses from repositories and services
@@ -111,6 +113,41 @@ class TResponse<T> {
         message: isSuccess ? 'Success (non-JSON)' : 'Failed to parse response',
         data: null,
         statusCode: response.statusCode,
+      );
+    }
+  }
+
+  factory TResponse.fromDioResponse(
+    dio.Response response,
+   { T Function(dynamic)? fromData,
+    String fieldName = 'data'}
+  ){
+    try{
+      if(response.data.isEmpty){
+        throw const FormatException('Empty response body');
+      }
+      final jsonResponse = jsonDecode(response.data);
+
+      if(jsonResponse is! Map<String, dynamic>){
+        throw FormatException('Expects JSON object: received: ${jsonResponse.runtimeType}');
+      }
+
+      bool? isSuccessful;
+      if(response.statusCode != null){
+        isSuccessful = response.statusCode! >= 200 && response.statusCode! < 300;
+      }
+
+      return TResponse.fromJson(
+        jsonResponse,
+        fromData: fromData,
+        isSuccessful: isSuccessful,
+        statusCode: response.statusCode
+      );
+    }catch(err){
+      TLogger.error('Failed to parse dio Response: ${err.toString()}');
+      return TResponse.failed(
+        message: 'Failed to parse dio Response: ${err.toString()}',
+        statusCode: response.statusCode ?? 400
       );
     }
   }
