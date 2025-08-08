@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:mobile_app_template/core/utils/logger/logger.dart';
 
 /// ## TResponse
 /// Custom class for storing responses from repositories and services
@@ -15,13 +16,12 @@ import 'package:http/http.dart' as http;
 /// - **[message]**: additional information for the result of the request
 /// - **[data]**: data returned from the request
 /// - **[statusCode]**: status code of the request
-/// - 
-class TResponse<T>{
+class TResponse<T> {
   final bool success;
   final String? message;
   final T? data;
   final int statusCode;
-  
+
   TResponse({
     required this.success,
     this.message,
@@ -30,61 +30,81 @@ class TResponse<T>{
   });
 
   /// ### fromJSON
-  /// Generates a [TResponse] object from a json
-  /// 
-  /// This method
-  /// - assumes that the json object has a success field which determines if the 
-  /// request succeeded or not. Defaults to false if json object has no succes property
-  /// - assumes that the json object has message property. Defaults to null if
-  /// message property does not exist
-  /// - assumes the json object has data field. If present parses the value of the data field 
-  /// to the provided data type, otherwise provide null as value
-  /// - assumes that the json object has statusCode field. Defaults to 200  
-  /// 
-  /// ### Parameters
-  /// - **[json]**: object from which data, success, message and statusCode values will be derived from.
-  /// Ideally this is for parsing values from custom API's
-  /// 
-  /// ### Returns
-  /// [TResponse] object representation based on the given json object
-  factory TResponse.fromJson(Map<String, dynamic> json) {
+  /// Generates a [TResponse] object from a JSON map.
+  factory TResponse.fromJson(
+    Map<String, dynamic> json, {
+    T Function(dynamic)? fromData,
+    String? fieldName = "data",
+    bool? isSuccessful,
+    int? statusCode,
+  }) {
+    T? parsedData;
+
+    try {
+      final value = json[fieldName];
+      if (value != null) {
+        if (fromData != null) {
+          // Handle lists automatically
+          if (value is List) {
+            parsedData = value.map((e) => fromData(e)).toList() as T;
+          } else {
+            parsedData = fromData(value);
+          }
+        } else if (value is T) {
+          parsedData = value;
+        } else if (T != dynamic && value is Map<String, dynamic>) {
+          // Custom object without parser → throw explicit error
+          throw FormatException(
+              "Custom object type $T for '$fieldName' requires a fromData parser");
+        }
+      }
+    } catch (err) {
+      TLogger.error(
+        "Failed to parse '$fieldName' as $T in [fromJson]: ${err.toString()}",
+      );
+      parsedData = null;
+    }
+
     return TResponse<T>(
-      success: json['success'] ?? false,
-      message: json['message'],
-      data: json['data'] != null ? json['data'] as T : null,
-      statusCode: json['statusCode'] ?? 200,
+      success: isSuccessful ?? json['success'] ?? false,
+      message: json['message'] ?? json['error']?.toString() ?? 'No Message Provided',
+      data: parsedData,
+      statusCode: statusCode ?? json['statusCode'] ?? 200,
     );
   }
 
   /// ## fromHttpResponse
-  /// Generates a [TResponse] object from a [http.Response] object
-  /// 
-  /// This method:
-  /// - decodes the [http.Response] body to JSON
-  /// - checks if [http.Response] object failed or succeeded
-  /// - generates [TResponse] object from the given response object
-  /// - if json parsing fails, return a [TResponse] object with [data] field = `null`
-  /// 
-  /// ### Parameters
-  /// - **[response]**: response from service/repository call
-  /// 
-  /// ### Returns
-  /// [TResponse] object that is derived from the [response]
-  factory TResponse.fromHttpResponse(http.Response response) {
+  /// Generates a [TResponse] object from an [http.Response].
+  factory TResponse.fromHttpResponse(
+    http.Response response, {
+    T Function(dynamic)? fromData,
+    String fieldName = 'data',
+  }) {
     try {
+      if (response.body.isEmpty) {
+        throw const FormatException("Empty response body");
+      }
+
       final jsonResponse = json.decode(response.body);
+
+      if (jsonResponse is! Map<String, dynamic>) {
+        throw FormatException(
+          "Expects JSON object, received: ${jsonResponse.runtimeType}",
+        );
+      }
 
       // Success is true if statusCode is 2xx, even if the API doesn't explicitly say so
       final isSuccess = response.statusCode >= 200 && response.statusCode < 300;
 
-      return TResponse<T>(
-        success: isSuccess,
-        message: jsonResponse['error']?.toString() ?? (isSuccess ? 'Success' : 'Unknown error'),
-        data: jsonResponse['data'] != null ? jsonResponse['data'] as T : null,
+      return TResponse<T>.fromJson(
+        jsonResponse,
+        fromData: fromData,
+        fieldName: fieldName,
+        isSuccessful: isSuccess,
         statusCode: response.statusCode,
       );
-    } catch (e) {
-      // If response body isn't JSON or decoding fails
+    } catch (err) {
+      TLogger.error("Failed to parse http response: ${err.toString()}");
       final isSuccess = response.statusCode >= 200 && response.statusCode < 300;
       return TResponse<T>(
         success: isSuccess,
@@ -97,38 +117,28 @@ class TResponse<T>{
 
   /// ## successful
   /// Generates a successful response template
-  /// 
-  /// ### Parameters
-  /// - **[message]**: optional message for the successful response 
-  /// ### Returns
-  /// Successful [TResponse] object
-  factory TResponse.successful(String? message){
+  factory TResponse.successful({String? message, int? statusCode}) {
     return TResponse<T>(
       success: true,
-      statusCode: 200,
-      message: message
+      statusCode: statusCode ?? 200,
+      message: message ?? 'Operation successful',
     );
   }
 
   /// ## failed
   /// Generates a failed response template
-  /// 
-  /// ### Parameters
-  /// - **[message]**: optional message for the failed response
-  /// ### Returns
-  /// Failed [TResponse] object
-  factory TResponse.failed(String? message){
+  factory TResponse.failed({String? message, int? statusCode}) {
     return TResponse<T>(
       success: false,
-      statusCode:400,
-      message: message
+      statusCode: statusCode ?? 400,
+      message: message ?? "Operation Failed",
     );
   }
 
-  ///checks if the response is successful
+  /// Checks if the response is successful
   bool get isSuccessful => success;
 
-  ///presents the data in a easily readible [String] format
+  /// Presents the data in a readable [String] format
   @override
   String toString() {
     return 'TResponse<$T>(success: $success, statusCode: $statusCode, message: $message, data: ${jsonEncode(data)})';
