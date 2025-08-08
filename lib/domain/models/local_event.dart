@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:mobile_app_template/core/utils/helpers/number_helpers.dart';
 
+part 'local_event.g.dart';
+
 @collection
 class LocalEvent {
   Id id = Isar.autoIncrement; // Isar's local ID
@@ -15,8 +17,9 @@ class LocalEvent {
   late String location;
   late String description;
 
+  @ignore
   TimeOfDay get eventTime => TNumberHelper.minutesToTimeOfDay(_eventTimeInMinutes);
-
+  
   set eventTime(TimeOfDay time){
     _eventTimeInMinutes = TNumberHelper.timeOfDayToMinutes(time);
   }

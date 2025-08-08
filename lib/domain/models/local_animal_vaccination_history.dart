@@ -1,5 +1,7 @@
 import 'package:isar/isar.dart';
 
+part 'local_animal_vaccination_history.g.dart';
+
 @collection
 class LocalAnimalVaccinationRecord {
   Id id = Isar.autoIncrement;

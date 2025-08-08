@@ -6,6 +6,8 @@ import 'package:mobile_app_template/core/enums/animal_status.dart';
 import 'package:mobile_app_template/domain/models/local_animal_medication_record.dart';
 import 'package:mobile_app_template/domain/models/local_animal_vaccination_history.dart';
 
+part 'local_animal_model.g.dart';
+
 @collection 
 class LocalAnimalModel {
   Id id = Isar.autoIncrement;

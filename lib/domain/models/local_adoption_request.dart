@@ -1,7 +1,7 @@
 import 'package:isar/isar.dart';
 import 'package:mobile_app_template/core/enums/adoption_request.dart';
 
-// part 'adoption_request.g.dart'; // Run `flutter pub run build_runner build`
+part 'local_adoption_request.g.dart'; 
 
 @collection
 class LocalAdoptionRequest {

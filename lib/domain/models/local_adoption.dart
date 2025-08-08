@@ -1,11 +1,11 @@
 import 'package:isar/isar.dart';
 import 'package:mobile_app_template/core/enums/adoption_request.dart';
 
-// part 'adoption.g.dart';
+part 'local_adoption.g.dart';
 
 @collection
 class LocalAdoption {
-  int id = Isar.autoIncrement;
+  Id id = Isar.autoIncrement;
 
   late String remoteId;
   late String animalId;
@@ -14,6 +14,7 @@ class LocalAdoption {
 
   late DateTime adoptionDate;
 
+  @Enumerated(EnumType.name)
   late AdoptionRequestStatus adoptionStatus;
 
   List<String> notes = [];
