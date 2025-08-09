@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:mobile_app_template/core/utils/file/file_utility.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/network/multipart_file_data.dart';
-import 'package:mobile_app_template/network/network_client.dart';
 import 'package:mobile_app_template/network/response.dart';
 
-class DioNetworkClient extends NetworkClient {
+class DioNetworkClient {
   final Dio _dio;
 
   DioNetworkClient(this._dio);
@@ -48,7 +48,26 @@ class DioNetworkClient extends NetworkClient {
     }
   }
 
-  @override
+  Future<TResponse<T>>post<T>(
+    String url,
+    {
+      Map<String, String>? fields,
+      Map<String, String>? headers,
+      List<MultipartFileData>? files,
+      required T Function(Map<String, dynamic>) dataParser
+    }
+  ) => _sendWithMethod("POST", url, dataParser: dataParser);
+
+  Future<TResponse<T>> put<T>(
+    String url,
+    {
+      Map<String, String>? fields,
+      Map<String, String>? headers,
+      List<MultipartFileData>? files,
+      required T Function(Map<String, dynamic>) dataParser
+    }
+  ) => _sendWithMethod("PUT", url, dataParser: dataParser);
+
   Future<TResponse<T>> get<T>({
     required String url,
     Map<String, dynamic>? queryParameters,
@@ -62,16 +81,16 @@ class DioNetworkClient extends NetworkClient {
     );
   }
 
-  @override
   Future<TResponse<T>> delete<T>({
      required String url,
-    Map<String, dynamic>? queryParameters,
+    Map<String, String>? queryParameters,
     Map<String, String>? headers,
     required T Function(Map<String, dynamic>) dataParser
   }){
     return _request(
       () => _dio.delete(
         url,
+        queryParameters: queryParameters,
         options: Options(headers: headers)
       ), 
       dataParser, 
@@ -79,101 +98,76 @@ class DioNetworkClient extends NetworkClient {
     );
   }
 
-  @override 
-  Future<TResponse<T>> postJson<T>({
-    required String url,
-    required dynamic body,
-    Map<String, String>? headers,
-    required T Function(Map<String, dynamic>) dataParser
-  }){
-    return _request(
-      () => _dio.post(
-        url,
-        data: jsonEncode(body),
-        options:Options(
-          headers: {...?headers, 'Content-Type': 'application/json'}
-        )
-      ), dataParser, 
-      url  
+
+  Future<FormData> _attachFiles(List<MultipartFileData> files, FormData formData) async{
+    //return immediately when files is empty
+    if(files.isEmpty){
+      return formData;
+    }
+    final fileResponse = await Future.wait(
+      files.map((f) => TFileUtility.loadFileInIsolate(f.fieldName, f.filePath)
+      ).toList(),
+      eagerError: true
     );
-  }
 
-  @override
-  Future<TResponse<T>> putJson<T>({
-    required String url,
-    required dynamic body,
-    Map<String, String>? headers,
-    required T Function(Map<String, dynamic>) dataParser
-  }){
-    return _request(
-      () => _dio.put(
-        url,
-        data:jsonEncode(body),
-        options: Options(
-          headers: {...?headers, 'Content-Type': 'application/json' }
+    for( var i = 0; i < fileResponse.length; i++){
+      final file = fileResponse[i];
+      final original = files[i];
+
+      if(file.error != null || file.bytes == null) {
+        throw Exception(
+          "Parsing file ${original.filePath} failed: ${file.error ?? 'Unknown Error'}"
+        );
+      }
+      formData.files.add(
+        MapEntry(
+          original.fieldName, 
+          MultipartFile.fromBytes(
+            file.bytes!,
+            filename: file.fileName ?? original.filePath.split('/').last
+          )
         )
-      ), 
-      dataParser, 
-      url
-    );
+      );
+    }
+    return formData;
   }
 
-  @override 
-  Future<TResponse<T>> postMultipart<T>({
-    required String url,
-    Map<String, String>? fields,
-    Map<String, String>? headers,
-    List<MultipartFileData>? files,
-    required T Function(Map<String, dynamic>) dataParser
-  }){
-    return _sendMultipart(method: 'POST', url: url, dataParser: dataParser);
-  }
-
-  @override
-  Future<TResponse<T>> putMultipart<T>({
-    required String url,
-    Map<String, String>? fields,
-    Map<String, String>? headers,
-    List<MultipartFileData>? files,
-    required T Function(Map<String, dynamic>) dataParser
-  }){
-    return _sendMultipart(method: 'PUT', url: url, dataParser: dataParser);
-  }
-
-  Future<TResponse<T>> _sendMultipart<T>({
-    required String method,
-    required String url,
+  Future<TResponse<T>> _sendWithMethod<T>(
+    String method,
+    String url, {
     Map<String, String>? fields,
     Map<String, String>? headers,
     List<MultipartFileData>? files,
     required T Function(Map<String, dynamic>) dataParser,
-  }){
-    final formData = FormData();
-    if(fields != null) formData.fields.addAll(fields.entries);
-
-    if(files != null){
-      for(final f in files){
-        formData.files.add(MapEntry(
-            f.fieldName,
-            MultipartFile.fromFileSync(f.filePath, filename: f.fileName) 
-          )
-        );
-      }
+  }) {
+    if (files != null && files.isNotEmpty) {
+      return _request(
+        () async {
+          final formData = await _attachFiles(files, FormData()..fields.addAll(fields?.entries ?? []));
+          return _dio.request(url,
+            data: formData,
+            options: Options(method: method, headers: {...?headers, 'Content-Type': 'multipart/form-data'}),
+          );
+        },
+        dataParser,
+        url,
+      );
     }
 
     return _request(
       () => _dio.request(
         url,
-        data: formData,
+        data: jsonEncode(fields),
         options: Options(
-          method: method,
-          headers: {...?headers, 'Content-Type': 'multipart/form-data'}
-        )
+          method: method, 
+          headers: {...?headers, 'Content-Type': 'application/json'}
+        ),
       ),
       dataParser,
-      url
+      url,
     );
   }
+
   TResponse<T> _responseHandler<T>(
     Response response,
     T Function(Map<String, dynamic>) dataParser
@@ -183,6 +177,7 @@ class DioNetworkClient extends NetworkClient {
       fromData: dataParser as dynamic
     );
   }
+
 }
 
 

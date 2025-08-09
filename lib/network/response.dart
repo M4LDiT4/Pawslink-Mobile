@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:get/get_connect/connect.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:dio/dio.dart' as dio;
@@ -35,7 +34,7 @@ class TResponse<T> {
   /// Generates a [TResponse] object from a JSON map.
   factory TResponse.fromJson(
     Map<String, dynamic> json, {
-    T Function(dynamic)? fromData,
+    T Function(Map<String, dynamic>)? fromData,
     String? fieldName = "data",
     bool? isSuccessful,
     int? statusCode,
@@ -119,7 +118,7 @@ class TResponse<T> {
 
   factory TResponse.fromDioResponse(
     dio.Response response,
-   { T Function(dynamic)? fromData,
+   { T Function(Map<String, dynamic>)? fromData,
     String fieldName = 'data'}
   ){
     try{

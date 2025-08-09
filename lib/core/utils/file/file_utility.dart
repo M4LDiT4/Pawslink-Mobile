@@ -1,4 +1,12 @@
+import 'dart:io';
+import 'dart:isolate';
 import 'package:file_magic_number/file_magic_number.dart';
+import 'package:mobile_app_template/core/utils/file/file_load_request.dart';
+import 'package:mobile_app_template/core/utils/file/file_load_response.dart';
+
+
+
+
 
 class TFileUtility {
   static String? fileExtensionFromMagic(FileMagicNumberType type) {
@@ -19,15 +27,51 @@ class TFileUtility {
         return 'zip';
       case FileMagicNumberType.rar:
         return 'rar';
-      // Add more as needed
       default:
         return null;
     }
   }
 
-  static bool isFileNameTextFile(String filename){
+  static bool isFileNameTextFile(String filename) {
     final extension = filename.split('.').last.toLowerCase();
     return ['txt', 'md', 'csv', 'json', 'xml'].contains(extension);
   }
- 
+
+  // ---------- Isolate Entry Point for reading file in Isolate ----------
+  static Future<void> _readFileForMultipart(FileLoadRequest request) async {
+    try {
+      final fileBytes = await File(request.filePath).readAsBytes();
+      request.sendPort.send(FileLoadResponse(
+        bytes: fileBytes,
+        fieldName: request.fieldName,
+        fileName: request.filePath.split('/').last,
+      ));
+    } catch (e) {
+      request.sendPort.send(FileLoadResponse(
+        error: e.toString(),
+        fieldName: request.fieldName,
+      ));
+    }
+  }
+
+  // ---------- Public API for loading file in Isolate ----------
+  static Future<FileLoadResponse> loadFileInIsolate(
+    String fieldName,
+    String filePath,
+  ) async {
+    final receivePort = ReceivePort();
+
+    await Isolate.spawn(
+      _readFileForMultipart,
+      FileLoadRequest(
+        sendPort: receivePort.sendPort,
+        fieldName: fieldName,
+        filePath: filePath,
+      ),
+    );
+
+    final response = await receivePort.first as FileLoadResponse;
+    receivePort.close();
+    return response;
+  }
 }
