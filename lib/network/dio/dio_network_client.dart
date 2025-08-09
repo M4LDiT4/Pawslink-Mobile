@@ -13,7 +13,7 @@ class DioNetworkClient {
 
   Future<TResponse<T>> _request<T>(
     Future<Response> Function() requestFn,
-    T Function(Map<String, dynamic>) dataParser,
+    T Function(dynamic) dataParser,
     String fallbackPath,
   ) async {
     try{
@@ -54,7 +54,7 @@ class DioNetworkClient {
       Map<String, String>? fields,
       Map<String, String>? headers,
       List<MultipartFileData>? files,
-      required T Function(Map<String, dynamic>) dataParser
+      required T Function(dynamic) dataParser
     }
   ) => _sendWithMethod("POST", url, dataParser: dataParser);
 
@@ -64,7 +64,7 @@ class DioNetworkClient {
       Map<String, String>? fields,
       Map<String, String>? headers,
       List<MultipartFileData>? files,
-      required T Function(Map<String, dynamic>) dataParser
+      required T Function(dynamic) dataParser
     }
   ) => _sendWithMethod("PUT", url, dataParser: dataParser);
 
@@ -72,7 +72,7 @@ class DioNetworkClient {
     required String url,
     Map<String, dynamic>? queryParameters,
     Map<String, String>? headers,
-    required T Function(Map<String, dynamic>) dataParser
+    required T Function(dynamic) dataParser
   }){
     return _request(
       () => _dio.get(url, queryParameters: queryParameters, options: Options(headers: headers)), 
@@ -85,7 +85,7 @@ class DioNetworkClient {
      required String url,
     Map<String, String>? queryParameters,
     Map<String, String>? headers,
-    required T Function(Map<String, dynamic>) dataParser
+    required T Function(dynamic) dataParser
   }){
     return _request(
       () => _dio.delete(
@@ -138,7 +138,7 @@ class DioNetworkClient {
     Map<String, String>? fields,
     Map<String, String>? headers,
     List<MultipartFileData>? files,
-    required T Function(Map<String, dynamic>) dataParser,
+    required T Function(dynamic) dataParser,
   }) {
     if (files != null && files.isNotEmpty) {
       return _request(
@@ -170,11 +170,11 @@ class DioNetworkClient {
 
   TResponse<T> _responseHandler<T>(
     Response response,
-    T Function(Map<String, dynamic>) dataParser
+    T Function(dynamic) dataParser
   ){
       return TResponse<T>.fromDioResponse(
       response,
-      fromData: dataParser as dynamic
+      parser: dataParser
     );
   }
 

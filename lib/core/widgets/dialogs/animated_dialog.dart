@@ -69,7 +69,7 @@ class AnimatedDialog {
         //catches parsing error
       }catch(e){
         TLogger.error(e.toString());
-        return TResponse.failed(null);
+        return TResponse.failed();
       }
   }
 }

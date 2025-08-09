@@ -7,11 +7,11 @@ class SaveToDraftsDialog extends StatelessWidget {
   const SaveToDraftsDialog({super.key});
 
   void _handleCancel(){
-    TNavigationService.back(result: TResponse.failed("Will not save to drafts"));
+    TNavigationService.back(result: TResponse.failed(message: "Will not save to drafts"));
   }
 
   void _handleConfirm(){
-    TNavigationService.back(result: TResponse.successful("Saving to drafts"));
+    TNavigationService.back(result: TResponse.successful(message: "Saving to drafts"));
   }
 
   @override

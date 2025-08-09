@@ -67,7 +67,7 @@ class _LoadingDialogState extends State<LoadingDialog>{
       //creates a delay before removing the dialog from the navigation stack
       await Future.delayed( const Duration(seconds: 3));
       //return a successful TResponse
-      TNavigationService.back(result: TResponse.successful(null));
+      TNavigationService.back(result: TResponse.successful());
     //will set the state of the dialog to error
     //catches all errors and modfiies the _errMessage based on the cause of the error encountered
     } catch (e, stackTrace) {
