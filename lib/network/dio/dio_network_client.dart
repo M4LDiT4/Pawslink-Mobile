@@ -1,73 +1,19 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
-import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_store.dart';
-import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:mobile_app_template/core/utils/file/file_utility.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
-import 'package:mobile_app_template/network/dio/auth_interceptor.dart';
-import 'package:mobile_app_template/network/dio/connection_interceptor.dart';
+
 import 'package:mobile_app_template/network/multipart_file_data.dart';
 import 'package:mobile_app_template/network/network_client.dart';
 import 'package:mobile_app_template/network/operation_response.dart';
-import 'package:mobile_app_template/services/api/authentication.dart';
-import 'package:path_provider/path_provider.dart';
+
 
 class DioNetworkClient extends NetworkClient {
 
-  static final DioNetworkClient _instance = DioNetworkClient._internal();
-
-  factory DioNetworkClient() => _instance;
-
-  DioNetworkClient._internal();
-
   late final Dio _dio;
 
-  Future<void> init() async{
-    final cacheDir = await getTemporaryDirectory();
-    final cacheOptions = CacheOptions(
-      store: HiveCacheStore(cacheDir.path),
-      policy: CachePolicy.request,
-      hitCacheOnErrorExcept: [401, 403],
-      maxStale: const Duration(days: 7)
-    );
-
-    _dio = Dio(
-      BaseOptions(
-        connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 10),
-        contentType: 'application/json', //requests are json on default
-        responseType: ResponseType.json, //responses are json in default
-      )
-    );
-
-    _dio.interceptors.addAll(
-      [
-        DioCacheInterceptor(options: cacheOptions),
-
-        ConnectionInterceptor(),
-
-        AuthInterceptor(
-          getAccessToken: TAuthenticationService().getAccesstoken, 
-          rotateToken: TAuthenticationService().rotateToken, 
-          dio: _dio
-        ),
-
-        RetryInterceptor(
-          dio: _dio,
-          retries: 3,
-          retryDelays: const [
-            Duration(seconds: 1),
-            Duration(seconds: 2),
-            Duration(seconds: 3)
-          ],
-          logPrint: print
-        )
-      ],
-    );
-  }
-
+  DioNetworkClient(Dio dio): _dio = dio;
 
   Future<OperationResponse<T>> _request<T>(
     Future<Response> Function() requestFn,
@@ -83,7 +29,7 @@ class DioNetworkClient extends NetworkClient {
       final fallbackResponse = err.response ??
         Response(
           requestOptions: RequestOptions(path: fallbackPath),
-          statusCode: 500,
+          statusCode: _mapDioErrorToStatusCode(err),
           data: {'error': err.message?? 'No response received'}
         );
       
@@ -144,7 +90,7 @@ class DioNetworkClient extends NetworkClient {
   Future<OperationResponse<T>> delete<T>(
     String url,
     {
-      Map<String, String>? queryParameters,
+      Map<String, dynamic>? queryParameters,
       Map<String, String>? headers,
       required T Function(dynamic) dataParser
     }
@@ -239,6 +185,33 @@ class DioNetworkClient extends NetworkClient {
       parser: dataParser
     );
   }
+
+  int _mapDioErrorToStatusCode(DioException err) {
+  switch (err.type) {
+    case DioExceptionType.connectionTimeout:
+    case DioExceptionType.sendTimeout:
+      return 408; // Request Timeout
+
+    case DioExceptionType.receiveTimeout:
+      return 504; // Gateway Timeout
+
+    case DioExceptionType.badResponse:
+      return err.response?.statusCode ?? 500;
+
+    case DioExceptionType.cancel:
+      return 499; // Client Closed Request
+
+    case DioExceptionType.badCertificate:
+      return 495; // SSL Certificate Error
+
+    case DioExceptionType.connectionError:
+      return 503; // Service Unavailable
+
+    case DioExceptionType.unknown:
+      return 520; // Unknown Error
+  }
+}
+
 
 }
 

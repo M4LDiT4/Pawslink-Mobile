@@ -49,7 +49,7 @@ class OperationResponse<T> {
       final jsonData = jsonDecode(data);
       if(jsonData is Map<String, dynamic>){
         message = jsonData['message'] ?? jsonData['error'];
-        statusCode = jsonData["statusCode"];
+        statusCode = jsonData["statusCode"] as int;
         success = jsonData['success'];
         parsedData = parser(jsonData[targetField]);
       }else{
@@ -62,7 +62,11 @@ class OperationResponse<T> {
     }
 
     return OperationResponse(
-      isSuccessful: _reqSuccessByStatuscode(response.statusCode) ?? success ?? false,
+      isSuccessful: _reqSuccessByStatuscode(response.statusCode) 
+        ?? _reqSuccessByStatuscode(statusCode) 
+        ??success 
+        ?? false
+      ,
       statusCode: response.statusCode ?? statusCode ?? 400,
       data: parsedData,
       message: message ?? "No message provided"
@@ -93,6 +97,7 @@ class OperationResponse<T> {
     int? statusCode
   }) => OperationResponse(isSuccessful: true, statusCode: statusCode ?? 200, message: message ?? "Operation Successful");
 
+  /// Check if response is successful or not by using statusCode
   static bool? _reqSuccessByStatuscode(int? statusCode){
     if(statusCode == null){
       return null;
