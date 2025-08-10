@@ -58,7 +58,7 @@ class DioNetworkClient extends NetworkClient {
       Map<String, String>? fields,
       Map<String, String>? headers,
       List<MultipartFileData>? files,
-      required T Function(dynamic) dataParser
+      T Function(dynamic)? dataParser
     }
   ) => _sendWithMethod("POST", url, dataParser: dataParser);
   @override
@@ -68,7 +68,7 @@ class DioNetworkClient extends NetworkClient {
       Map<String, String>? fields,
       Map<String, String>? headers,
       List<MultipartFileData>? files,
-      required T Function(dynamic) dataParser
+      T Function(dynamic)? dataParser
     }
   ) => _sendWithMethod("PUT", url, dataParser: dataParser);
   @override
@@ -77,9 +77,10 @@ class DioNetworkClient extends NetworkClient {
     {
       Map<String, dynamic>? queryParameters,
       Map<String, String>? headers,
-      required T Function(dynamic) dataParser
+      T Function(dynamic)? dataParser
     }
   ){
+    dataParser ??= defaultParser;
     return _request(
       () => _dio.get(url, queryParameters: queryParameters, options: Options(headers: headers)), 
       dataParser, 
@@ -92,9 +93,10 @@ class DioNetworkClient extends NetworkClient {
     {
       Map<String, dynamic>? queryParameters,
       Map<String, String>? headers,
-      required T Function(dynamic) dataParser
+      T Function(dynamic)? dataParser
     }
   ){
+    dataParser ??= defaultParser;
     return _request(
       () => _dio.delete(
         url,
@@ -146,8 +148,9 @@ class DioNetworkClient extends NetworkClient {
     Map<String, String>? fields,
     Map<String, String>? headers,
     List<MultipartFileData>? files,
-    required T Function(dynamic) dataParser,
+    T Function(dynamic)? dataParser,
   }) {
+    dataParser ??= defaultParser;
     if (files != null && files.isNotEmpty) {
       return _request(
         () async {
@@ -187,32 +190,32 @@ class DioNetworkClient extends NetworkClient {
   }
 
   int _mapDioErrorToStatusCode(DioException err) {
-  switch (err.type) {
-    case DioExceptionType.connectionTimeout:
-    case DioExceptionType.sendTimeout:
-      return 408; // Request Timeout
+    switch (err.type) {
+      case DioExceptionType.connectionTimeout:
+      case DioExceptionType.sendTimeout:
+        return 408; // Request Timeout
 
-    case DioExceptionType.receiveTimeout:
-      return 504; // Gateway Timeout
+      case DioExceptionType.receiveTimeout:
+        return 504; // Gateway Timeout
 
-    case DioExceptionType.badResponse:
-      return err.response?.statusCode ?? 500;
+      case DioExceptionType.badResponse:
+        return err.response?.statusCode ?? 500;
 
-    case DioExceptionType.cancel:
-      return 499; // Client Closed Request
+      case DioExceptionType.cancel:
+        return 499; // Client Closed Request
 
-    case DioExceptionType.badCertificate:
-      return 495; // SSL Certificate Error
+      case DioExceptionType.badCertificate:
+        return 495; // SSL Certificate Error
 
-    case DioExceptionType.connectionError:
-      return 503; // Service Unavailable
+      case DioExceptionType.connectionError:
+        return 503; // Service Unavailable
 
-    case DioExceptionType.unknown:
-      return 520; // Unknown Error
+      case DioExceptionType.unknown:
+        return 520; // Unknown Error
+    }
   }
-}
 
-
+  T defaultParser<T>(dynamic data) => data as T;
 }
 
 
