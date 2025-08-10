@@ -1,17 +1,75 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_store.dart';
+import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:mobile_app_template/core/utils/file/file_utility.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
+import 'package:mobile_app_template/network/dio/auth_interceptor.dart';
+import 'package:mobile_app_template/network/dio/connection_interceptor.dart';
 import 'package:mobile_app_template/network/multipart_file_data.dart';
-import 'package:mobile_app_template/network/response.dart';
+import 'package:mobile_app_template/network/network_client.dart';
+import 'package:mobile_app_template/network/operation_response.dart';
+import 'package:mobile_app_template/services/api/authentication.dart';
+import 'package:path_provider/path_provider.dart';
 
-class DioNetworkClient {
-  final Dio _dio;
+class DioNetworkClient extends NetworkClient {
 
-  DioNetworkClient(this._dio);
+  static final DioNetworkClient _instance = DioNetworkClient._internal();
 
-  Future<TResponse<T>> _request<T>(
+  factory DioNetworkClient() => _instance;
+
+  DioNetworkClient._internal();
+
+  late final Dio _dio;
+
+  Future<void> init() async{
+    final cacheDir = await getTemporaryDirectory();
+    final cacheOptions = CacheOptions(
+      store: HiveCacheStore(cacheDir.path),
+      policy: CachePolicy.request,
+      hitCacheOnErrorExcept: [401, 403],
+      maxStale: const Duration(days: 7)
+    );
+
+    _dio = Dio(
+      BaseOptions(
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        contentType: 'application/json', //requests are json on default
+        responseType: ResponseType.json, //responses are json in default
+      )
+    );
+
+    _dio.interceptors.addAll(
+      [
+        DioCacheInterceptor(options: cacheOptions),
+
+        ConnectionInterceptor(),
+
+        AuthInterceptor(
+          getAccessToken: TAuthenticationService().getAccesstoken, 
+          rotateToken: TAuthenticationService().rotateToken, 
+          dio: _dio
+        ),
+
+        RetryInterceptor(
+          dio: _dio,
+          retries: 3,
+          retryDelays: const [
+            Duration(seconds: 1),
+            Duration(seconds: 2),
+            Duration(seconds: 3)
+          ],
+          logPrint: print
+        )
+      ],
+    );
+  }
+
+
+  Future<OperationResponse<T>> _request<T>(
     Future<Response> Function() requestFn,
     T Function(dynamic) dataParser,
     String fallbackPath,
@@ -47,8 +105,8 @@ class DioNetworkClient {
       return _responseHandler(fallbackResponse, dataParser);
     }
   }
-
-  Future<TResponse<T>>post<T>(
+  @override
+  Future<OperationResponse<T>>post<T>(
     String url,
     {
       Map<String, String>? fields,
@@ -57,8 +115,8 @@ class DioNetworkClient {
       required T Function(dynamic) dataParser
     }
   ) => _sendWithMethod("POST", url, dataParser: dataParser);
-
-  Future<TResponse<T>> put<T>(
+  @override
+  Future<OperationResponse<T>> put<T>(
     String url,
     {
       Map<String, String>? fields,
@@ -67,26 +125,30 @@ class DioNetworkClient {
       required T Function(dynamic) dataParser
     }
   ) => _sendWithMethod("PUT", url, dataParser: dataParser);
-
-  Future<TResponse<T>> get<T>({
-    required String url,
-    Map<String, dynamic>? queryParameters,
-    Map<String, String>? headers,
-    required T Function(dynamic) dataParser
-  }){
+  @override
+  Future<OperationResponse<T>> get<T>(
+    String url,
+    {
+      Map<String, dynamic>? queryParameters,
+      Map<String, String>? headers,
+      required T Function(dynamic) dataParser
+    }
+  ){
     return _request(
       () => _dio.get(url, queryParameters: queryParameters, options: Options(headers: headers)), 
       dataParser, 
       url
     );
   }
-
-  Future<TResponse<T>> delete<T>({
-     required String url,
-    Map<String, String>? queryParameters,
-    Map<String, String>? headers,
-    required T Function(dynamic) dataParser
-  }){
+  @override
+  Future<OperationResponse<T>> delete<T>(
+    String url,
+    {
+      Map<String, String>? queryParameters,
+      Map<String, String>? headers,
+      required T Function(dynamic) dataParser
+    }
+  ){
     return _request(
       () => _dio.delete(
         url,
@@ -132,7 +194,7 @@ class DioNetworkClient {
     return formData;
   }
 
-  Future<TResponse<T>> _sendWithMethod<T>(
+  Future<OperationResponse<T>> _sendWithMethod<T>(
     String method,
     String url, {
     Map<String, String>? fields,
@@ -168,12 +230,12 @@ class DioNetworkClient {
     );
   }
 
-  TResponse<T> _responseHandler<T>(
+  OperationResponse<T> _responseHandler<T>(
     Response response,
     T Function(dynamic) dataParser
   ){
-      return TResponse<T>.fromDioResponse(
-      response,
+    return OperationResponse.fromDioResponse(
+      response, 
       parser: dataParser
     );
   }

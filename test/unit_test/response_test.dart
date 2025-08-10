@@ -1,153 +1,151 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:dio/dio.dart' as dio;
-import 'package:mobile_app_template/network/response.dart';
-
-// Mock custom object for parsing
-class CustomObject {
-  final String name;
-  final int age;
-
-  CustomObject({required this.name, required this.age});
-
-  factory CustomObject.fromJson(Map<String, dynamic> json) {
-    return CustomObject(
-      name: json['name'] as String,
-      age: json['age'] as int,
-    );
-  }
-
-  Map<String, dynamic> toJson() => {
-        'name': name,
-        'age': age,
-      };
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is CustomObject &&
-          runtimeType == other.runtimeType &&
-          name == other.name &&
-          age == other.age;
-
-  @override
-  int get hashCode => name.hashCode ^ age.hashCode;
-}
+import 'package:mobile_app_template/core/utils/logger/logger.dart';
+import 'package:mobile_app_template/network/operation_response.dart';
 
 void main() {
-  group('TResponse Tests', () {
-    test('fromDioResponse - success case', () {
-      final responseData = jsonEncode({'name': 'John', 'age': 25});
-      final dioResponse = dio.Response(
-        requestOptions: dio.RequestOptions(path: ''),
+  group('OperationResponse', () {
+
+    test('fromDioResponse returns successful OperationResponse when status code 200 and valid data', () {
+      final responseData = jsonEncode({
+        'message': 'Success message',
+        'statusCode': 200,
+        'success': true,
+        'data': {'key': 'value'}
+      });
+      final dioResponse = Response(
         data: responseData,
         statusCode: 200,
+        requestOptions: RequestOptions(path: '/test'),
       );
 
-      final result = TResponse<CustomObject>.fromDioResponse(
+      final result = OperationResponse<Map<String, dynamic>>.fromDioResponse(
         dioResponse,
-        parser: (data) => CustomObject.fromJson(data),
+        parser: (json) {
+          TLogger.info(json.toString());
+          return json as Map<String, dynamic>;
+        },
       );
 
       expect(result.isSuccessful, true);
-      expect(result.data, CustomObject(name: 'John', age: 25));
+      expect(result.statusCode, 200);
+      expect(result.message, 'Success message');
+      expect(result.data, isA<Map<String, dynamic>>());
+      expect(result.data!['key'], 'value');
     });
 
-    test('fromDioResponse - null data', () {
-      final dioResponse = dio.Response(
-        requestOptions: dio.RequestOptions(path: ''),
+    test("fromDioResponse returns successful OperationResponse when status code 200 and data is list", (){
+      final intList = [1, 2, 3];
+      final dioResponse = Response(
+        data: jsonEncode(intList),
+        statusCode: 200,
+        requestOptions: RequestOptions(path: '/test')
+      ); 
+
+      final result = OperationResponse<List<int>>.fromDioResponse(
+        dioResponse, 
+        parser: (list){
+          TLogger.info("Runtime type: ${list.runtimeType.toString()}");
+          if (list is List) {
+            try {
+              final jsonList = <int>[];
+              jsonList.addAll(
+                list.map((item){
+                  if(item is int){
+                    return item;
+                  }
+                  if(item is String){
+                    final parsedNum = int.tryParse(item);
+                    if(parsedNum == null){
+                      throw  FormatException("$item is not a valid numeric string");
+                    }
+                    return parsedNum;
+                  }
+                  throw FormatException("$item is not a valid number or numeric string");
+                }).toList()
+              );
+              return jsonList;
+            } catch (e) {
+              TLogger.error(e.toString());
+              rethrow;
+            }
+          }
+          return <int>[];
+        }
+      );
+
+      expect(result.isSuccessful, true);
+      expect(result.statusCode, 200);
+      expect(result.data, isA<List<int>>());
+      expect(result.data, equals([1, 2, 3]));
+    });
+
+    test('fromDioResponse returns failed OperationResponse when status code 400 and error message', () {
+      final responseData = jsonEncode({
+        'error': 'Some error occurred',
+        'statusCode': 400,
+        'success': false,
+      });
+      final dioResponse = Response(
+        data: responseData,
+        statusCode: 400,
+        requestOptions: RequestOptions(path: '/test'),
+      );
+
+      final result = OperationResponse<dynamic>.fromDioResponse(
+        dioResponse,
+        parser: (json) => json,
+      );
+
+      expect(result.isSuccessful, false);
+      expect(result.statusCode, 400);
+      expect(result.message, 'Some error occurred');
+      expect(result.data, null);
+    });
+
+    test('fromDioResponse returns nullResponse when response data is null', () {
+      final dioResponse = Response(
         data: null,
-        statusCode: 200,
+        statusCode: 204,
+        requestOptions: RequestOptions(path: '/test'),
       );
 
-      final result = TResponse<CustomObject>.fromDioResponse(
+      final result = OperationResponse<dynamic>.fromDioResponse(
         dioResponse,
-        parser: (data) => CustomObject.fromJson(data),
+        parser: (json) => json,
       );
 
       expect(result.isSuccessful, true);
+      expect(result.statusCode, 204);
+      expect(result.message, 'Dio response is null');
       expect(result.data, null);
-      expect(result.message, 'Dio Null Response');
     });
 
-    test('fromDioResponse - parsing failure', () {
-      final invalidJson = jsonEncode({'unexpected': 'field'});
-      final dioResponse = dio.Response(
-        requestOptions: dio.RequestOptions(path: ''),
-        data: invalidJson,
-        statusCode: 200,
-      );
+    test('nullResponse factory creates an OperationResponse with default values', () {
+      final response = OperationResponse.nullResponse();
 
-      final result = TResponse<CustomObject>.fromDioResponse(
-        dioResponse,
-        parser: (data) => throw Exception("Parse error"),
-      );
-
-      expect(result.data, null);
-      expect(result.isSuccessful, true);
+      expect(response.isSuccessful, false);
+      expect(response.statusCode, 400);
+      expect(response.message, 'No response provided');
+      expect(response.data, null);
     });
 
-    test('successful factory', () {
-      final result = TResponse.successful(message: 'OK', statusCode: 201);
-      expect(result.isSuccessful, true);
-      expect(result.statusCode, 201);
-      expect(result.message, 'OK');
+    test('failedResponse factory creates an OperationResponse with false isSuccessful', () {
+      final response = OperationResponse.failedResponse(message: 'Failure', statusCode: 500);
+
+      expect(response.isSuccessful, false);
+      expect(response.statusCode, 500);
+      expect(response.message, 'Failure');
     });
 
-    test('failed factory', () {
-      final result = TResponse.failed(message: 'Not Found', statusCode: 404);
-      expect(result.isSuccessful, false);
-      expect(result.statusCode, 404);
-      expect(result.message, 'Not Found');
-    });
+    test('successfulResponse factory creates an OperationResponse with true isSuccessful', () {
+      final response = OperationResponse.successfulResponse(message: 'Success', statusCode: 201);
 
-    test('parseFromJson - success case', () {
-      final json = {
-        'success': true,
-        'statusCode': 200,
-        'data': {'name': 'Alice', 'age': 30},
-        'message': 'Success'
-      };
-
-      final result = TResponse<CustomObject>.parseFromJson(
-        json,
-        parser: (data) => CustomObject.fromJson(data),
-      );
-
-      expect(result.isSuccessful, true);
-      expect(result.data, CustomObject(name: 'Alice', age: 30));
-    });
-
-    test('parseFromJson - missing data field throws exception', () {
-      final json = {'success': true, 'statusCode': 200};
-      expect(
-        () => TResponse<CustomObject>.parseFromJson(
-          json,
-          parser: (data) => CustomObject.fromJson(data),
-        ),
-        throwsFormatException,
-      );
-    });
-
-    test('nullResponse factory', () {
-      final result = TResponse.nullResponse(message: 'Empty');
-      expect(result.isSuccessful, false);
-      expect(result.message, 'Empty');
-    });
-
-    test('toString includes all fields', () {
-      final obj = CustomObject(name: 'Test', age: 40);
-      final response = TResponse<CustomObject>(
-        success: true,
-        statusCode: 200,
-        message: 'Hello',
-        data: obj,
-      );
-      final str = response.toString();
-      expect(str, contains('TResponse<CustomObject>'));
-      expect(str, contains('Hello'));
-      expect(str, contains('Test'));
+      expect(response.isSuccessful, true);
+      expect(response.statusCode, 201);
+      expect(response.message, 'Success');
     });
   });
 }
