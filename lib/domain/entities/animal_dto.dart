@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:mobile_app_template/domain/entities/animal_medication_dto.dart';
 import 'package:mobile_app_template/domain/entities/animal_vaccination_dto.dart';
@@ -95,7 +96,7 @@ class AnimalDTO extends BaseDto{
   /// inserts new items to the `medicationHistory
   /// ### Parameters
   /// - **[medList]**: a [List] of [AnimalMedicationDTO] that will be added to the current `medicationHistory`
-  void insertMedicaitonHistory(List<AnimalMedicationDTO> medList){
+  void insertMedicationHistory(List<AnimalMedicationDTO> medList){
     medicationHistory.addAll(medList);
   }
 
@@ -158,8 +159,8 @@ class AnimalDTO extends BaseDto{
   /// Converts [AnimalDTO] to [Map] of key type [String] and value type [dynamic]
   /// ### Notes:
   /// - use this representation for API requests like form data or JSON
-  Map<String, dynamic> toMap(){
-    final Map<String, dynamic> animal = {
+  Map<String, String> toMap(){
+    final Map<String, String> animal = {
       'name': name,
       'sex': sex.label,
       'status': status.label,
@@ -181,7 +182,7 @@ class AnimalDTO extends BaseDto{
     };
 
     if(age != null){
-      animal['age'] = age;
+      animal['age'] = age!.toString();
     }
 
     if(sterilizationDate != null){
@@ -189,7 +190,7 @@ class AnimalDTO extends BaseDto{
     }
 
     if(remoteId != null){
-      animal['_id'] = remoteId;
+      animal['_id'] = remoteId!;
     }
 
     return animal;
