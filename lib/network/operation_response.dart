@@ -46,10 +46,19 @@ class OperationResponse<T> {
     int? statusCode;
     bool? success;
     try{
-      final jsonData = jsonDecode(data);
+      // if data is string, decode as json, otherwise retain
+      final jsonData = data is String? jsonDecode(data): data;
+      //if jsonData is map, these are the assumptions
+      //jsonData
+      //  -may or may not have a message or error field
+      //  -may or may not have a statusCode field
+      //  -may or may not have a success field
+      //  -may nor may not have a field defined by `targetField`
+      // Note
+      //  -assumes that response data is in the `targetField` key
       if(jsonData is Map<String, dynamic>){
         message = jsonData['message'] ?? jsonData['error'];
-        statusCode = jsonData["statusCode"] as int;
+        statusCode = jsonData["statusCode"];
         success = jsonData['success'];
         parsedData = parser(jsonData[targetField]);
       }else{

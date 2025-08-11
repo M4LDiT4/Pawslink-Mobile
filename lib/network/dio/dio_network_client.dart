@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:mobile_app_template/core/utils/file/file_utility.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
 
@@ -60,7 +61,14 @@ class DioNetworkClient extends NetworkClient {
       List<MultipartFileData>? files,
       T Function(dynamic)? dataParser
     }
-  ) => _sendWithMethod("POST", url, dataParser: dataParser);
+  ) => _sendWithMethod(
+    "POST", 
+    url, 
+    dataParser: dataParser,
+    fields: fields,
+    headers: headers,
+    files: files
+  );
   @override
   Future<OperationResponse<T>> put<T>(
     String url,
@@ -70,7 +78,14 @@ class DioNetworkClient extends NetworkClient {
       List<MultipartFileData>? files,
       T Function(dynamic)? dataParser
     }
-  ) => _sendWithMethod("PUT", url, dataParser: dataParser);
+  ) => _sendWithMethod(
+    "PUT", 
+    url, 
+    dataParser: dataParser,
+    fields: fields,
+    headers: headers,
+    files: files
+  );
   @override
   Future<OperationResponse<T>> get<T>(
     String url,
@@ -151,6 +166,7 @@ class DioNetworkClient extends NetworkClient {
     T Function(dynamic)? dataParser,
   }) {
     dataParser ??= defaultParser;
+    //send form data if at least one file is attached
     if (files != null && files.isNotEmpty) {
       return _request(
         () async {
@@ -165,6 +181,7 @@ class DioNetworkClient extends NetworkClient {
       );
     }
 
+    //send a json string if there is no file/s attached
     return _request(
       () => _dio.request(
         url,
