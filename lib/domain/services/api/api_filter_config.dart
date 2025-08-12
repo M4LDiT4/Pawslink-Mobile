@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:mobile_app_template/core/enums/filter_condition_type.dart';
 
 class ApiFilterConfig {
@@ -177,5 +179,13 @@ class ApiFilterConfig {
         throw const FormatException("Expects a boolean value or null for 'exists'");
       }
     }
+  }
+
+  Map<String, dynamic> toMap(){
+    return {
+      'field': field,
+      'condition': condition.toString(),
+      'value': jsonEncode(value)
+    };
   }
 }

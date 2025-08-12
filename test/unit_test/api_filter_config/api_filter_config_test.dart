@@ -128,4 +128,5 @@ void main() {
       expect(() => ApiFilterConfig(FilterConditionType.exists, 'true', 'field'), throwsFormatException);
     });
   });
+
 }
