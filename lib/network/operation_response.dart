@@ -22,10 +22,11 @@ class OperationResponse<T> {
   /// - **[response]**: a dio [Response] object that will be used to construct the new [OperationResponse]
   /// - **[parser]** : a function that parses the `data` field of the dio response
   /// ### Returns
-  /// A [OperationResponse] object
+  /// A [OperationResponse] object that reprensents the processed data from the response of the request
   /// 
   /// ### Notes
   /// - This parser-constructor assumes that the `data` field can be parsed directly by the `parser` function
+  /// - If [response.data] is an instance of [Map], it assumes that the data is stored in the `targetField` field 
   factory OperationResponse.fromDioResponse(
     Response response,
     {

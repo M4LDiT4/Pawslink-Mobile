@@ -51,4 +51,44 @@ void main() {
       expect(response.bytes, isNull);
     });
   });
+
+    test('loadFileInIsolate reads a list of files correctly', () async {
+    // Create multiple temp files
+    final tempDir = Directory.systemTemp.createTempSync();
+    final filesData = {
+      'file1.txt': 'Content of file 1',
+      'file2.txt': 'Content of file 2',
+      'file3.txt': 'Content of file 3',
+    };
+
+    final filePaths = <String>[];
+    for (final entry in filesData.entries) {
+      final file = File('${tempDir.path}/${entry.key}');
+      await file.writeAsString(entry.value);
+      filePaths.add(file.path);
+    }
+
+    // Load files in parallel
+    final responses = await Future.wait(
+      filePaths.map((path) =>
+          TFileUtility.loadFileInIsolate('testField', path)),
+    );
+
+    // Assertions
+    for (int i = 0; i < responses.length; i++) {
+      final response = responses[i];
+      final fileName = filePaths[i].split(Platform.pathSeparator).last;
+      final expectedContent = filesData[fileName];
+
+      expect(response.error, isNull);
+      expect(response.bytes, isNotNull);
+      expect(String.fromCharCodes(response.bytes!), equals(expectedContent));
+      expect(response.fileName, equals(fileName));
+      expect(response.fieldName, equals('testField'));
+    }
+
+    // Cleanup
+    await tempDir.delete(recursive: true);
+  });
+
 }

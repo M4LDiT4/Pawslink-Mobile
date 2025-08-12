@@ -53,6 +53,12 @@ class TFileUtility {
     }
   }
 
+  /// Reads files as bytes and returns a [FileLoadResponse] that can be easily inserted in a [Map]
+  /// ### Parameters
+  /// - **[fieldName]**: [String] key of file/bytes when inserted in a file
+  /// - **[filePath]**: [String] directory path of the file, file may or may not exist;
+  /// ### Returns
+  /// [FileLoadResponse] a JSON object that represents the read file and the key it will have when inserted in a [Map]
   static Future<FileLoadResponse> loadFileInIsolate(
     String fieldName,
     String filePath,

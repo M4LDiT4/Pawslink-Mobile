@@ -176,7 +176,7 @@ class DioNetworkClient extends NetworkClient {
     List<MultipartFileData>? files,
     T Function(dynamic)? dataParser,
   }) {
-    dataParser ??= defaultParser;
+    dataParser ??= defaultParser; // default parser if dataParser is not provided
     //send form data if at least one file is attached
     if (files != null && files.isNotEmpty) {
       return _request(
@@ -242,7 +242,14 @@ class DioNetworkClient extends NetworkClient {
         return 520; // Unknown Error
     }
   }
-
+  /// Parses the data as of the same type as the type parameter
+  /// ### Parameters:
+  /// - **[data]**: data from the [Response.data].
+  /// If [Response.data] is a [Map], data is taken from the `data` field
+  /// ### Notes:
+  ///  - Parses the data to dynamic
+  ///  - Assumes that if the [Response.data] is a [Map], the data will be taken from the
+  /// `data` key of the map 
   T defaultParser<T>(dynamic data) => data as T;
 }
 
