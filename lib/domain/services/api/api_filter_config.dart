@@ -1,10 +1,6 @@
-import 'dart:convert';
-
 import 'package:mobile_app_template/core/enums/filter_condition_type.dart';
 import 'package:mobile_app_template/core/enums/general_data_types.dart';
-import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/core/utils/network/serialization.dart';
-import 'package:mobile_app_template/domain/entities/base_dto.dart';
 
 class ApiFilterConfig {
   final FilterConditionType condition;
