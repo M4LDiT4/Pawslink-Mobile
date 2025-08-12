@@ -37,7 +37,6 @@ class TFileUtility {
     return ['txt', 'md', 'csv', 'json', 'xml'].contains(extension);
   }
 
-  // ---------- Isolate Entry Point for reading file in Isolate ----------
   static Future<void> _readFileForMultipart(FileLoadRequest request) async {
     try {
       final fileBytes = await File(request.filePath).readAsBytes();
@@ -54,7 +53,6 @@ class TFileUtility {
     }
   }
 
-  // ---------- Public API for loading file in Isolate ----------
   static Future<FileLoadResponse> loadFileInIsolate(
     String fieldName,
     String filePath,

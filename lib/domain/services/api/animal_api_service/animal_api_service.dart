@@ -35,16 +35,16 @@ class AnimalApiService {
     _baseUrl = Uri.parse('$backendUrl$_basePath');
   }
 
-  Future<OperationResponse<AnimalDTO>> addAnimal(AnimalDTO animal, File profilePicture) async{
+  Future<OperationResponse<AnimalDTO>> addAnimal(AnimalDTO animal, {File? profilePicture}) async{
     try{
       _checkIfPreConditionValid();
       final savedAnimal = await _client!.post<AnimalDTO>(
         "${_baseUrl!.path}/$_addAnimalPath", 
         dataParser: (item) => AnimalDTO.fromMap(item),
         fields: animal.toMap(),
-        files: [
+        files: profilePicture != null? [
           MultipartFileData(fieldName: 'image', filePath: profilePicture.path)
-        ]
+        ]: []
       );
       return savedAnimal;
     }catch(err, stack){

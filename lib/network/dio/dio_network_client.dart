@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
+import 'package:mobile_app_template/core/utils/file/file_load_response.dart';
 import 'package:mobile_app_template/core/utils/file/file_utility.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
 
@@ -124,38 +125,48 @@ class DioNetworkClient extends NetworkClient {
   }
 
 
-  Future<FormData> _attachFiles(List<MultipartFileData> files, FormData formData) async{
-    //return immediately when files is empty
-    if(files.isEmpty){
+  Future<FormData> _attachFiles(
+    List<MultipartFileData> files,
+    FormData formData, {
+    Future<FileLoadResponse> Function(String, String)? fileLoader,
+  }) async {
+    // Use dependency injection for testability
+    final loader = fileLoader ?? TFileUtility.loadFileInIsolate;
+
+    // Return immediately when files is empty
+    if (files.isEmpty) {
       return formData;
     }
+
     final fileResponse = await Future.wait(
-      files.map((f) => TFileUtility.loadFileInIsolate(f.fieldName, f.filePath)
-      ).toList(),
-      eagerError: true
+      files.map((f) => loader(f.fieldName, f.filePath)).toList(),
+      eagerError: true,
     );
 
-    for( var i = 0; i < fileResponse.length; i++){
+    for (var i = 0; i < fileResponse.length; i++) {
       final file = fileResponse[i];
       final original = files[i];
 
-      if(file.error != null || file.bytes == null) {
+      if (file.error != null || file.bytes == null) {
         throw Exception(
-          "Parsing file ${original.filePath} failed: ${file.error ?? 'Unknown Error'}"
+          "Parsing file ${original.filePath} failed: ${file.error ?? 'Unknown Error'}",
         );
       }
+
       formData.files.add(
         MapEntry(
-          original.fieldName, 
+          original.fieldName,
           MultipartFile.fromBytes(
             file.bytes!,
-            filename: file.fileName ?? original.filePath.split('/').last
-          )
-        )
+            filename: file.fileName ??
+                original.filePath.split('/').last,
+          ),
+        ),
       );
     }
     return formData;
   }
+
 
   Future<OperationResponse<T>> _sendWithMethod<T>(
     String method,
