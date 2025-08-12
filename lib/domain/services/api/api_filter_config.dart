@@ -1,6 +1,10 @@
 import 'dart:convert';
 
 import 'package:mobile_app_template/core/enums/filter_condition_type.dart';
+import 'package:mobile_app_template/core/enums/general_data_types.dart';
+import 'package:mobile_app_template/core/utils/logger/logger.dart';
+import 'package:mobile_app_template/core/utils/network/serialization.dart';
+import 'package:mobile_app_template/domain/entities/base_dto.dart';
 
 class ApiFilterConfig {
   final FilterConditionType condition;
@@ -182,10 +186,27 @@ class ApiFilterConfig {
   }
 
   Map<String, dynamic> toMap(){
+    dynamic serializableValue;
+    switch(SerializationUtility.getGenericDataType(value)){
+      case GeneralDataTypes.isPrimitive:
+        serializableValue = value;
+        break;
+      case GeneralDataTypes.isIterable:
+        serializableValue = SerializationUtility.serializeIterableData(value as Iterable);
+        break;
+      case GeneralDataTypes.isNoValue:
+        serializableValue = null;
+        break;
+      case GeneralDataTypes.isObject:
+        serializableValue = SerializationUtility.serializeObject(value as Object);
+        break;
+    }
     return {
       'field': field,
       'condition': condition.toString(),
-      'value': jsonEncode(value)
+      'value': serializableValue
     };
   }
+
 }
+
