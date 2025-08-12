@@ -72,8 +72,8 @@ class AnimalApiService {
       queryParameters['sortOrder'] = sortConfig?.order.name ?? SortOrder.asc.name;
 
       queryParameters['filterBy'] = filterConfig?.field;
-      queryParameters['filterCondition'] = filterConfig?.type.name;
-      queryParameters['filterValue'] = filterConfig?.type.toString();
+      queryParameters['filterCondition'] = filterConfig?.condition.name;
+      queryParameters['filterValue'] = filterConfig?.condition.toString();
       queryParameters['page'] = page;
       queryParameters['limit'] = limit;
       
