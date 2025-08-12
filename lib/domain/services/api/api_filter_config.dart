@@ -2,10 +2,12 @@ import 'package:mobile_app_template/core/enums/filter_condition_type.dart';
 import 'package:mobile_app_template/core/enums/general_data_types.dart';
 import 'package:mobile_app_template/core/utils/network/serialization.dart';
 
+/// ## ApiFilterConfig
+/// A class to create and serialize filters
 class ApiFilterConfig {
-  final FilterConditionType condition;
-  final dynamic value;
-  final String field;
+  final FilterConditionType condition; // condition to meet to include item to the returned result
+  final dynamic value; // value for comparison
+  final String field; //field in the model to compare the value to
 
   ApiFilterConfig(this.condition, this.value, this.field) {
     _validate();
@@ -181,6 +183,9 @@ class ApiFilterConfig {
     }
   }
 
+  /// Serializes value for easier json encoding
+  /// ### Return
+  /// A [Map] with key [String] and value [dynamic] that represents the JSON form of the filter
   Map<String, dynamic> toMap(){
     dynamic serializableValue;
     switch(SerializationUtility.getGenericDataType(value)){

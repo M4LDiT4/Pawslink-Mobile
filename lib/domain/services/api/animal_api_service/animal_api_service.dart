@@ -2,7 +2,6 @@
 import 'dart:io';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:mobile_app_template/core/enums/sort_order.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/domain/entities/animal_dto.dart';
 import 'package:mobile_app_template/domain/services/api/api_filter_config.dart';
@@ -67,11 +66,9 @@ class AnimalApiService {
     try{
       Map<String, dynamic> queryParameters ={};
 
-      //insert sort config
-      queryParameters['sortBy'] = sortConfig?.field ?? "_id";
-      queryParameters['sortOrder'] = sortConfig?.order.name ?? SortOrder.asc.name;
+      queryParameters['sortConfig'] = sortConfig?.toMap();
 
-      queryParameters['filterBy'] = filterConfig?.field;
+      queryParameters['filterBy'] = filterConfig?.field ?? ApiSortConfig.withDefaults().toMap();
       queryParameters['filterCondition'] = filterConfig?.condition.name;
       queryParameters['filterValue'] = filterConfig?.condition.toString();
       queryParameters['page'] = page;
