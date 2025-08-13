@@ -1,8 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile_app_template/core/utils/logger/logger.dart';
+import 'package:mobile_app_template/features/animal_database/widgets/scan_qr_code/dialogs/resolution_dialog.dart';
 import 'package:mobile_app_template/network/dio/dio_network_client.dart';
+import 'package:mobile_app_template/network/multipart_file_data.dart';
 import 'package:mobile_app_template/network/operation_response.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
@@ -239,6 +243,77 @@ void main() {
 
         expect(result.isSuccessful, true);
       });
+
+      test(
+        "Attaching file to the request sets the content type to multipart/form-data and data to be type FormData", 
+        () async {
+          final tempFile = File('${Directory.systemTemp.path}/testfile.txt');
+          const content = 'Hello from isolate!';
+          await tempFile.writeAsString(content);
+
+          final mockResponse = Response(
+            requestOptions: RequestOptions(path: '/post'),
+            data: {
+              'data': {
+                'statusCode': 200,
+                'success': true
+              }
+            }
+          );
+
+          when(
+            mockDio.request(
+            any, 
+            data:anyNamed('data'),
+            queryParameters: anyNamed('queryParameters'),
+            options: anyNamed('options'),
+            cancelToken: anyNamed('cancelToken'),
+            onReceiveProgress: anyNamed('onReceiveProgress'),
+            onSendProgress: anyNamed('onSendProgress')
+            )
+          ).thenAnswer((_) async => mockResponse );
+
+          final result = await dioClient.post(
+            '/post',
+            files:  [MultipartFileData(
+              fieldName: 'image', 
+              filePath: tempFile.path
+            )]
+          );
+
+          verify(mockDio.request(
+            any, 
+            data: argThat(
+              predicate((data) {
+                if(data is FormData){
+                  return data.files.any((field){
+                    return field.key == 'image';
+                  });
+                }
+                return false;
+              }),
+              named: 'data'
+            ),
+            queryParameters: anyNamed('queryParameters'),
+            options: argThat(
+              predicate<Options>(
+                (o) => 
+                  o.headers?['content-type'] == 'multipart/form-data' ||
+                  o.headers?['Content-Type'] == 'multipart/form-data',
+                
+              ),
+              named: 'options'
+             ),
+            cancelToken: anyNamed('cancelToken'),
+            onReceiveProgress: anyNamed('onReceiveProgress'),
+            onSendProgress: anyNamed('onSendProgress')
+            )
+          ).called(1);
+
+          expect(result, isA<OperationResponse>());
+          await tempFile.delete();
+        }
+      );
 
   });
 }
