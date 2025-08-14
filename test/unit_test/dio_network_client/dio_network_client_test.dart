@@ -3,8 +3,6 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile_app_template/core/utils/logger/logger.dart';
-import 'package:mobile_app_template/features/animal_database/widgets/scan_qr_code/dialogs/resolution_dialog.dart';
 import 'package:mobile_app_template/network/dio/dio_network_client.dart';
 import 'package:mobile_app_template/network/multipart_file_data.dart';
 import 'package:mobile_app_template/network/operation_response.dart';

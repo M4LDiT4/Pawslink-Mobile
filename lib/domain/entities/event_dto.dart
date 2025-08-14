@@ -31,16 +31,16 @@ class EventDTO extends BaseDto<LocalEvent> {
   }
 
   @override
-  Map<String, dynamic> toMap() {
-    final Map<String, dynamic> event = {
+  Map<String, String> toMap() {
+    final Map<String, String> event = {
       'eventName': eventName,
       'eventDate': eventDate.toIso8601String(),
-      'eventTime': TNumberHelper.timeOfDayToMinutes(eventTime), // or store as Map if needed
+      'eventTime': TNumberHelper.timeOfDayToMinutes(eventTime).toString(), // or store as Map if needed
       'location': location,
       'description': description,
     };
     if(remoteId != null){
-      event['_id'] = remoteId;
+      event['_id'] = remoteId!;
     }
 
     return event;
