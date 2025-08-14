@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/get_navigation.dart';
+import 'package:get/utils.dart';
 import 'package:isar/isar.dart';
 import 'package:mobile_app_template/core/constants/colors.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
@@ -6,7 +8,9 @@ import 'package:mobile_app_template/core/dependency_injection/dependency_injecti
 import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
 import 'package:mobile_app_template/core/utils/device/device_utility.dart';
 import 'package:mobile_app_template/core/widgets/buttons/admin/admin_home_actionbutton.dart';
+import 'package:mobile_app_template/core/widgets/dialogs/async_generic_loader/async_generic_loader.dart';
 import 'package:mobile_app_template/domain/repositories/event_repository.dart';
+import 'package:mobile_app_template/network/operation_response.dart';
 import 'package:mobile_app_template/services/navigation/navigation_service.dart';
 
 class AdminEventsScreens extends StatefulWidget {
@@ -36,6 +40,21 @@ class _AdminEventsScreensState extends State<AdminEventsScreens> {
 
   void _navigateToViewEvent(){
     TNavigationService.toNamed(TAppRoutes.viewEvents);
+  }
+
+  Future<OperationResponse> waitSomeTime({int seconds = 2}) async {
+    await Future.delayed(Duration(seconds: seconds));
+    
+    // return OperationResponse.successfulResponse();
+    throw Exception("Failed");
+  }
+
+
+  void _showTrialDialog(){
+    Get.defaultDialog(
+      title: "Saving animal",
+      content: AsyncGenericLoader(asyncFunction: waitSomeTime)
+    );
   }
 
   @override
@@ -79,7 +98,7 @@ class _AdminEventsScreensState extends State<AdminEventsScreens> {
                 ),
                 AdminHomeActionButtons(
                   label: "Drafts",
-                  onPress: () {},
+                  onPress: _showTrialDialog,
                 ),
                 AdminHomeActionButtons(
                   label: "+ Add Events",
