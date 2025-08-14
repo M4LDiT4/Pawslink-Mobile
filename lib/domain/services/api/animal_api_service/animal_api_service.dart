@@ -79,7 +79,8 @@ class AnimalApiService {
         dataParser: (item) => OperationResponse.listParser(
           item, 
           itemParser: (item) => AnimalDTO.fromMap(item)
-        )
+        ),
+        queryParameters: queryParameters
       );
       return response;
     }catch(err, stack){

@@ -1,10 +1,11 @@
 
 import 'dart:io';
 
-import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/domain/entities/event_dto.dart';
+import 'package:mobile_app_template/domain/services/api/api_filter_config.dart';
+import 'package:mobile_app_template/domain/services/api/api_sort_config.dart';
 import 'package:mobile_app_template/network/multipart_file_data.dart';
 import 'package:mobile_app_template/network/network_client.dart';
 import 'package:mobile_app_template/network/operation_response.dart';
@@ -63,6 +64,40 @@ class EventApiService {
       TLogger.info("Stack: \n ${stack.toString()}");
       return OperationResponse.failedResponse(
         message: "An exception occured while saving ${event.eventName} to database"
+      );
+    }
+  }
+
+  Future<OperationResponse<List<EventDTO>>> getEvents({
+    int page = 1,
+    int limit = 50,
+    bool? all = false,
+    ApiSortConfig? sortConfig,
+    ApiFilterConfig? filterConfig
+  }) async{
+    try{
+      Map<String, dynamic> queryParameters = {};
+
+      queryParameters['sortConfig'] = sortConfig?.toMap();
+      queryParameters['filterConfig'] = filterConfig?.toMap();
+      queryParameters['page'] = page;
+      queryParameters['limit'] = limit;
+
+      final response = await _client!.get(
+        "${_baseUrl.toString()}$_getEventPath", 
+        dataParser: (item) => OperationResponse.listParser(
+          item,
+          itemParser: (item) => EventDTO.fromMap(item)
+        ),
+        queryParameters: queryParameters
+      );
+
+      return response;
+    }catch(err, stack){
+      TLogger.error("Get event operation failed: ${err.toString()}");
+      TLogger.debug("Stack: \n ${stack.toString()}");
+      return OperationResponse.failedResponse(
+        message: "An exception occured while getting events"
       );
     }
   }
