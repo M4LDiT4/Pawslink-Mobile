@@ -152,7 +152,7 @@ class DioNetworkClient extends NetworkClient {
           "Parsing file ${original.filePath} failed: ${file.error ?? 'Unknown Error'}",
         );
       }
-
+      
       formData.files.add(
         MapEntry(
           original.fieldName,
