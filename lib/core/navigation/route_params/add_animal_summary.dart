@@ -74,7 +74,6 @@ class AddAnimalSummaryParams extends RouteParamBaseClass{
     ..traitsAndPersonality = traits
     ..createdAt = DateTime.now()
     ..updatedAt = DateTime.now()
-    ..imgUrl = null
     ..sterilizationDate = sterilizationDate;
 
     return animal;

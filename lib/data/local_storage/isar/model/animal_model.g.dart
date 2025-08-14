@@ -37,10 +37,10 @@ const AnimalSchema = CollectionSchema(
       name: r'createdAt',
       type: IsarType.dateTime,
     ),
-    r'imgUrl': PropertySchema(
+    r'imgUrls': PropertySchema(
       id: 4,
-      name: r'imgUrl',
-      type: IsarType.string,
+      name: r'imgUrls',
+      type: IsarType.stringList,
     ),
     r'location': PropertySchema(
       id: 5,
@@ -57,42 +57,47 @@ const AnimalSchema = CollectionSchema(
       name: r'notes',
       type: IsarType.stringList,
     ),
-    r'saveStatus': PropertySchema(
+    r'profileImgUrl': PropertySchema(
       id: 8,
+      name: r'profileImgUrl',
+      type: IsarType.string,
+    ),
+    r'saveStatus': PropertySchema(
+      id: 9,
       name: r'saveStatus',
       type: IsarType.string,
       enumMap: _AnimalsaveStatusEnumValueMap,
     ),
     r'sex': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'sex',
       type: IsarType.string,
       enumMap: _AnimalsexEnumValueMap,
     ),
     r'species': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'species',
       type: IsarType.string,
       enumMap: _AnimalspeciesEnumValueMap,
     ),
     r'status': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'status',
       type: IsarType.string,
       enumMap: _AnimalstatusEnumValueMap,
     ),
     r'sterilizationDate': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'sterilizationDate',
       type: IsarType.dateTime,
     ),
     r'traitsAndPersonality': PropertySchema(
-      id: 13,
+      id: 14,
       name: r'traitsAndPersonality',
       type: IsarType.stringList,
     ),
     r'updatedAt': PropertySchema(
-      id: 14,
+      id: 15,
       name: r'updatedAt',
       type: IsarType.dateTime,
     )
@@ -144,9 +149,15 @@ int _animalEstimateSize(
     }
   }
   {
-    final value = object.imgUrl;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
+    final list = object.imgUrls;
+    if (list != null) {
+      bytesCount += 3 + list.length * 3;
+      {
+        for (var i = 0; i < list.length; i++) {
+          final value = list[i];
+          bytesCount += value.length * 3;
+        }
+      }
     }
   }
   bytesCount += 3 + object.location.length * 3;
@@ -161,6 +172,12 @@ int _animalEstimateSize(
           bytesCount += value.length * 3;
         }
       }
+    }
+  }
+  {
+    final value = object.profileImgUrl;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
     }
   }
   bytesCount += 3 + object.saveStatus.name.length * 3;
@@ -192,17 +209,18 @@ void _animalSerialize(
   writer.writeString(offsets[1], object.bsonId);
   writer.writeStringList(offsets[2], object.coatColor);
   writer.writeDateTime(offsets[3], object.createdAt);
-  writer.writeString(offsets[4], object.imgUrl);
+  writer.writeStringList(offsets[4], object.imgUrls);
   writer.writeString(offsets[5], object.location);
   writer.writeString(offsets[6], object.name);
   writer.writeStringList(offsets[7], object.notes);
-  writer.writeString(offsets[8], object.saveStatus.name);
-  writer.writeString(offsets[9], object.sex.name);
-  writer.writeString(offsets[10], object.species.name);
-  writer.writeString(offsets[11], object.status.name);
-  writer.writeDateTime(offsets[12], object.sterilizationDate);
-  writer.writeStringList(offsets[13], object.traitsAndPersonality);
-  writer.writeDateTime(offsets[14], object.updatedAt);
+  writer.writeString(offsets[8], object.profileImgUrl);
+  writer.writeString(offsets[9], object.saveStatus.name);
+  writer.writeString(offsets[10], object.sex.name);
+  writer.writeString(offsets[11], object.species.name);
+  writer.writeString(offsets[12], object.status.name);
+  writer.writeDateTime(offsets[13], object.sterilizationDate);
+  writer.writeStringList(offsets[14], object.traitsAndPersonality);
+  writer.writeDateTime(offsets[15], object.updatedAt);
 }
 
 Animal _animalDeserialize(
@@ -217,24 +235,25 @@ Animal _animalDeserialize(
   object.coatColor = reader.readStringList(offsets[2]);
   object.createdAt = reader.readDateTime(offsets[3]);
   object.id = id;
-  object.imgUrl = reader.readStringOrNull(offsets[4]);
+  object.imgUrls = reader.readStringList(offsets[4]);
   object.location = reader.readString(offsets[5]);
   object.name = reader.readString(offsets[6]);
   object.notes = reader.readStringList(offsets[7]);
+  object.profileImgUrl = reader.readStringOrNull(offsets[8]);
   object.saveStatus =
-      _AnimalsaveStatusValueEnumMap[reader.readStringOrNull(offsets[8])] ??
+      _AnimalsaveStatusValueEnumMap[reader.readStringOrNull(offsets[9])] ??
           SaveStatus.draft;
-  object.sex = _AnimalsexValueEnumMap[reader.readStringOrNull(offsets[9])] ??
+  object.sex = _AnimalsexValueEnumMap[reader.readStringOrNull(offsets[10])] ??
       AnimalSex.male;
   object.species =
-      _AnimalspeciesValueEnumMap[reader.readStringOrNull(offsets[10])] ??
+      _AnimalspeciesValueEnumMap[reader.readStringOrNull(offsets[11])] ??
           AnimalSpecies.dog;
   object.status =
-      _AnimalstatusValueEnumMap[reader.readStringOrNull(offsets[11])] ??
+      _AnimalstatusValueEnumMap[reader.readStringOrNull(offsets[12])] ??
           AnimalStatus.transient;
-  object.sterilizationDate = reader.readDateTimeOrNull(offsets[12]);
-  object.traitsAndPersonality = reader.readStringList(offsets[13]);
-  object.updatedAt = reader.readDateTime(offsets[14]);
+  object.sterilizationDate = reader.readDateTimeOrNull(offsets[13]);
+  object.traitsAndPersonality = reader.readStringList(offsets[14]);
+  object.updatedAt = reader.readDateTime(offsets[15]);
   return object;
 }
 
@@ -254,7 +273,7 @@ P _animalDeserializeProp<P>(
     case 3:
       return (reader.readDateTime(offset)) as P;
     case 4:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readStringList(offset)) as P;
     case 5:
       return (reader.readString(offset)) as P;
     case 6:
@@ -262,22 +281,24 @@ P _animalDeserializeProp<P>(
     case 7:
       return (reader.readStringList(offset)) as P;
     case 8:
+      return (reader.readStringOrNull(offset)) as P;
+    case 9:
       return (_AnimalsaveStatusValueEnumMap[reader.readStringOrNull(offset)] ??
           SaveStatus.draft) as P;
-    case 9:
+    case 10:
       return (_AnimalsexValueEnumMap[reader.readStringOrNull(offset)] ??
           AnimalSex.male) as P;
-    case 10:
+    case 11:
       return (_AnimalspeciesValueEnumMap[reader.readStringOrNull(offset)] ??
           AnimalSpecies.dog) as P;
-    case 11:
+    case 12:
       return (_AnimalstatusValueEnumMap[reader.readStringOrNull(offset)] ??
           AnimalStatus.transient) as P;
-    case 12:
-      return (reader.readDateTimeOrNull(offset)) as P;
     case 13:
-      return (reader.readStringList(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 14:
+      return (reader.readStringList(offset)) as P;
+    case 15:
       return (reader.readDateTime(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -288,27 +309,33 @@ const _AnimalsaveStatusEnumValueMap = {
   r'draft': r'draft',
   r'permanent': r'permanent',
   r'temporary': r'temporary',
+  r'synced': r'synced',
 };
 const _AnimalsaveStatusValueEnumMap = {
   r'draft': SaveStatus.draft,
   r'permanent': SaveStatus.permanent,
   r'temporary': SaveStatus.temporary,
+  r'synced': SaveStatus.synced,
 };
 const _AnimalsexEnumValueMap = {
   r'male': r'male',
   r'female': r'female',
+  r'unknown': r'unknown',
 };
 const _AnimalsexValueEnumMap = {
   r'male': AnimalSex.male,
   r'female': AnimalSex.female,
+  r'unknown': AnimalSex.unknown,
 };
 const _AnimalspeciesEnumValueMap = {
   r'dog': r'dog',
   r'cat': r'cat',
+  r'unknown': r'unknown',
 };
 const _AnimalspeciesValueEnumMap = {
   r'dog': AnimalSpecies.dog,
   r'cat': AnimalSpecies.cat,
+  r'unknown': AnimalSpecies.unknown,
 };
 const _AnimalstatusEnumValueMap = {
   r'transient': r'transient',
@@ -316,6 +343,7 @@ const _AnimalstatusEnumValueMap = {
   r'adopted': r'adopted',
   r'on_campus': r'on_campus',
   r'owned': r'owned',
+  r'unknown': r'unknown',
 };
 const _AnimalstatusValueEnumMap = {
   r'transient': AnimalStatus.transient,
@@ -323,6 +351,7 @@ const _AnimalstatusValueEnumMap = {
   r'adopted': AnimalStatus.adopted,
   r'on_campus': AnimalStatus.on_campus,
   r'owned': AnimalStatus.owned,
+  r'unknown': AnimalStatus.unknown,
 };
 
 Id _animalGetId(Animal object) {
@@ -939,75 +968,75 @@ extension AnimalQueryFilter on QueryBuilder<Animal, Animal, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlIsNull() {
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlsIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'imgUrl',
+        property: r'imgUrls',
       ));
     });
   }
 
-  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlIsNotNull() {
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlsIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'imgUrl',
+        property: r'imgUrls',
       ));
     });
   }
 
-  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlEqualTo(
-    String? value, {
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlsElementEqualTo(
+    String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'imgUrl',
+        property: r'imgUrls',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlGreaterThan(
-    String? value, {
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlsElementGreaterThan(
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'imgUrl',
+        property: r'imgUrls',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlLessThan(
-    String? value, {
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlsElementLessThan(
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'imgUrl',
+        property: r'imgUrls',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlBetween(
-    String? lower,
-    String? upper, {
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlsElementBetween(
+    String lower,
+    String upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'imgUrl',
+        property: r'imgUrls',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -1017,71 +1046,156 @@ extension AnimalQueryFilter on QueryBuilder<Animal, Animal, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlStartsWith(
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlsElementStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'imgUrl',
+        property: r'imgUrls',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlEndsWith(
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlsElementEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'imgUrl',
+        property: r'imgUrls',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlContains(
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlsElementContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'imgUrl',
+        property: r'imgUrls',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlMatches(
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlsElementMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'imgUrl',
+        property: r'imgUrls',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlIsEmpty() {
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlsElementIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'imgUrl',
+        property: r'imgUrls',
         value: '',
       ));
     });
   }
 
-  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlIsNotEmpty() {
+  QueryBuilder<Animal, Animal, QAfterFilterCondition>
+      imgUrlsElementIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'imgUrl',
+        property: r'imgUrls',
         value: '',
       ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlsLengthEqualTo(
+      int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'imgUrls',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'imgUrls',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'imgUrls',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'imgUrls',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'imgUrls',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> imgUrlsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'imgUrls',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
     });
   }
 
@@ -1571,6 +1685,153 @@ extension AnimalQueryFilter on QueryBuilder<Animal, Animal, QFilterCondition> {
         upper,
         includeUpper,
       );
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> profileImgUrlIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'profileImgUrl',
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> profileImgUrlIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'profileImgUrl',
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> profileImgUrlEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'profileImgUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> profileImgUrlGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'profileImgUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> profileImgUrlLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'profileImgUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> profileImgUrlBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'profileImgUrl',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> profileImgUrlStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'profileImgUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> profileImgUrlEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'profileImgUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> profileImgUrlContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'profileImgUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> profileImgUrlMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'profileImgUrl',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition> profileImgUrlIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'profileImgUrl',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterFilterCondition>
+      profileImgUrlIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'profileImgUrl',
+        value: '',
+      ));
     });
   }
 
@@ -2618,18 +2879,6 @@ extension AnimalQuerySortBy on QueryBuilder<Animal, Animal, QSortBy> {
     });
   }
 
-  QueryBuilder<Animal, Animal, QAfterSortBy> sortByImgUrl() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'imgUrl', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Animal, Animal, QAfterSortBy> sortByImgUrlDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'imgUrl', Sort.desc);
-    });
-  }
-
   QueryBuilder<Animal, Animal, QAfterSortBy> sortByLocation() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'location', Sort.asc);
@@ -2651,6 +2900,18 @@ extension AnimalQuerySortBy on QueryBuilder<Animal, Animal, QSortBy> {
   QueryBuilder<Animal, Animal, QAfterSortBy> sortByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterSortBy> sortByProfileImgUrl() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'profileImgUrl', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterSortBy> sortByProfileImgUrlDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'profileImgUrl', Sort.desc);
     });
   }
 
@@ -2776,18 +3037,6 @@ extension AnimalQuerySortThenBy on QueryBuilder<Animal, Animal, QSortThenBy> {
     });
   }
 
-  QueryBuilder<Animal, Animal, QAfterSortBy> thenByImgUrl() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'imgUrl', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Animal, Animal, QAfterSortBy> thenByImgUrlDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'imgUrl', Sort.desc);
-    });
-  }
-
   QueryBuilder<Animal, Animal, QAfterSortBy> thenByLocation() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'location', Sort.asc);
@@ -2809,6 +3058,18 @@ extension AnimalQuerySortThenBy on QueryBuilder<Animal, Animal, QSortThenBy> {
   QueryBuilder<Animal, Animal, QAfterSortBy> thenByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterSortBy> thenByProfileImgUrl() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'profileImgUrl', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QAfterSortBy> thenByProfileImgUrlDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'profileImgUrl', Sort.desc);
     });
   }
 
@@ -2911,10 +3172,9 @@ extension AnimalQueryWhereDistinct on QueryBuilder<Animal, Animal, QDistinct> {
     });
   }
 
-  QueryBuilder<Animal, Animal, QDistinct> distinctByImgUrl(
-      {bool caseSensitive = true}) {
+  QueryBuilder<Animal, Animal, QDistinct> distinctByImgUrls() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'imgUrl', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'imgUrls');
     });
   }
 
@@ -2935,6 +3195,14 @@ extension AnimalQueryWhereDistinct on QueryBuilder<Animal, Animal, QDistinct> {
   QueryBuilder<Animal, Animal, QDistinct> distinctByNotes() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'notes');
+    });
+  }
+
+  QueryBuilder<Animal, Animal, QDistinct> distinctByProfileImgUrl(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'profileImgUrl',
+          caseSensitive: caseSensitive);
     });
   }
 
@@ -3016,9 +3284,9 @@ extension AnimalQueryProperty on QueryBuilder<Animal, Animal, QQueryProperty> {
     });
   }
 
-  QueryBuilder<Animal, String?, QQueryOperations> imgUrlProperty() {
+  QueryBuilder<Animal, List<String>?, QQueryOperations> imgUrlsProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'imgUrl');
+      return query.addPropertyName(r'imgUrls');
     });
   }
 
@@ -3037,6 +3305,12 @@ extension AnimalQueryProperty on QueryBuilder<Animal, Animal, QQueryProperty> {
   QueryBuilder<Animal, List<String>?, QQueryOperations> notesProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'notes');
+    });
+  }
+
+  QueryBuilder<Animal, String?, QQueryOperations> profileImgUrlProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'profileImgUrl');
     });
   }
 

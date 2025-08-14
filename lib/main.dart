@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mobile_app_template/core/dependency_injection/dependency_injection.dart';
 import 'package:mobile_app_template/core/global_states/initialize_global_state.dart';
-import 'package:mobile_app_template/core/utils/http/dio_client.dart';
+import 'package:mobile_app_template/network/dio/dio_client.dart';
 import 'package:mobile_app_template/services/api/authentication.dart';
 
 import 'app.dart';

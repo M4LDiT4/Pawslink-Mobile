@@ -2,8 +2,8 @@
 import 'package:dio/dio.dart';
 import 'package:mobile_app_template/core/navigation/route_params/add_event.dart';
 import 'package:mobile_app_template/core/utils/helpers/map_helpers.dart';
-import 'package:mobile_app_template/core/utils/http/dio_client.dart';
-import 'package:mobile_app_template/core/utils/http/response.dart';
+import 'package:mobile_app_template/network/dio/dio_client.dart';
+import 'package:mobile_app_template/network/response.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
 
 class EventApi{

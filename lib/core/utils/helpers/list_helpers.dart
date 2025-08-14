@@ -1,43 +1,45 @@
-///@file : list_helpers.dart
-///@description : provides functions to centralize list operations
-///@usage : TListHelpers.function();
-///@example : TListHelpers.removeDuplicates(list);
-class TListHelpers{
+import 'dart:convert';
+
+/// A utility class for list operations.
+///
+/// Use this to centralize logic related to lists.
+/// Example usage: `TListHelpers.removeDuplicates(list);`
+class TListHelpers {
   TListHelpers._();
-  
-  ///@description : remove duplicates from the list
-  ///@args : {List<T>} list  -> list to remove duplicates from
-  ///@return : {List<T>} -> list with no duplicates
-  static List<T> removeDuplicates<T>(List<T> list){
+
+  /// Removes duplicates from a list.
+  ///
+  /// Returns a new list with only unique elements.
+  static List<T> removeDuplicates<T>(List<T> list) {
     return list.toSet().toList();
   }
 
-  ///@description : checks if array is empty or null
-  ///@args : {List<T>} list -> list to check
-  ///@return : {bool} -> is list empty or null?
+  /// Checks if a list is null or empty.
+  ///
+  /// Returns `true` if the list is either null or has no elements.
   static bool isNullOrEmpty<T>(List<T>? list) {
     return list == null || list.isEmpty;
   }
-  
-  //@description: returns the first element of the list safely
-  //@args : {List<T>} list -> list to get the first element from
-  //@return : {T || null} -> returns null if list is empty and first element otherwise
+
+  /// Returns the first element of the list safely.
+  ///
+  /// Returns `null` if the list is empty.
   static T? safeFirst<T>(List<T> list) {
     return list.isEmpty ? null : list.first;
   }
 
-  ///@description : retrieves the last element of the list safely
-  ///@args : {List<T> } list -> list to get the last element from
-  ///@return : {T || null} -> returns null if list is empty and null if otherwise
-  T? safeLast<T>(List<T> list) {
+  /// Returns the last element of the list safely.
+  ///
+  /// Returns `null` if the list is empty.
+  static T? safeLast<T>(List<T> list) {
     return list.isEmpty ? null : list.last;
   }
 
-  ///@description: creates a list of lists with size defined by size
-  ///@args : {List<T>} list -> list to divide to smaller chunks
-  ///@args : {int} size -> size of the chucks (number of elements per chunk)
-  ///@return : {List<List<T>>} -> returns a 2d array
-  List<List<T>> chunk<T>(List<T> list, int size) {
+  /// Divides a list into chunks of a given size.
+  ///
+  /// Returns a 2D list where each inner list has a maximum of [size] elements.
+  /// Throws an [ArgumentError] if [size] is less than or equal to 0.
+  static List<List<T>> chunk<T>(List<T> list, int size) {
     if (size <= 0) throw ArgumentError('Chunk size must be greater than 0');
     return [
       for (int i = 0; i < list.length; i += size)
@@ -45,19 +47,35 @@ class TListHelpers{
     ];
   }
 
-  ///@description : reorders the list randomly
-  ///@args : {List<T>} list -> list to reorder randomly
-  ///@return : {List<T>} -> randomly reordered list
-  List<T> shuffledCopy<T>(List<T> list) {
+  /// Returns a randomly shuffled copy of the list.
+  static List<T> shuffledCopy<T>(List<T> list) {
     final copy = List<T>.from(list);
     copy.shuffle();
     return copy;
   }
 
-  ///@description : turns 2d array to a 1d array
-  ///@args : {List<List<T>>} nestedList -> list to conver to 1d array\
-  ///@return : {List<T>} -> 1d array
-  List<T> flatten<T>(List<List<T>> nestedList) {
+  /// Flattens a 2D list into a 1D list.
+  static List<T> flatten<T>(List<List<T>> nestedList) {
     return nestedList.expand((e) => e).toList();
+  }
+
+  /// Parses a dynamic value into a list of strings.
+  ///
+  /// Supports values that are either a JSON-encoded string or a List.
+  /// Returns an empty list if parsing fails or value is invalid.
+  static List<String> parseStringList(dynamic value) {
+    if (value is String) {
+      try {
+        final decoded = jsonDecode(value);
+        if (decoded is List) {
+          return decoded.map((e) => e.toString()).toList();
+        }
+      } catch (_) {
+        // Optionally log the error or handle parsing failure
+      }
+    } else if (value is List) {
+      return value.map((e) => e.toString()).toList();
+    }
+    return [];
   }
 }

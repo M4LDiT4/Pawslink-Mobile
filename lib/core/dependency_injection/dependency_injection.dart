@@ -9,6 +9,6 @@ final GetIt getIt = GetIt.instance;
 //do not register dependencies that are used only in tightly coupled screens
 Future<void> setupDependencyInjection() async {
   //register the configure Isar service lazily and globally
-  final isar = await IsarService().isar;
-  getIt.registerLazySingleton<Isar>(()=> isar);
+  final isarService = await IsarService.create();
+  getIt.registerLazySingleton<Isar>(()=> isarService.isar);
 }

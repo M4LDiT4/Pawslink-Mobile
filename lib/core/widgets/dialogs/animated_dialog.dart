@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
-import 'package:mobile_app_template/core/utils/http/response.dart';
+import 'package:mobile_app_template/network/response.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
 
 class AnimatedDialog {
@@ -69,7 +69,7 @@ class AnimatedDialog {
         //catches parsing error
       }catch(e){
         TLogger.error(e.toString());
-        return TResponse.failed(null);
+        return TResponse.failed();
       }
   }
 }

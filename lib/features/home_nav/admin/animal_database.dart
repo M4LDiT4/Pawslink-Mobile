@@ -6,7 +6,7 @@ import 'package:mobile_app_template/core/dependency_injection/dependency_injecti
 import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
 import 'package:mobile_app_template/core/utils/device/device_utility.dart';
 import 'package:mobile_app_template/core/widgets/buttons/admin/admin_home_actionbutton.dart';
-import 'package:mobile_app_template/data/local_storage/isar/repositories/animal_repository.dart';
+import 'package:mobile_app_template/domain/repositories/animal_repository.dart';
 import 'package:mobile_app_template/services/api/animal_api.dart';
 import 'package:mobile_app_template/services/navigation/navigation_service.dart';
 

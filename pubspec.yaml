@@ -30,6 +30,8 @@ dependencies:
   # file picker 
   image_picker: ^1.1.2
   file_selector: ^1.0.3
+  # file util
+  file_magic_number: ^1.4.0
 
   # path related
   path_provider: ^2.1.5
@@ -61,12 +63,20 @@ dependencies:
   # qr code scanner
   mobile_scanner: ^7.0.1
   pretty_qr_code: ^3.4.0
+
+  # local storage
   isar: ^3.1.0+1
   isar_flutter_libs: ^3.1.0+1
+
+
+  # service locator
   get_it: ^8.0.3
-  file_magic_number: ^1.4.0
+
+  # internect connection
   internet_connection_checker: ^3.0.1
   connectivity_plus: ^6.1.4
+
+  # mongodb id generator
   bson: ^5.0.7
 
 dev_dependencies:
@@ -77,6 +87,7 @@ dev_dependencies:
   isar_generator: ^3.1.0+1
   build_runner: ^2.4.13
   mocktail: ^1.0.4
+  mockito: ^5.4.4
 
 flutter:
   uses-material-design: true
