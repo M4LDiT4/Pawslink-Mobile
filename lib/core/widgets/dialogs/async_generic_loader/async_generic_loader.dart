@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_notifier.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mobile_app_template/core/constants/colors.dart';
 import 'package:mobile_app_template/core/constants/lottie_strings.dart';
@@ -65,7 +66,27 @@ class _AsyncGenericLoaderState<T> extends State<AsyncGenericLoader<T>> with Sing
   }
 
   void _exitDialog(){
-    TNavigationService.back(result: _response);
+    TNavigationService.back(result: _response ?? OperationResponse.successfulResponse());
+  }
+
+  void _retryRequest(){
+    if(_status == WidgetStatus.error){
+      _dataLoader = widget.asyncFunction();
+    }
+  }
+
+  void _handleButtonPress(){
+    if(_status == WidgetStatus.error){
+      _retryRequest();
+    }else if(_status == WidgetStatus.idle){
+      _exitDialog();
+    }else{
+      throw Exception("Status is not 'error' or 'success' but you pressed a button");
+    }
+  }
+
+  void _handleCancel(){
+    TNavigationService.back(result: OperationResponse.failedResponse());
   }
 
   @override
@@ -83,8 +104,20 @@ class _AsyncGenericLoaderState<T> extends State<AsyncGenericLoader<T>> with Sing
   Widget _buildLoader(){
     return AnimatedSwitcher(
       duration:const Duration(
-        milliseconds: 300
+        milliseconds: 500
       ),
+      transitionBuilder: (Widget child, Animation<double> animation) {
+      return ScaleTransition(
+        scale: CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeInOut,
+        ),
+        child: FadeTransition(
+          opacity: animation,
+          child: child,
+        ),
+      );
+    },
       child: _buildLoaderByStatus(),
     );
   }
@@ -96,20 +129,25 @@ class _AsyncGenericLoaderState<T> extends State<AsyncGenericLoader<T>> with Sing
         if (snapshot.connectionState == ConnectionState.waiting) {
           _updateStatusSafely(WidgetStatus.loading);
           return Lottie.asset(
+            TLottie.walkingDog,
             width: 160,
-            TLottie.walkingDog);
-        } else if (snapshot.hasError) {
-          _updateStatusSafely(WidgetStatus.error);
-          return Center(
-            child: Lottie.asset(
-              width: 160,
-              TLottie.errorCat
-            ),
+            key: const ValueKey("loading"),
           );
-        } else if (snapshot.hasData) {
-          // async function has data
+        }
+
+        if (snapshot.hasError) {
+          _updateStatusSafely(WidgetStatus.error);
+          return Lottie.asset(
+            TLottie.errorCat,
+            width: 160,
+            key: const ValueKey("error"),
+          );
+        }
+
+        if (snapshot.hasData) {
           final data = snapshot.data!;
           _updateResponseSafely(data);
+
           if (data.isSuccessful) {
             _updateStatusSafely(WidgetStatus.idle);
             return Lottie.asset(
@@ -121,17 +159,28 @@ class _AsyncGenericLoaderState<T> extends State<AsyncGenericLoader<T>> with Sing
                   ..duration = composition.duration
                   ..forward();
               },
+              key: const ValueKey("success"),
             );
           } else {
             _updateStatusSafely(WidgetStatus.error);
-            return Center(child: Text('Failed: ${data.message}'));
+            return Lottie.asset(
+              TLottie.errorCat,
+              width: 160,
+              key: const ValueKey("failed"),
+            );
           }
-        } else {
-          return const Center(child: Text('No data'));
         }
+
+        // No data fallback
+        return Lottie.asset(
+          TLottie.errorCat,
+          width: 160,
+          key: const ValueKey("no-data"),
+        );
       },
     );
   }
+
 
   Widget _buildActionButtons() {
     final bool isError = _status == WidgetStatus.error;
@@ -139,35 +188,68 @@ class _AsyncGenericLoaderState<T> extends State<AsyncGenericLoader<T>> with Sing
     final String label = isError ? "Retry" : "Okay";
 
     return AnimatedSize(
-      duration: const Duration(
-        milliseconds: 300,
-      ),
-      curve:  Curves.easeInOut,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
       alignment: Alignment.topCenter,
-      child: _status != WidgetStatus.loading ? Padding(
-      padding: const EdgeInsets.only(top: 20),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: color,
-                  elevation: 0,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  side: BorderSide(color: color, width: 2),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+      child: _status != WidgetStatus.loading
+        ? Padding(
+            padding: const EdgeInsets.only(top: 20),
+            child: Column(
+              children: [
+                // Main action button
+                _buildButton(
+                  label: label,
+                  color: color,
+                  textColor: Colors.white,
+                  onPressed: _handleButtonPress,
+                  filled: true,
                 ),
-                onPressed: _exitDialog,
-                child: Text(label),
-              ),
+
+                // Extra "Cancel" button if error
+                if (isError)
+                  _buildButton(
+                    label: "Cancel",
+                    color: color,
+                    textColor: color,
+                    onPressed: _handleCancel,
+                    filled: false,
+                  ),
+              ],
             ),
-          ],
+          )
+        : const SizedBox.shrink(),
+    );
+  }
+
+  /// Helper for creating buttons with consistent style
+  Widget _buildButton({
+    required String label,
+    required Color color,
+    required Color textColor,
+    required VoidCallback onPressed,
+    bool filled = true,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8), // spacing between buttons
+      child: SizedBox(
+        width: double.infinity, // full width inside dialog
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: filled ? color : Colors.transparent,
+            elevation: 0,
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            side: BorderSide(color: color, width: 2),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          onPressed: onPressed,
+          child: Text(
+            label,
+            style: TextStyle(color: textColor),
+          ),
         ),
-      )
-      : const SizedBox.shrink(),
+      ),
     );
   }
 
