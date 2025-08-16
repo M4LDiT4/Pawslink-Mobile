@@ -102,6 +102,7 @@ class TUIHelpers {
     String title = "Notice",
     SnackBarState state = SnackBarState.neutral,
     Duration duration = const Duration(seconds: 3),
+    SnackPosition snackPosition = SnackPosition.BOTTOM
   }) {
     Color backgroundColor;
     IconData icon;
@@ -127,10 +128,26 @@ class TUIHelpers {
       backgroundColor: backgroundColor,
       colorText: Colors.white,
       icon: Icon(icon, color: Colors.white),
-      snackPosition: SnackPosition.BOTTOM,
+      snackPosition: snackPosition,
       duration: duration,
       margin: const EdgeInsets.all(16),
       borderRadius: 12,
+    );
+  }
+
+  static Future<T?> showDefaultDialog<T>(
+    Widget child,
+    {
+      bool isDismissible = false,
+    }
+  ){
+    return Get.defaultDialog<T>(
+      title: "",//remove the title to make it customizable
+      titlePadding: EdgeInsets.zero, //remove the padding for the title
+      content: PopScope(
+        canPop: isDismissible,
+        child: child 
+      )
     );
   }
 }
