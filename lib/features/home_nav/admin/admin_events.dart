@@ -52,7 +52,8 @@ class _AdminEventsScreensState extends State<AdminEventsScreens> {
 
   void _showTrialDialog(){
     Get.defaultDialog(
-      title: "Saving animal",
+      title: "",
+      titlePadding: EdgeInsets.zero,
       content: AsyncGenericLoader(asyncFunction: waitSomeTime)
     );
   }
