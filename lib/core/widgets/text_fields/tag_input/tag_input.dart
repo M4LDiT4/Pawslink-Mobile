@@ -148,19 +148,21 @@ class _TagInputState extends State<TagInput> {
           : Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    foregroundColor: theme.colorScheme.primary,
-                    side: BorderSide(
-                      color: theme.colorScheme.primary,
-                      width: 2,
+              Expanded(
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      foregroundColor: theme.colorScheme.primary,
+                      side: BorderSide(
+                        color: theme.colorScheme.primary,
+                        width: 2,
+                      ),
+                      padding: const EdgeInsets.all(8),
                     ),
-                    padding: const EdgeInsets.all(8),
+                    onPressed: () => setState(() => _showTextInput = true),
+                    child: const Text("+ Add"),
                   ),
-                  onPressed: () => setState(() => _showTextInput = true),
-                  child: const Text("+ Add"),
-                ),
+              ),
             ],
           ),
     );

@@ -16,6 +16,7 @@ import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/mo
 import 'package:mobile_app_template/core/widgets/text_fields/multivalue_text_input/multivalue_textinput.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/generic_text_field/generic_textfield_builder.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/modal_input_list.dart';
+import 'package:mobile_app_template/core/widgets/text_fields/tag_input/tag_input.dart';
 import 'package:mobile_app_template/core/widgets/texts/section_title.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
 import 'package:mobile_app_template/features/animal_database/controllers/add_animal_controller.dart';
@@ -160,35 +161,21 @@ class AddAnimalScreeen extends StatelessWidget {
                 )
               ),
               const FixedSeparator(space: TSizes.spaceBetweenSections),
-              MultivalueTextInput(
-                controller: controller.coatColorController,
-                title: TText.coatColor,
+              TagInput(
+                title: "Coat color",
+                controller: controller.coatController,
               ),
               const FixedSeparator(space: TSizes.spaceBetweenSections),
-              MultivalueTextInput(
-                controller: controller.notesController,
-                title: TText.notes,
-              ),
-              const FixedSeparator(space: TSizes.spaceBetweenSections),
-               MultivalueTextInput(
+              TagInput(
+                title: "Traits and Personality",
                 controller: controller.traitsController,
-                title: TText.traitsAndPersonality,
               ),
               const FixedSeparator(space: TSizes.spaceBetweenSections),
-              ModalInputList(
-                modal: VaccinationModal(),
-                title: TText.vaxHistory,
-                controller: controller.vaxController,
-                icon: Icons.vaccines,
-              ),
+              TagInput(
+                title: "Notes",
+                controller: controller.notesController,
+                ),
               const FixedSeparator(space: TSizes.spaceBetweenSections),
-              ModalInputList(
-                title: TText.medHistory,
-                modal: MedicationModal(),
-                controller: controller.medController,
-                icon: Icons.medication,
-              ),
-              const FixedSeparator(space: TSizes.spaceBetweenItems),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
