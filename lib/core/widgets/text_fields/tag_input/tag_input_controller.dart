@@ -4,25 +4,29 @@ class TagInputController extends ChangeNotifier {
   final List<String> _items = [];
   final TextEditingController textinputController = TextEditingController();
 
-  void addItem(){
-    final item = textinputController.text;
-    if(item.isNotEmpty){
+  List<String> get items => List.unmodifiable(_items);
+
+  final ValueNotifier<int> itemCount = ValueNotifier<int>(0);
+
+  void addItem() {
+    final item = textinputController.text.trim();
+    if (item.isNotEmpty) {
       _items.add(item);
+      itemCount.value = items.length;
       textinputController.clear();
       notifyListeners();
     }
   }
 
-  void clear(){
-    textinputController.clear();
-  }
-  set removeItem(int index){
-    if(index < items.length){
+  void removeItem(int index) {
+    if (index < _items.length) {
       _items.removeAt(index);
+      itemCount.value = items.length;
       notifyListeners();
-    }else{
-      throw Exception("Error removing item at index $index as the number of items is only ${_items.length}");
     }
   }
-  List<String> get items => _items;
+
+  void clearInput() {
+    textinputController.clear();
+  }
 }

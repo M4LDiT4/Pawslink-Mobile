@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/tag_input/tag_input_controller.dart';
-import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
 
 class TagInput extends StatefulWidget {
   final TagInputController? controller;
@@ -10,11 +9,11 @@ class TagInput extends StatefulWidget {
   final int? max;
 
   const TagInput({
-    super.key, 
+    super.key,
     required this.title,
     this.controller,
     this.max,
-    this.isRequired = false
+    this.isRequired = false,
   });
 
   @override
@@ -35,30 +34,22 @@ class _TagInputState extends State<TagInput> {
   }
 
   @override
-  void dispose(){
-    super.dispose();
+  void dispose() {
     _focusNode.dispose();
+    super.dispose();
   }
 
   void _handleFocusChange() {
     if (!_focusNode.hasFocus) {
-      // TextField lost focus → hide it
-      setState(() {
-        _showTextInput = false;
-      });
+      setState(() => _showTextInput = false);
     }
   }
 
-  bool _isEnough(){
-    if(!widget.isRequired){
-      return true;
-    }
-    if(widget.max == null){
-      return _controller.items.isNotEmpty;
-    }
-    return _controller.items.length >= widget.max!;
+  bool _isEnough(int  count) {
+    if (!widget.isRequired) return true;
+    if (widget.max == null) return count != 0;
+    return count >= widget.max!;
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -66,9 +57,9 @@ class _TagInputState extends State<TagInput> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildHeader(context),
-        const FixedSeparator(space: 8),
-        _buildChips(),
-        const FixedSeparator(space: 8),
+        const SizedBox(height: 8),
+        _buildChips(), // rebuilds only when items change
+        const SizedBox(height: 8),
         _buildInputOrAddButton(context),
       ],
     );
@@ -87,53 +78,63 @@ class _TagInputState extends State<TagInput> {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 22,
-              color: Theme.of(context).colorScheme.primary
+              color: Theme.of(context).colorScheme.primary,
             ),
           ),
         ),
-        Text.rich(
-          TextSpan(
-            children: [
+        ValueListenableBuilder<int>(
+          valueListenable: _controller.itemCount, // a ValueNotifier<int>
+          builder: (_, count, __) {
+            return Text.rich(
               TextSpan(
-                text: _controller.items.length.toString(),
-                style: TextStyle(
-                  color: _isEnough()? Colors.green: Colors.red , 
-                  fontWeight: FontWeight.bold
-                ),
+                children: [
+                  TextSpan(
+                    text: count.toString(),
+                    style: TextStyle(
+                      color: _isEnough(count) ? Colors.green : Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(
+                    text: " / ${widget.max ?? "--"}",
+                  ),
+                ],
               ),
-               TextSpan(
-                text: " / ${widget.max != null ? widget.max.toString(): "--" }",
-              ),
-            ],
-          ),
-          style: const TextStyle(fontSize: 16), // default style
-        )
+              style: const TextStyle(fontSize: 16),
+            );
+          },
+        ),
       ],
     );
   }
+
 
   /// -------------------------------
   /// SECTION 2: Chips List
   /// -------------------------------
   Widget _buildChips() {
-    return Wrap(
-      spacing: 8,
-      runSpacing: 4,
-      children: [
-        ..._controller.items.asMap().entries.map((entry) {
-          final index = entry.key;
-          final item = entry.value;
+    return AnimatedBuilder(
+      animation: _controller, // listens for notifyListeners()
+      builder: (_, __) {
+        return Wrap(
+          spacing: 8,
+          runSpacing: 4,
+          children: _controller.items.asMap().entries.map((entry) {
+            final index = entry.key;
+            final item = entry.value;
 
-          return Chip(
-            label: Text(item),
-            onDeleted: () {
-              setState(() => _controller.items.removeAt(index));
-            },
-          );
-        }),
-      ],
+            return Chip(
+              label: Text(item),
+              onDeleted: () => _controller.removeItem(index),
+              deleteIconColor: Colors.red,
+            );
+          }).toList(),
+        );
+      },
     );
   }
+
+
 
   /// -------------------------------
   /// SECTION 3: Input / Add Button
@@ -141,30 +142,28 @@ class _TagInputState extends State<TagInput> {
   Widget _buildInputOrAddButton(BuildContext context) {
     final theme = Theme.of(context);
 
-    return AnimatedSwitcher(
+    return AnimatedCrossFade(
       duration: const Duration(milliseconds: 300),
-      child: _showTextInput
-          ? _buildTextFormField()
-          : Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent,
-                      foregroundColor: theme.colorScheme.primary,
-                      side: BorderSide(
-                        color: theme.colorScheme.primary,
-                        width: 2,
-                      ),
-                      padding: const EdgeInsets.all(8),
-                    ),
-                    onPressed: () => setState(() => _showTextInput = true),
-                    child: const Text("+ Add"),
-                  ),
-              ),
-            ],
+      crossFadeState: _showTextInput
+          ? CrossFadeState.showSecond
+          : CrossFadeState.showFirst,
+      firstChild: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.transparent,
+            foregroundColor: theme.colorScheme.primary,
+            side: BorderSide(
+              color: theme.colorScheme.primary,
+              width: 2,
+            ),
+            padding: const EdgeInsets.all(8),
           ),
+          onPressed: () => setState(() => _showTextInput = true),
+          child: const Text("+ Add"),
+        ),
+      ),
+      secondChild: _buildTextFormField(),
     );
   }
 
@@ -173,7 +172,6 @@ class _TagInputState extends State<TagInput> {
   /// -------------------------------
   Widget _buildTextFormField() {
     return Row(
-      key: const ValueKey("text_input"),
       children: [
         Expanded(
           child: TextFormField(
@@ -188,26 +186,17 @@ class _TagInputState extends State<TagInput> {
         const SizedBox(width: 8),
         IconButton(
           onPressed: () {
-            _controller.clear();
+            _controller.clearInput();
             setState(() => _showTextInput = false);
           },
           icon: const Icon(Iconsax.close_circle),
         ),
         IconButton(
-          onPressed: _addTag,
+          onPressed: _controller.addItem,
           icon: const Icon(Iconsax.add_circle),
         ),
       ],
     );
   }
 
-  /// -------------------------------
-  /// HELPER: Add a tag
-  /// -------------------------------
-  void _addTag() {
-    setState(() {
-      _controller.addItem();
-    });
-    _controller.clear();
-  }
 }

@@ -11,11 +11,7 @@ import 'package:mobile_app_template/core/widgets/dropdowns/generic_dropdown.dart
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
 import 'package:mobile_app_template/core/widgets/pickers/date_pickers/generic_date_picker.dart';
 import 'package:mobile_app_template/core/widgets/pickers/img_pickers/generic_img_picker.dart';
-import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/modals/medication_modal.dart';
-import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/modals/vaccination_modal.dart';
-import 'package:mobile_app_template/core/widgets/text_fields/multivalue_text_input/multivalue_textinput.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/generic_text_field/generic_textfield_builder.dart';
-import 'package:mobile_app_template/core/widgets/text_fields/modal_input_list/modal_input_list.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/tag_input/tag_input.dart';
 import 'package:mobile_app_template/core/widgets/texts/section_title.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
