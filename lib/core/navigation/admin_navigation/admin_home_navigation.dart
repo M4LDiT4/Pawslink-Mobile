@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
+import 'package:mobile_app_template/core/widgets/composite/record_list_field/forms/animal_vaccination_form.dart';
+import 'package:mobile_app_template/core/widgets/composite/record_list_field/record_list_field.dart';
 
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
 import 'package:mobile_app_template/core/navigation/admin_navigation/admin_navigation_controller.dart';
@@ -57,7 +59,15 @@ class _AdminHomeNavigationState extends State<AdminHomeNavigation> {
           ],
         ),
       ),
-      body: Obx(() => controller.getCurrentScreen()),
+      // body: Obx(() => controller.getCurrentScreen()),
+      body: Scaffold(
+        body: RecordListField(
+          title: "Vaccination History",
+          form: AnimalVaccinationForm(
+            title: "Enter Vaccination Details",
+          ),
+        ),
+      ),
 
     );
   }

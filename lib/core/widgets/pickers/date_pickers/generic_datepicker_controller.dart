@@ -7,7 +7,11 @@ class GenericDatepickerController extends ChangeNotifier {
   String? _errorMssg;
   bool _isRequired = false;
 
-  GenericDatepickerController();
+  GenericDatepickerController({
+    DateTime? initialDate
+  }){
+    _selectedDate = initialDate;
+  }
 
   GenericDatepickerController errorText(String? errorText){
     _errorText = errorText;
@@ -16,11 +20,6 @@ class GenericDatepickerController extends ChangeNotifier {
 
   GenericDatepickerController isRequired(bool flag){
     _isRequired = flag;
-    return this;
-  }
-
-  GenericDatepickerController initialDate(DateTime? date){
-    _selectedDate = date;
     return this;
   }
 

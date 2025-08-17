@@ -150,6 +150,37 @@ class TUIHelpers {
       )
     );
   }
+
+  static Future<T?> showResponsiveModal<T>({
+    required Widget child,
+    bool isDismissible = true,
+    T? arguments
+  }) {
+    return Get.dialog<T>(
+      Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return ConstrainedBox(
+              constraints: BoxConstraints(
+                // Max height 80% of screen
+                maxHeight: MediaQuery.of(context).size.height * 0.8,
+                maxWidth: MediaQuery.of(context).size.width * 0.95,
+              ),
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.all(16),
+                child: child,
+              ),
+            );
+          },
+        ),
+      ),
+      arguments: arguments,
+      barrierDismissible: isDismissible,
+    );
+  }
 }
 
 enum SnackBarState { neutral, success, error }

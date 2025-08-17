@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 
 class TagInputController extends ChangeNotifier {
-  final List<String> _items = [];
+  late final List<String> _items;
   final TextEditingController textinputController = TextEditingController();
 
   List<String> get items => List.unmodifiable(_items);
 
   final ValueNotifier<int> itemCount = ValueNotifier<int>(0);
+
+  TagInputController({
+    List<String>? items
+  }){
+    _items = items??[];
+  }
 
   void addItem() {
     final item = textinputController.text.trim();
@@ -29,4 +35,5 @@ class TagInputController extends ChangeNotifier {
   void clearInput() {
     textinputController.clear();
   }
+
 }
