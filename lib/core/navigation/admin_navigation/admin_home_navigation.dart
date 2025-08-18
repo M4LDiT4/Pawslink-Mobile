@@ -2,12 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
-import 'package:mobile_app_template/core/widgets/composite/record_list_field/forms/animal_vaccination_form.dart';
-import 'package:mobile_app_template/core/widgets/composite/record_list_field/record_list_field.dart';
 
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
 import 'package:mobile_app_template/core/navigation/admin_navigation/admin_navigation_controller.dart';
-import 'package:mobile_app_template/core/widgets/text_fields/tag_input/tag_input.dart';
 import 'package:mobile_app_template/services/local_storage/local_secure_storage.dart';
 import 'package:mobile_app_template/services/navigation/navigation_service.dart';
 
@@ -59,16 +56,21 @@ class _AdminHomeNavigationState extends State<AdminHomeNavigation> {
           ],
         ),
       ),
-      // body: Obx(() => controller.getCurrentScreen()),
-      body: Scaffold(
-        body: RecordListField(
-          title: "Vaccination History",
-          form: AnimalVaccinationForm(
-            title: "Enter Vaccination Details",
-          ),
+      body: Obx(
+        () => AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            return SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(1, 0),
+                end: Offset.zero,
+              ).animate(animation),
+              child: child,
+            );
+          },
+          child: controller.getCurrentScreen(),
         ),
-      ),
-
+      )
     );
   }
 }

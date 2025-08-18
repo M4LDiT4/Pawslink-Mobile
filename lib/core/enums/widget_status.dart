@@ -12,6 +12,7 @@ enum WidgetStatus {
   disabled,
   error,
   loading,
+  full,
 }
 
 
@@ -22,7 +23,9 @@ extension WidgetStatusColorExtension on WidgetStatus {
       case WidgetStatus.idle:
         return isDark ? Colors.grey[700]! : Colors.grey[300]!;
       case WidgetStatus.focused:
-        return isDark ? TColors.primaryDark.withAlpha(TNumberHelper.getAlphaWithOpacity(0.3)) : TColors.primary;
+        return isDark
+            ? TColors.primaryDark.withAlpha(TNumberHelper.getAlphaWithOpacity(0.3))
+            : TColors.primary;
       case WidgetStatus.valid:
         return isDark ? Colors.greenAccent[400]! : Colors.green;
       case WidgetStatus.invalid:
@@ -33,8 +36,11 @@ extension WidgetStatusColorExtension on WidgetStatus {
         return isDark ? Colors.grey[800]! : Colors.grey[400]!;
       case WidgetStatus.error:
         return isDark ? Colors.redAccent[100]! : Colors.redAccent;
+      case WidgetStatus.full: // new case
+        return isDark ? Colors.purple[300]! : Colors.purple; // choose a color you like
       default:
-        return (isDark ? TColors.info : TColors.info).withAlpha(TNumberHelper.getAlphaWithOpacity(0.6));
-    } 
+        return (isDark ? TColors.info : TColors.info)
+            .withAlpha(TNumberHelper.getAlphaWithOpacity(0.6));
+    }
   }
 }

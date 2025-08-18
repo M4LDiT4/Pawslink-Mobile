@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mobile_app_template/core/widgets/composite/record_list_field/record_list_field.dart';
+import 'package:mobile_app_template/core/widgets/composite/record_list_field/record_list_field_controller.dart';
 import 'package:mobile_app_template/core/widgets/dropdowns/generic_dropdown_controller.dart';
 import 'package:mobile_app_template/core/widgets/pickers/date_pickers/generic_datepicker_controller.dart';
 import 'package:mobile_app_template/core/widgets/pickers/img_pickers/generic_img_picker_controller.dart';
@@ -28,6 +30,8 @@ class AddAnimalController extends GetxController {
   late TagInputController traitsController;
   late TagInputController notesController;
 
+  late RecordListFieldController vaccinationController;
+
   final RxBool _isSterilized = false.obs;
 
   @override
@@ -45,6 +49,7 @@ class AddAnimalController extends GetxController {
     coatController = TagInputController();
     traitsController = TagInputController();
     notesController = TagInputController();
+    vaccinationController = RecordListFieldController();
   }
 
   @override
@@ -55,6 +60,10 @@ class AddAnimalController extends GetxController {
     sexController.dispose();
     speciesController.dispose();
     statusController.dispose();
+    coatController.dispose();
+    traitsController.dispose();
+    notesController.dispose();
+    vaccinationController.dispose();
     super.onClose();
   }
 

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app_template/core/constants/colors.dart';
+import 'package:mobile_app_template/core/enums/widget_status.dart';
 import 'package:mobile_app_template/core/utils/helpers/ui_helpers.dart';
 import 'package:mobile_app_template/core/widgets/composite/record_list_field/record_list_field_controller.dart';
 import 'package:mobile_app_template/core/widgets/composite/record_list_field/record_list_item.dart';
@@ -10,13 +12,18 @@ class RecordListField extends StatefulWidget {
   final String title;
   final bool isRequired;
   final int? max;
+  final int? min;
+  final String? errMessage;
+
   const RecordListField({
     required this.form,
     this.controller,
     required this.title,
     this.isRequired = false,
     this.max,
-    super.key
+    this.min,
+    this.errMessage,
+    super.key,
   });
 
   @override
@@ -27,123 +34,177 @@ class _RecordListFieldState extends State<RecordListField> {
   late final RecordListFieldController _controller;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    _controller = widget.controller ?? RecordListFieldController();
+    final ctrl = widget.controller ?? RecordListFieldController();
+    ctrl.max = widget.max;
+    ctrl.min = widget.min;
+    ctrl.errMessage = widget.errMessage;
+    _controller = ctrl;
   }
 
-  bool _isEnough(int  count) {
+  // -------------------------------
+  // Helpers
+  // -------------------------------
+
+  bool _isEnough(int count) {
     if (!widget.isRequired) return true;
     if (widget.max == null) return count != 0;
     return count >= widget.max!;
   }
-  void _showForm() async{
+
+  Future<void> _showForm() async {
     final response = await TUIHelpers.showResponsiveModal<RecordListItem>(
-      child: widget.form
+      child: widget.form,
     );
-    if(response != null){
+    if (response != null) {
       _controller.addItem(response);
     }
   }
 
-  void _editItem(RecordListItem item, int index) async{
+  Future<void> _editItem(RecordListItem item, int index) async {
     final response = await TUIHelpers.showResponsiveModal<RecordListItem>(
       child: widget.form,
-      arguments:  item
+      arguments: item,
     );
-
-    if(response != null){
+    if (response != null) {
       _controller.updateItem(item, index);
     }
   }
+
+  // -------------------------------
+  // Main Build
+  // -------------------------------
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Column(
       children: [
-        // title
         _buildHeader(context),
-        // list of inputs
-        AnimatedBuilder(
-          animation: _controller, 
-          builder: (_, __){
-            return ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: _controller.items.length,
-              itemBuilder:  (_, index){
-                final item = _controller.items[index];
-                return RecordListTile(
-                  item: item,
-                  deleteFunction: () => _controller.removeItem(index),
-                  editFunction: () => _editItem(item, index),
-                );
-              }
-            );
-          }
-        ),
-        // add button
-        SizedBox(
-        width: double.infinity,
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.transparent,
-            foregroundColor: theme.colorScheme.primary,
-            side: BorderSide(
-              color: theme.colorScheme.primary,
-              width: 2,
-            ),
-            padding: const EdgeInsets.all(8),
-          ),
-          onPressed: _showForm,
-          child: const Text("+ Add"),
-        ),
-      ),
+        const SizedBox(height: 8),
+        _buildList(),
+        const SizedBox(height: 8),
+        _buildAddButton(context),
       ],
     );
   }
 
-  /// -------------------------------
-  /// SECTION 1: Title + Counter
-  /// -------------------------------
   Widget _buildHeader(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
+    return Column(
       children: [
-        Expanded(
-          child: Text(
-            widget.title,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Expanded(
+              child: Text(
+                widget.title,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 22,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+            ),
+            ValueListenableBuilder<int>(
+              valueListenable: _controller.itemCount,
+              builder: (_, count, __) => _buildCounter(count),
+            ),
+          ],
+        ),
+        AnimatedBuilder(
+          animation: _controller, 
+          builder: (context, child) {
+            if(_controller.status == WidgetStatus.error){
+              return Text(
+                style: const TextStyle(
+                  color: TColors.error,
+                  fontWeight: FontWeight.bold
+                ),
+                _controller.errMessage
+              );
+            }
+            return const SizedBox.shrink();
+          }
+        )
+      ],
+    );
+  }
+
+  Widget _buildCounter(int count) {
+    return Text.rich(
+      TextSpan(
+        children: [
+          TextSpan(
+            text: count.toString(),
             style: TextStyle(
+              color: _isEnough(count) ? Colors.green : Colors.red,
               fontWeight: FontWeight.bold,
-              fontSize: 22,
-              color: Theme.of(context).colorScheme.primary,
             ),
           ),
-        ),
-        ValueListenableBuilder<int>(
-          valueListenable: _controller.itemCount, // a ValueNotifier<int>
-          builder: (_, count, __) {
-            return Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(
-                    text: count.toString(),
-                    style: TextStyle(
-                      color: _isEnough(count) ? Colors.green : Colors.red,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  TextSpan(
-                    text: " / ${widget.max ?? "--"}",
-                  ),
-                ],
+          TextSpan(
+            text: " / ${widget.max ?? "--"}",
+          ),
+        ],
+      ),
+      style: const TextStyle(fontSize: 16),
+    );
+  }
+
+  Widget _buildList() {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (_, __) => ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: _controller.items.length,
+        itemBuilder: (_, index) {
+          final item = _controller.items[index];
+          return RecordListTile(
+            item: item,
+            deleteFunction: () => _controller.removeItem(index),
+            editFunction: () => _editItem(item, index),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildAddButton(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      children: [
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              foregroundColor: theme.colorScheme.primary,
+              side: BorderSide(
+                color: theme.colorScheme.primary,
+                width: 2,
               ),
-              style: const TextStyle(fontSize: 16),
-            );
-          },
+              padding: const EdgeInsets.all(8),
+            ),
+            onPressed: _showForm,
+            child: const Text("+ Add"),
+          ),
         ),
+        AnimatedBuilder(
+          animation: _controller, 
+          builder: (context, child){
+            if(_controller.status == WidgetStatus.full){
+              return Text(
+                style: const TextStyle(
+                  color: TColors.warning,
+                  fontWeight: FontWeight.bold
+                ),
+                _controller.widgetFullMessage
+              );
+            }
+            return const SizedBox.shrink();
+          }
+        )
       ],
     );
   }
 }
-
