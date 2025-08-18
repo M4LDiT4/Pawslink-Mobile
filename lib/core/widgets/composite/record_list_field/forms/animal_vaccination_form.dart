@@ -45,24 +45,11 @@ class _AnimalVaccinationFormState extends State<AnimalVaccinationForm> {
     try{
       final data = Get.arguments;
       if(data is! RecordListItem){
-        throw Exception("Expects object of type `RecordListItem`, received: ${data.runtimeType}");
+        _initializeNoPrevData();
+        return;
       }
       final prevData = data.data as AnimalVaccinationDTO;
-      vaxNameController = TextEditingController(text: prevData.vaccineName);
-      dateGivenController =
-          GenericDatepickerController(initialDate: prevData.dateGiven);
-      doseNumberController =
-          TextEditingController(text: prevData.doseNumber.toString());
-      nextDueDateController =
-          GenericDatepickerController(initialDate: prevData.nextDueDate);
-      administeredByController =
-          TextEditingController(text: prevData.administeredBy);
-      batchNumberController =
-          TextEditingController(text: prevData.batchNumber.toString() );
-      expiryDateController =
-          GenericDatepickerController(initialDate: prevData.expiryDate);
-      routeController = TextEditingController(text: prevData.route );
-      notesController = TagInputController(items: prevData.notes);
+      _initializeWithPrevData(prevData);
     }catch(err){
       TLogger.error(err.toString());
       _initializeNoPrevData();
@@ -79,6 +66,24 @@ class _AnimalVaccinationFormState extends State<AnimalVaccinationForm> {
     expiryDateController = GenericDatepickerController();
     routeController = TextEditingController();
     notesController = TagInputController();
+  }
+
+  void _initializeWithPrevData(AnimalVaccinationDTO prevData){
+    vaxNameController = TextEditingController(text: prevData.vaccineName);
+    dateGivenController =
+        GenericDatepickerController(initialDate: prevData.dateGiven);
+    doseNumberController =
+        TextEditingController(text: prevData.doseNumber.toString());
+    nextDueDateController =
+        GenericDatepickerController(initialDate: prevData.nextDueDate);
+    administeredByController =
+        TextEditingController(text: prevData.administeredBy);
+    batchNumberController =
+        TextEditingController(text: prevData.batchNumber.toString() );
+    expiryDateController =
+        GenericDatepickerController(initialDate: prevData.expiryDate);
+    routeController = TextEditingController(text: prevData.route );
+    notesController = TagInputController(items: prevData.notes);
   }
 
   void _closeModal() {

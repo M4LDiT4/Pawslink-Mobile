@@ -10,10 +10,10 @@ class RecordListTile extends StatelessWidget {
   const RecordListTile({
     super.key,
     required this.item,
-    this.leadingIcon = Icons.circle,
+    IconData? leadingIcon,
     required this.deleteFunction,
     required this.editFunction
-  });
+  }): leadingIcon = leadingIcon?? Icons.circle;
 
   @override
   Widget build(BuildContext context) {

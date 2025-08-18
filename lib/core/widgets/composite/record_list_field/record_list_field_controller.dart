@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_template/core/enums/widget_status.dart';
-import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/core/widgets/composite/record_list_field/record_list_item.dart';
+import 'package:mobile_app_template/domain/entities/base_dto.dart';
 
 
 
-class RecordListFieldController<T> extends ChangeNotifier{
+class RecordListFieldController extends ChangeNotifier{
   final List<RecordListItem> _items = [];
   ValueNotifier<int> itemCount = ValueNotifier<int>(0);
   bool _isRequired = false;
@@ -15,18 +15,21 @@ class RecordListFieldController<T> extends ChangeNotifier{
   final String _widgetFullMessage = "Maximum number of elements reached";
   WidgetStatus _status = WidgetStatus.idle;
 
+  
+
   // ------------------
   // CRUD OPERATIONS
   // ------------------
   void addItem(RecordListItem item) {
-    if(_max != null && _items.length >= _max!){
-      _errMessage = "Maximum number of inputs reached";
-      _status = _status = WidgetStatus.full;
-      notifyListeners();
+    if(_status == WidgetStatus.full){
       return;
     }
     _items.add(item);
     itemCount.value = items.length;
+    if(_max != null && itemCount.value == _max){
+      _errMessage = "Maximum number of inputs reached";
+      _status = WidgetStatus.full;
+    }
     notifyListeners();
   }
 
@@ -39,6 +42,10 @@ class RecordListFieldController<T> extends ChangeNotifier{
       }
       notifyListeners();
     }
+  }
+
+  List<BaseDto> get value{
+    return _items.map((item) => item.data).toList();
   }
 
   void updateItem(RecordListItem item, int index){
@@ -109,7 +116,7 @@ class RecordListFieldController<T> extends ChangeNotifier{
   // ---------------------
   
 
-  List<T> get items => List.unmodifiable(_items);
+  List get items => List.unmodifiable(_items);
   WidgetStatus get status{
     return _status;
   }

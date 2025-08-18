@@ -14,6 +14,7 @@ class RecordListField extends StatefulWidget {
   final int? max;
   final int? min;
   final String? errMessage;
+  final IconData? icon;
 
   const RecordListField({
     required this.form,
@@ -23,6 +24,7 @@ class RecordListField extends StatefulWidget {
     this.max,
     this.min,
     this.errMessage,
+    this.icon,
     super.key,
   });
 
@@ -100,7 +102,7 @@ class _RecordListFieldState extends State<RecordListField> {
                 widget.title,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 22,
+                  fontSize: 18,
                   color: Theme.of(context).colorScheme.primary,
                 ),
               ),
@@ -163,6 +165,7 @@ class _RecordListFieldState extends State<RecordListField> {
             item: item,
             deleteFunction: () => _controller.removeItem(index),
             editFunction: () => _editItem(item, index),
+            leadingIcon: widget.icon,
           );
         },
       ),

@@ -77,7 +77,7 @@ class _TagInputState extends State<TagInput> {
             widget.title,
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 22,
+              fontSize: 18,
               color: Theme.of(context).colorScheme.primary,
             ),
           ),

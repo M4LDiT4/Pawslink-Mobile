@@ -8,8 +8,11 @@ import 'package:mobile_app_template/core/widgets/dropdowns/generic_dropdown_cont
 import 'package:mobile_app_template/core/widgets/pickers/date_pickers/generic_datepicker_controller.dart';
 import 'package:mobile_app_template/core/widgets/pickers/img_pickers/generic_img_picker_controller.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/tag_input/tag_input_controller.dart';
+import 'package:mobile_app_template/domain/entities/animal_dto.dart';
 
 class AddAnimalController extends GetxController {
+  AnimalDTO? prevAnimal;
+
   late GlobalKey<FormState> formKey;
 
   //image picker controller
@@ -34,22 +37,18 @@ class AddAnimalController extends GetxController {
 
   final RxBool _isSterilized = false.obs;
 
+  AddAnimalController({
+    this.prevAnimal
+  });
+
   @override
   void onInit(){
     super.onInit();
-    nameController = TextEditingController();
-    locationController = TextEditingController();
-    ageController = TextEditingController();
-    sexController = GenericDropdownController();
-    speciesController = GenericDropdownController();
-    statusController = GenericDropdownController();
-    imgPickerController = GenericImgPickerController();
-    formKey = GlobalKey<FormState>();
-    sterilizationDateController = GenericDatepickerController();
-    coatController = TagInputController();
-    traitsController = TagInputController();
-    notesController = TagInputController();
-    vaccinationController = RecordListFieldController();
+    if(prevAnimal != null){
+      _initWithData();
+    }else{
+      _initWithNoData();
+    }
   }
 
   @override
@@ -65,6 +64,52 @@ class AddAnimalController extends GetxController {
     notesController.dispose();
     vaccinationController.dispose();
     super.onClose();
+  }
+
+  void _initWithNoData(){
+    nameController = TextEditingController();
+    locationController = TextEditingController();
+    ageController = TextEditingController();
+    sexController = GenericDropdownController();
+    speciesController = GenericDropdownController();
+    statusController = GenericDropdownController();
+    imgPickerController = GenericImgPickerController();
+    formKey = GlobalKey<FormState>();
+    sterilizationDateController = GenericDatepickerController();
+    coatController = TagInputController();
+    traitsController = TagInputController();
+    notesController = TagInputController();
+    vaccinationController = RecordListFieldController();
+  }
+
+  void _initWithData(){
+    final prevData = prevAnimal!;
+    nameController = TextEditingController(
+      text: prevData.name
+    );
+    locationController = TextEditingController(
+      text: prevData.location
+    );
+    ageController = TextEditingController(
+      text: prevData.age?.toString()
+    );
+    sexController = GenericDropdownController(
+      selectedValue: prevData.sex.name
+    );
+    speciesController = GenericDropdownController(
+      selectedValue: prevData.species.name
+    );
+    statusController = GenericDropdownController(
+      selectedValue: prevData.status.name
+    );
+    imgPickerController = GenericImgPickerController(
+    );
+    formKey = GlobalKey<FormState>();
+    sterilizationDateController = GenericDatepickerController();
+    coatController = TagInputController();
+    traitsController = TagInputController();
+    notesController = TagInputController();
+    vaccinationController = RecordListFieldController();
   }
 
   void handleSubmit(){

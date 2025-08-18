@@ -7,6 +7,7 @@ import 'package:mobile_app_template/core/enums/animal_species.dart';
 import 'package:mobile_app_template/core/enums/animal_status.dart';
 import 'package:mobile_app_template/core/utils/device/device_utility.dart';
 import 'package:mobile_app_template/core/widgets/buttons/form_button/form_button.dart';
+import 'package:mobile_app_template/core/widgets/composite/record_list_field/forms/animal_medication_form.dart';
 import 'package:mobile_app_template/core/widgets/composite/record_list_field/forms/animal_vaccination_form.dart';
 import 'package:mobile_app_template/core/widgets/composite/record_list_field/record_list_field.dart';
 import 'package:mobile_app_template/core/widgets/dropdowns/generic_dropdown.dart';
@@ -177,10 +178,14 @@ class AddAnimalScreeen extends StatelessWidget {
               const RecordListField(
                 form: AnimalVaccinationForm(title: "Vaccination Details"), 
                 title: "Vaccination History",
-                min: 1,
-                max: 2,
               ),
               const FixedSeparator(space: TSizes.spaceBetweenSections),
+              const RecordListField(
+                form: AnimalMedicationForm(title: "Medication Details"), 
+                title: "Medication History"
+              ),
+              const FixedSeparator(space: TSizes.spaceBetweenSections),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [

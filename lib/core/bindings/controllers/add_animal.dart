@@ -5,6 +5,6 @@ import 'package:mobile_app_template/features/animal_database/controllers/add_ani
 class AddAnimalControllerBinding extends Bindings {
   @override
   void dependencies () {
-    Get.lazyPut<AddAnimalController>(() => AddAnimalController());
+    Get.lazyPut<AddAnimalController>(() => AddAnimalController(prevAnimal: Get.arguments));
   }
 }
