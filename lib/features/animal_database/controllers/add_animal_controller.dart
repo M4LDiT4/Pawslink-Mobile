@@ -2,8 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mobile_app_template/core/widgets/composite/record_list_field/record_list_field.dart';
+import 'package:mobile_app_template/core/utils/formatters/formatter.dart';
 import 'package:mobile_app_template/core/widgets/composite/record_list_field/record_list_field_controller.dart';
+import 'package:mobile_app_template/core/widgets/composite/record_list_field/record_list_item.dart';
 import 'package:mobile_app_template/core/widgets/dropdowns/generic_dropdown_controller.dart';
 import 'package:mobile_app_template/core/widgets/pickers/date_pickers/generic_datepicker_controller.dart';
 import 'package:mobile_app_template/core/widgets/pickers/img_pickers/generic_img_picker_controller.dart';
@@ -13,7 +14,9 @@ import 'package:mobile_app_template/domain/entities/animal_dto.dart';
 class AddAnimalController extends GetxController {
   AnimalDTO? prevAnimal;
 
-  late GlobalKey<FormState> formKey;
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final imgPickerKey = GlobalKey();
+  final sterilizationKey = GlobalKey();
 
   //image picker controller
   late GenericImgPickerController imgPickerController;
@@ -26,14 +29,15 @@ class AddAnimalController extends GetxController {
   late GenericDropdownController speciesController;
   late GenericDropdownController statusController;
   late GenericDatepickerController sterilizationDateController;
-
-
-  //
+  
+  // tag input controllers
   late TagInputController coatController;
   late TagInputController traitsController;
   late TagInputController notesController;
 
+  // form inputs
   late RecordListFieldController vaccinationController;
+  late RecordListFieldController medicationController;
 
   final RxBool _isSterilized = false.obs;
 
@@ -74,12 +78,12 @@ class AddAnimalController extends GetxController {
     speciesController = GenericDropdownController();
     statusController = GenericDropdownController();
     imgPickerController = GenericImgPickerController();
-    formKey = GlobalKey<FormState>();
     sterilizationDateController = GenericDatepickerController();
     coatController = TagInputController();
     traitsController = TagInputController();
     notesController = TagInputController();
     vaccinationController = RecordListFieldController();
+    medicationController = RecordListFieldController();
   }
 
   void _initWithData(){
@@ -104,36 +108,67 @@ class AddAnimalController extends GetxController {
     );
     imgPickerController = GenericImgPickerController(
     );
-    formKey = GlobalKey<FormState>();
-    sterilizationDateController = GenericDatepickerController();
-    coatController = TagInputController();
-    traitsController = TagInputController();
-    notesController = TagInputController();
-    vaccinationController = RecordListFieldController();
+    sterilizationDateController = GenericDatepickerController(
+      initialDate: prevData.sterilizationDate
+    );
+    coatController = TagInputController(
+      items: prevData.coatColor
+    );
+    traitsController = TagInputController(
+      items: prevData.traitsAndPersonality
+    );
+    notesController = TagInputController(
+      items: prevData.notes
+    );
+    vaccinationController = RecordListFieldController(
+      initialData: prevData.vaccinationHistory.map(
+        (item)=> RecordListItem(
+          title: item.vaccineName, 
+          subTitle: TFormatter.formatDate(item.dateGiven), 
+          data: item
+        )
+      ).toList()
+    );
+    medicationController = RecordListFieldController(
+      initialData: prevData.medicationHistory.map(
+        (item)=> RecordListItem(
+          title: item.medicationName, 
+          subTitle: TFormatter.formatDate(item.dateGiven), 
+          data: item
+        )
+      ).toList()
+    );
   }
 
   void handleSubmit(){
-    // bool isFormValid = formKey.currentState!.validate();
-    // bool isImageValid = imgPickerController.validate();
-    // bool isSterilizationValid = sterilizationDateController.validate();
-    // if(isFormValid && isImageValid && isSterilizationValid){
-    //   final params = AddAnimalSummaryParams(
-    //     name: nameController.text , 
-    //     age: ageController.text, 
-    //     location: locationController.text, 
-    //     sex: sexController.selectedValue!, 
-    //     species: speciesController.selectedValue!, 
-    //     status: statusController.selectedValue!,
-    //     coatColor: coatColorController.getStringValues(),
-    //     notes: notesController.getStringValues(),
-    //     traits: traitsController.getStringValues(),
-    //     vaccinations: vaxController.getValue(),
-    //     medications: medController.getValue(),
-    //     animalImage: imgPickerController.selectedImage,
-    //     sterilizationDate: _isSterilized.value? sterilizationDateController.selectedDate : null,
-    //   );
-    //   TNavigationService.toNamed(TAppRoutes.addAnimalSummary, arguments: params);
-    // }
+    bool isFormValid = formKey.currentState!.validate();
+    bool isImageValid = imgPickerController.validate();
+    bool isSterilizationValid = sterilizationDateController.validate();
+    if(isFormValid
+      && isImageValid
+      && isSterilizationValid  
+    ){
+      // do something
+    }else{
+      if(!isImageValid){
+        scrollToError(imgPickerKey);
+      }else if(!isFormValid){
+        scrollToError(formKey);
+      }else{
+        scrollToError(sterilizationKey);
+      }
+    }
+  }
+
+  void scrollToError(GlobalKey key){
+    final context = key.currentContext;
+    if(context != null){
+      Scrollable.ensureVisible(
+        context,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   bool get isSterilized => _isSterilized.value;

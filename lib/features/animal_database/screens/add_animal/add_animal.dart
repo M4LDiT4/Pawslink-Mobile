@@ -74,6 +74,7 @@ class AddAnimalScreeen extends StatelessWidget {
               GenericImagePicker(
                 controller: controller.imgPickerController,
                 isRequired: true,
+                key: controller.imgPickerKey,
               ),
               const FixedSeparator(space: TSizes.spaceBetweenSections),
               _buildSection(
@@ -151,6 +152,7 @@ class AddAnimalScreeen extends StatelessWidget {
                       onChanged: controller.setIsSterilized
                     ),
                     GenericDatePickerButton(
+                      key: controller.sterilizationKey,
                       labelText: "Pick Date",
                       enabled: controller.isSterilized,
                       controller: controller.sterilizationDateController,

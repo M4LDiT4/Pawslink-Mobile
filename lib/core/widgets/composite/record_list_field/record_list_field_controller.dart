@@ -6,7 +6,7 @@ import 'package:mobile_app_template/domain/entities/base_dto.dart';
 
 
 class RecordListFieldController extends ChangeNotifier{
-  final List<RecordListItem> _items = [];
+  final List<RecordListItem> _items;
   ValueNotifier<int> itemCount = ValueNotifier<int>(0);
   bool _isRequired = false;
   int? _max;
@@ -15,7 +15,9 @@ class RecordListFieldController extends ChangeNotifier{
   final String _widgetFullMessage = "Maximum number of elements reached";
   WidgetStatus _status = WidgetStatus.idle;
 
-  
+  RecordListFieldController({
+    List<RecordListItem>? initialData
+  }): _items = initialData ?? [];
 
   // ------------------
   // CRUD OPERATIONS
