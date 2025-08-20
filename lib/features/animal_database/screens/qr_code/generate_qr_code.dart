@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:mobile_app_template/core/constants/colors.dart';
 import 'package:mobile_app_template/core/constants/image_strings.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
-import 'package:mobile_app_template/core/utils/helpers/file_helper.dart';
+import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
+import 'package:mobile_app_template/domain/repositories/file_repository.dart';
 import 'package:mobile_app_template/features/animal_database/widgets/view_animal_profile_slider/generate_qr_button.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 
 class QrCodeGeneratorScreen extends StatefulWidget {
-  //pass the stringified object id here
   const QrCodeGeneratorScreen({super.key});
 
   @override
@@ -18,20 +20,33 @@ class QrCodeGeneratorScreen extends StatefulWidget {
 class _QrCodeGeneratorScreenState extends State<QrCodeGeneratorScreen> {
   final GlobalKey _key = GlobalKey();
   late QrImage _qrImage;
+  String? _objectId;
+  String? _name;
 
   @override
   void initState(){
     super.initState();
+    final args = Get.arguments;
+    _objectId = args["remoteId"];
+    _name = args["name"];
+    if(_objectId == null){
+      return;
+    }
     final qrCode = QrCode(
       8, QrErrorCorrectLevel.H
-    )..addData("This is my data"); //replace this with actual object id
+    )..addData(_objectId!); 
 
     _qrImage = QrImage(qrCode);
     
   }
 
   Future<String?> _saveQRCode() async{
-    final response = await TFileHelpers.saveQRCode(_key, "name");
+    final data = await LocalFileRepository.capture(_key);
+    if(data == null){
+      throw Exception("Failed to convert qr code to uint8intlist");
+    }
+    final response = await LocalFileRepository.saveQrCode(data, _name!);
+    TLogger.debug(response);
     return response;
   }
 
@@ -45,7 +60,9 @@ class _QrCodeGeneratorScreenState extends State<QrCodeGeneratorScreen> {
           height: double.infinity,
           child: Padding(
             padding: const EdgeInsets.all(TSizes.paddingmd),
-            child: Column(
+            child: _objectId == null
+            ? const Placeholder()
+            :Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 RepaintBoundary(

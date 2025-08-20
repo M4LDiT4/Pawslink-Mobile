@@ -47,11 +47,15 @@ class _ViewAnimalDetailsScreenState extends State<ViewAnimalDetailsScreen> {
   }
 
   void _navigateToGenerateQrCode(){
-    TNavigationService.toNamed(TAppRoutes.qrCodeGenerator);
+    final animal = _controller.animal;
+    TNavigationService.toNamed(
+      TAppRoutes.qrCodeGenerator, 
+      arguments: {
+        'remoteId': animal.remoteId,
+        'name': animal.name
+      }
+    );
   }
-
-  
-
 
   @override
   void dispose() {

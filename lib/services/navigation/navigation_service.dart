@@ -8,8 +8,8 @@ class TNavigationService {
   TNavigationService._();
 
   /// Navigate to a named route
-  static void toNamed(String routeName, {dynamic arguments}) {
-    Get.toNamed(routeName, arguments: arguments);
+  static void toNamed(String routeName, {dynamic arguments, Map<String,String>? parameters}) {
+    Get.toNamed(routeName, arguments: arguments, parameters: parameters);
   }
 
   /// Navigate to a widget page

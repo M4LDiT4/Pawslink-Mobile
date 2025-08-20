@@ -105,6 +105,7 @@ class AnimalDTO extends BaseDto{
   /// to [AnimalAdapter]
   factory AnimalDTO.fromLocalAnimalModel(LocalAnimalModel localAnimal){
     return AnimalDTO(
+      remoteId: localAnimal.remoteId,
       localId: localAnimal.id,
       name: localAnimal.name, 
       age: localAnimal.age,

@@ -3,7 +3,11 @@
 // Consider using `getApplicationDocumentsDirectory()` or `NSDocumentDirectory`
 
 import 'dart:io';
+import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:path/path.dart' as p;
 
 import 'package:file_magic_number/file_magic_number.dart';
@@ -344,4 +348,46 @@ class LocalFileRepository {
     return file;
   }
 
+  static Future<String> saveQrCode(Uint8List pngBytes, String filename) async {
+    // Get app-specific directory (works on Android & iOS)
+    final Directory downloadDir =Directory('/storage/emulated/0/Download');
+
+    // Create a subdirectory for QR codes
+    final Directory qrCodesDir = Directory('${downloadDir.path}/qr_codes');
+    if (!qrCodesDir.existsSync()) {
+      await qrCodesDir.create(recursive: true);
+    }
+
+    // Sanitize filename
+    final safeFilename = filename.replaceAll(RegExp(r'[^\w\s-]'), '_');
+
+    // Full path with timestamp
+    final filePath = '${qrCodesDir.path}/${safeFilename}_${DateTime.now().millisecondsSinceEpoch}.png';
+
+    // Save file
+    final file = File(filePath);
+    await file.writeAsBytes(pngBytes);
+
+    return file.path; // Return path for future use
+  }
+
+  static Future<Uint8List?> capture(GlobalKey key, {double pixelRatio = 3.0}) async {
+    try {
+      // Get the RenderObject of the widget
+      RenderRepaintBoundary boundary =
+          key.currentContext!.findRenderObject() as RenderRepaintBoundary;
+
+      // Convert to Image
+      ui.Image image = await boundary.toImage(pixelRatio: pixelRatio);
+
+      // Convert Image to ByteData (PNG format)
+      ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+
+      // Convert ByteData to Uint8List
+      return byteData?.buffer.asUint8List();
+    } catch (e) {
+      debugPrint("Error capturing widget: $e");
+      return null;
+    }
+  }
 }

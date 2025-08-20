@@ -1,8 +1,11 @@
 // initialize tlhis when you are in add animal section
 import 'dart:io';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 
-import 'package:flutter/cupertino.dart';
-import 'package:get/get.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:mobile_app_template/core/utils/helpers/app_exception.dart';
 import 'package:mobile_app_template/core/utils/helpers/ui_helpers.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/core/widgets/dialogs/save_to_drafts/save_to_drafts_dialog.dart';
@@ -57,7 +60,6 @@ class AnimalDatabaseRepository {
       final response = await _localService.addAnimal(animalDto, profilePicture);
       return response;
     }catch(err, stack){
-      TLogger.error('Saving animal locally failed: ${err.toString()}');
       TLogger.debug('Stack:\n$stack');
       return OperationResponse<AnimalDTO>.failedResponse(
         message: 'Failed to save animal locally'
