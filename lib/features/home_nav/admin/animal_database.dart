@@ -6,7 +6,12 @@ import 'package:mobile_app_template/core/dependency_injection/dependency_injecti
 import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
 import 'package:mobile_app_template/core/utils/device/device_utility.dart';
 import 'package:mobile_app_template/core/widgets/buttons/admin/admin_home_actionbutton.dart';
+import 'package:mobile_app_template/domain/repositories/animal_database_repository.dart';
+import 'package:mobile_app_template/domain/services/api/animal_api_service/animal_api_service.dart';
 import 'package:mobile_app_template/domain/services/local/animal_repository.dart';
+import 'package:mobile_app_template/domain/services/local/local_animal_service.dart';
+import 'package:mobile_app_template/network/dio/app_dio.dart';
+import 'package:mobile_app_template/network/dio/dio_network_client.dart';
 import 'package:mobile_app_template/services/api/animal_api.dart';
 import 'package:mobile_app_template/services/navigation/navigation_service.dart';
 
@@ -21,13 +26,20 @@ class _AnimalDatabaseScreenState extends State<AnimalDatabaseScreen> {
   @override
   void initState(){
     super.initState();
-    //register the animal repository in the service locator
-    //inject the isar dependency
-    getIt.registerLazySingleton(()=> AnimalRepository(getIt<Isar>()));
 
-    AnimalApi animalAPI = AnimalApi();
-    animalAPI.init();
-    getIt.registerLazySingleton(() => animalAPI);
+    final localAnimalService = LocalAnimalService(getIt<Isar>());
+
+    final animalApiService = AnimalApiService();
+    animalApiService.init(DioNetworkClient(AppDio().dio));
+
+    getIt.registerLazySingleton(()=>animalApiService);
+
+    getIt.registerLazySingleton(
+      ()=> AnimalDatabaseRepository(
+        animalApiService: animalApiService, 
+        localAnimalService: localAnimalService)
+      );
+
   }
 
   @override

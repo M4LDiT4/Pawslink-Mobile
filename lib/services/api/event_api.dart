@@ -9,8 +9,6 @@ import 'package:mobile_app_template/core/utils/logger/logger.dart';
 class EventApi{
   final String _basePath = "event-repository";
   final String _addEvent = "event";
-  final String _getEvent = "event";
-  final String _updateEvent = "event/update";
 
   bool _isInitialized = false;
   late Uri _baseUri;

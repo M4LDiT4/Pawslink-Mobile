@@ -7,7 +7,6 @@ import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/core/widgets/charts/generic_donut_chart.dart';
 import 'package:mobile_app_template/domain/services/local/animal_repository.dart';
 import 'package:mobile_app_template/features/animal_database/widgets/animal_summary_card/animal_species_summary.dart';
-import 'package:mobile_app_template/services/api/animal_api.dart';
 
 class AnimalSpeciesSummaryCardController extends ChangeNotifier {
   WidgetStatus _status = WidgetStatus.idle;
@@ -16,7 +15,7 @@ class AnimalSpeciesSummaryCardController extends ChangeNotifier {
 
   //repositories
   late AnimalRepository _localRepo;
-  late AnimalApi _cloudRepo;
+
 
   //controller states
   bool _hasLoaded = false;
@@ -28,7 +27,6 @@ class AnimalSpeciesSummaryCardController extends ChangeNotifier {
   }) {
     _species = species;
     _errorMessage = "Failed to query ${species.name} animal data";
-    _cloudRepo = getIt.get<AnimalApi>();
     _localRepo = getIt.get<AnimalRepository>();
     _setLoading();
   }

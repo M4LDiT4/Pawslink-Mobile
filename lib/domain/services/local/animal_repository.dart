@@ -287,10 +287,10 @@ class AnimalRepository {
     try{
       final results = await Future.wait([
         getAnimalByStatusCoount(AnimalStatus.adopted),
-        getAnimalByStatusCoount(AnimalStatus.on_campus),
+        getAnimalByStatusCoount(AnimalStatus.onCampus),
         getAnimalByStatusCoount(AnimalStatus.owned),
         getAnimalByStatusCoount(AnimalStatus.transient),
-        getAnimalByStatusCoount(AnimalStatus.rainbow_bridge),
+        getAnimalByStatusCoount(AnimalStatus.rainbowBridge),
         getAnimalBySpeciesCount(AnimalSpecies.cat),
         getAnimalBySpeciesCount(AnimalSpecies.dog)
       ]);

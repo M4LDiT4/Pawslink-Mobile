@@ -130,4 +130,8 @@ class RecordListFieldController extends ChangeNotifier{
   String get widgetFullMessage{
     return _widgetFullMessage;
   }
+
+  List<BaseDto> getValues(){
+    return _items.map((item) => item.data).toList();
+  }
 }

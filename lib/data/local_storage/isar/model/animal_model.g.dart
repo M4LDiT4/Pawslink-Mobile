@@ -347,9 +347,9 @@ const _AnimalstatusEnumValueMap = {
 };
 const _AnimalstatusValueEnumMap = {
   r'transient': AnimalStatus.transient,
-  r'rainbow_bridge': AnimalStatus.rainbow_bridge,
+  r'rainbow_bridge': AnimalStatus.rainbowBridge,
   r'adopted': AnimalStatus.adopted,
-  r'on_campus': AnimalStatus.on_campus,
+  r'on_campus': AnimalStatus.onCampus,
   r'owned': AnimalStatus.owned,
   r'unknown': AnimalStatus.unknown,
 };

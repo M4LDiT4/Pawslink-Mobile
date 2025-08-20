@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:mobile_app_template/domain/entities/animal_medication_dto.dart';
 import 'package:mobile_app_template/domain/entities/animal_vaccination_dto.dart';

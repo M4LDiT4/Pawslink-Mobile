@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_template/core/constants/colors.dart';
 import 'package:mobile_app_template/core/utils/device/device_utility.dart';
+import 'package:mobile_app_template/core/utils/helpers/string_helper.dart';
 import 'package:mobile_app_template/core/widgets/dropdowns/generic_dropdown_controller.dart';
 
-class GenericDropdown extends StatefulWidget {
+class GenericDropdown<T extends Enum> extends StatefulWidget {
   const GenericDropdown({
     super.key,
     required this.options,
@@ -18,29 +19,30 @@ class GenericDropdown extends StatefulWidget {
     this.initialValue,
   });
 
-  final List<String> options;
+  final List<T> options;
   final String labelText;
   final String? errorText;
-  final Function(String?)? onChanged;
+  final Function(T?)? onChanged;
   final EdgeInsetsGeometry padding;
   final String? suffixText;
   final bool isRequired;
-  final String? Function(String? value)? validator;
-  final GenericDropdownController? controller;
-  final String? initialValue;
+  final String? Function(T? value)? validator;
+  final GenericDropdownController<T>? controller;
+  final T? initialValue;
 
   @override
-  State<GenericDropdown> createState() => _GenericDropdownState();
+  State<GenericDropdown<T>> createState() => _GenericDropdownState<T>();
 }
 
-class _GenericDropdownState extends State<GenericDropdown> {
-  late GenericDropdownController _controller;
+class _GenericDropdownState<T extends Enum> extends State<GenericDropdown<T>> {
+  late GenericDropdownController<T> _controller;
   late FocusNode _focusNode;
+
   @override
   void initState() {
     super.initState();
     _focusNode = FocusNode();
-    _controller = widget.controller?? GenericDropdownController();
+    _controller = widget.controller ?? GenericDropdownController<T>();
     _controller = _controller.initialValue(widget.initialValue);
   }
 
@@ -64,19 +66,20 @@ class _GenericDropdownState extends State<GenericDropdown> {
     );
   }
 
-  String? _validatorFunction(String? value) {
+  String? _validatorFunction(T? value) {
     if (!widget.isRequired) return null;
     if (widget.validator != null) {
       return widget.validator!(value);
     }
-    if (value == null || value.isEmpty) {
+    if (value == null) {
       return "Required *";
     }
     return null;
   }
 
-  void _changeValue(String? value){
+  void _changeValue(T? value) {
     _controller.selectedValue = value;
+    widget.onChanged?.call(value);
   }
 
   void _handleOnTap() async {
@@ -102,8 +105,8 @@ class _GenericDropdownState extends State<GenericDropdown> {
       child: Padding(
         padding: widget.padding,
         child: AnimatedBuilder(
-          animation: _controller, 
-          builder: (context, _) => DropdownButtonFormField<String>(
+          animation: _controller,
+          builder: (context, _) => DropdownButtonFormField<T>(
             onTap: _handleOnTap,
             value: _controller.selectedValue,
             isExpanded: true,
@@ -135,17 +138,17 @@ class _GenericDropdownState extends State<GenericDropdown> {
               color: isDarkMode ? TColors.textLight : TColors.textDark,
             ),
             onChanged: _changeValue,
-            items: widget.options.map((String value) {
-              return DropdownMenuItem<String>(
+            items: widget.options.map((T value) {
+              return DropdownMenuItem<T>(
                 value: value,
                 child: Text(
-                  value,
+                  TStringHelpers.camelCaseToWords(value.name), // ✅ use enum.name for display
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
               );
             }).toList(),
           ),
-        )
+        ),
       ),
     );
   }

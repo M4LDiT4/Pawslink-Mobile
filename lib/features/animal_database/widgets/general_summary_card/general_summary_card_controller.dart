@@ -5,14 +5,12 @@ import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/core/widgets/charts/generic_donut_chart.dart';
 import 'package:mobile_app_template/domain/services/local/animal_repository.dart';
 import 'package:mobile_app_template/features/animal_database/widgets/general_summary_card/general_animal_summary.dart';
-import 'package:mobile_app_template/services/api/animal_api.dart';
 
 class GeneralSummaryCardController extends ChangeNotifier {
   GeneralAnimalSummary _animalSummary = GeneralAnimalSummary();
   final String _errorMessage = "Failed to query general animal data";
 
   // repositories
-  late AnimalApi _cloudRepo;
   late AnimalRepository _localRepo; 
 
   //controller states
@@ -20,7 +18,6 @@ class GeneralSummaryCardController extends ChangeNotifier {
   bool _hasLoaded = false;
 
   GeneralSummaryCardController(){
-    _cloudRepo = getIt.get<AnimalApi>();
     _localRepo = getIt.get<AnimalRepository>();
     _setLoading();
   }

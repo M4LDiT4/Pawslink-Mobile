@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:mobile_app_template/core/utils/file/file_load_response.dart';
 import 'package:mobile_app_template/core/utils/file/file_utility.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';

@@ -1,7 +1,12 @@
 
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mobile_app_template/core/enums/animal_sex.dart';
+import 'package:mobile_app_template/core/enums/animal_species.dart';
+import 'package:mobile_app_template/core/enums/animal_status.dart';
 import 'package:mobile_app_template/core/utils/formatters/formatter.dart';
 import 'package:mobile_app_template/core/widgets/composite/record_list_field/record_list_field_controller.dart';
 import 'package:mobile_app_template/core/widgets/composite/record_list_field/record_list_item.dart';
@@ -10,6 +15,10 @@ import 'package:mobile_app_template/core/widgets/pickers/date_pickers/generic_da
 import 'package:mobile_app_template/core/widgets/pickers/img_pickers/generic_img_picker_controller.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/tag_input/tag_input_controller.dart';
 import 'package:mobile_app_template/domain/entities/animal_dto.dart';
+import 'package:mobile_app_template/domain/entities/animal_medication_dto.dart';
+import 'package:mobile_app_template/domain/entities/animal_vaccination_dto.dart';
+import 'package:mobile_app_template/domain/repositories/animal_database_repository.dart';
+import 'package:mobile_app_template/network/operation_response.dart';
 
 class AddAnimalController extends GetxController {
   AnimalDTO? prevAnimal;
@@ -25,9 +34,9 @@ class AddAnimalController extends GetxController {
   late TextEditingController nameController;
   late TextEditingController locationController;
   late TextEditingController ageController;
-  late GenericDropdownController sexController;
-  late GenericDropdownController speciesController;
-  late GenericDropdownController statusController;
+  late GenericDropdownController<AnimalSex> sexController;
+  late GenericDropdownController<AnimalSpecies> speciesController;
+  late GenericDropdownController<AnimalStatus> statusController;
   late GenericDatepickerController sterilizationDateController;
   
   // tag input controllers
@@ -40,6 +49,8 @@ class AddAnimalController extends GetxController {
   late RecordListFieldController medicationController;
 
   final RxBool _isSterilized = false.obs;
+
+  late final AnimalDatabaseRepository _repo;
 
   AddAnimalController({
     this.prevAnimal
@@ -98,13 +109,13 @@ class AddAnimalController extends GetxController {
       text: prevData.age?.toString()
     );
     sexController = GenericDropdownController(
-      selectedValue: prevData.sex.name
+      selectedValue: prevData.sex
     );
     speciesController = GenericDropdownController(
-      selectedValue: prevData.species.name
+      selectedValue: prevData.species
     );
     statusController = GenericDropdownController(
-      selectedValue: prevData.status.name
+      selectedValue: prevData.status
     );
     imgPickerController = GenericImgPickerController(
     );
@@ -140,7 +151,7 @@ class AddAnimalController extends GetxController {
     );
   }
 
-  void handleSubmit(){
+  bool handleSubmit(){
     bool isFormValid = formKey.currentState!.validate();
     bool isImageValid = imgPickerController.validate();
     bool isSterilizationValid = sterilizationDateController.validate();
@@ -148,7 +159,7 @@ class AddAnimalController extends GetxController {
       && isImageValid
       && isSterilizationValid  
     ){
-      // do something
+      return true;
     }else{
       if(!isImageValid){
         scrollToError(imgPickerKey);
@@ -157,7 +168,26 @@ class AddAnimalController extends GetxController {
       }else{
         scrollToError(sterilizationKey);
       }
+
+      return false;
     }
+  }
+
+  Future<OperationResponse<AnimalDTO>> addAnimal(){
+    final animal = AnimalDTO(
+      name: nameController.text, 
+      sex: sexController.selectedValue!, 
+      status: statusController.selectedValue!, 
+      species: speciesController.selectedValue!, 
+      location: locationController.text,
+      coatColor: coatController.items,
+      traitsAndPersonality: traitsController.items,
+      notes: notesController.items,
+      medicationHistory: medicationController.getValues().map((el) => el as AnimalMedicationDTO).toList(),
+      vaccinationHistory: vaccinationController.getValues().map((el) => el as AnimalVaccinationDTO).toList(),
+    );
+
+    return _repo.addAnimal(animal, File(imgPickerController.selectedImage!.path));
   }
 
   void scrollToError(GlobalKey key){

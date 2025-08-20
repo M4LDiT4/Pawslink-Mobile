@@ -20,7 +20,7 @@ class AnimalListScreenState extends State<AnimalListScreen> {
       name: 'Max',
       location: 'New York, NY',
       sex: AnimalSex.male,
-      status: AnimalStatus.on_campus,
+      status: AnimalStatus.onCampus,
       id: 'dog001',
     ),
     AnimalProfile(
@@ -44,7 +44,7 @@ class AnimalListScreenState extends State<AnimalListScreen> {
       name: 'Bella',
       location: 'Austin, TX',
       sex: AnimalSex.female,
-      status: AnimalStatus.rainbow_bridge,
+      status: AnimalStatus.rainbowBridge,
       id: 'cat002',
     ),
     AnimalProfile(
@@ -89,7 +89,7 @@ class AnimalListScreenState extends State<AnimalListScreen> {
         name: 'Max',
         location: 'New York, NY',
         sex: AnimalSex.male,
-        status: AnimalStatus.on_campus,
+        status: AnimalStatus.onCampus,
         id: 'dog001',
       ),
       AnimalProfile(
@@ -113,7 +113,7 @@ class AnimalListScreenState extends State<AnimalListScreen> {
         name: 'Bella',
         location: 'Austin, TX',
         sex: AnimalSex.female,
-        status: AnimalStatus.rainbow_bridge,
+        status: AnimalStatus.rainbowBridge,
         id: 'cat002',
       ),
       AnimalProfile(

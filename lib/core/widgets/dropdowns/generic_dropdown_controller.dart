@@ -1,20 +1,20 @@
-
 import 'package:flutter/material.dart';
-class GenericDropdownController extends ChangeNotifier {
-  String? _selectedValue;
 
-  GenericDropdownController({String? selectedValue}) {
+class GenericDropdownController<T extends Enum> extends ChangeNotifier {
+  T? _selectedValue;
+
+  GenericDropdownController({T? selectedValue}) {
     _selectedValue = selectedValue;
   }
 
-  GenericDropdownController initialValue(String? initialValue){
+  GenericDropdownController<T> initialValue(T? initialValue) {
     _selectedValue = initialValue;
     return this;
   }
 
-  String? get selectedValue => _selectedValue;
+  T? get selectedValue => _selectedValue;
 
-  set selectedValue(String? value) {
+  set selectedValue(T? value) {
     if (_selectedValue != value) {
       _selectedValue = value;
       notifyListeners(); // Notify listeners of the change

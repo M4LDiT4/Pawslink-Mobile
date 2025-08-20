@@ -20,7 +20,7 @@ class GeneralAnimalSummary {
       GenericDonutChartParams(
         value: onCampus.toDouble(),
         title: "On Campus",
-        color: AnimalStatus.on_campus.color,
+        color: AnimalStatus.onCampus.color,
       ),
       GenericDonutChartParams(
         value: owned.toDouble(),
@@ -35,7 +35,7 @@ class GeneralAnimalSummary {
       GenericDonutChartParams(
         value: rainbowBridge.toDouble(),
         title: "Rainbow bridge",
-        color: AnimalStatus.rainbow_bridge.color,
+        color: AnimalStatus.rainbowBridge.color,
       ),
     ];
   }

@@ -32,7 +32,7 @@ void main(){
         final animal = AnimalDTO(
           name: 'Buddy',
           sex: AnimalSex.male,
-          status: AnimalStatus.rainbow_bridge,
+          status: AnimalStatus.rainbowBridge,
           species: AnimalSpecies.dog,
           location: 'Shelter A',
         );
@@ -50,7 +50,7 @@ void main(){
       final animal = AnimalDTO(
         name: 'Buddy',
         sex: AnimalSex.male,
-        status: AnimalStatus.rainbow_bridge,
+        status: AnimalStatus.rainbowBridge,
         species: AnimalSpecies.dog,
         location: 'Shelter A',
       );
@@ -96,7 +96,7 @@ void main(){
       final animal = AnimalDTO(
         name: 'Buddy',
         sex: AnimalSex.male,
-        status: AnimalStatus.rainbow_bridge,
+        status: AnimalStatus.rainbowBridge,
         species: AnimalSpecies.dog,
         location: 'Shelter A',
       );
