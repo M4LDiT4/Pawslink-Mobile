@@ -5,6 +5,7 @@
 import 'package:get/get.dart';
 import 'package:mobile_app_template/core/bindings/controllers/add_animal.dart';
 import 'package:mobile_app_template/core/bindings/controllers/add_event.dart';
+import 'package:mobile_app_template/core/bindings/controllers/view_animal.dart';
 import 'package:mobile_app_template/core/bindings/controllers/view_event.dart';
 import 'package:mobile_app_template/features/animal_database/screens/add_animal/add_animal.dart';
 import 'package:mobile_app_template/features/animal_database/screens/add_animal/add_animal_summary.dart';
@@ -77,7 +78,8 @@ class TAppPages {
     GetPage(
       name: TAppRoutes.viewAnimalDetails,   
       page: () => const ViewAnimalDetailsScreen(),
-      transition: Transition.leftToRightWithFade
+      transition: Transition.leftToRightWithFade,
+      binding: ViewAnimalDetailsControllerBinding()
     ),
     GetPage(
       name: TAppRoutes.qrCodeScanner,

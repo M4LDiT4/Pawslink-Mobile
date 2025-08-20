@@ -1,15 +1,22 @@
 
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mobile_app_template/core/dependency_injection/dependency_injection.dart';
 import 'package:mobile_app_template/core/enums/animal_sex.dart';
 import 'package:mobile_app_template/core/enums/animal_species.dart';
 import 'package:mobile_app_template/core/enums/animal_status.dart';
+import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
 import 'package:mobile_app_template/core/utils/formatters/formatter.dart';
+import 'package:mobile_app_template/core/utils/helpers/ui_helpers.dart';
+import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/core/widgets/composite/record_list_field/record_list_field_controller.dart';
 import 'package:mobile_app_template/core/widgets/composite/record_list_field/record_list_item.dart';
+import 'package:mobile_app_template/core/widgets/dialogs/async_generic_loader/async_generic_loader.dart';
+import 'package:mobile_app_template/core/widgets/dialogs/save_to_drafts/save_to_drafts_dialog.dart';
 import 'package:mobile_app_template/core/widgets/dropdowns/generic_dropdown_controller.dart';
 import 'package:mobile_app_template/core/widgets/pickers/date_pickers/generic_datepicker_controller.dart';
 import 'package:mobile_app_template/core/widgets/pickers/img_pickers/generic_img_picker_controller.dart';
@@ -18,7 +25,9 @@ import 'package:mobile_app_template/domain/entities/animal_dto.dart';
 import 'package:mobile_app_template/domain/entities/animal_medication_dto.dart';
 import 'package:mobile_app_template/domain/entities/animal_vaccination_dto.dart';
 import 'package:mobile_app_template/domain/repositories/animal_database_repository.dart';
+import 'package:mobile_app_template/network/internet_connection/connection_controller.dart';
 import 'package:mobile_app_template/network/operation_response.dart';
+import 'package:mobile_app_template/services/navigation/navigation_service.dart';
 
 class AddAnimalController extends GetxController {
   AnimalDTO? prevAnimal;
@@ -51,9 +60,10 @@ class AddAnimalController extends GetxController {
   final RxBool _isSterilized = false.obs;
 
   late final AnimalDatabaseRepository _repo;
+  late final ConnectionController _connectionController;
 
   AddAnimalController({
-    this.prevAnimal
+    this.prevAnimal,
   });
 
   @override
@@ -64,6 +74,8 @@ class AddAnimalController extends GetxController {
     }else{
       _initWithNoData();
     }
+    _repo = getIt<AnimalDatabaseRepository>();
+    _connectionController = Get.find<ConnectionController>();
   }
 
   @override
@@ -151,7 +163,7 @@ class AddAnimalController extends GetxController {
     );
   }
 
-  bool handleSubmit(){
+  void handleSubmit(){
     bool isFormValid = formKey.currentState!.validate();
     bool isImageValid = imgPickerController.validate();
     bool isSterilizationValid = sterilizationDateController.validate();
@@ -159,7 +171,7 @@ class AddAnimalController extends GetxController {
       && isImageValid
       && isSterilizationValid  
     ){
-      return true;
+      _addAnimal();
     }else{
       if(!isImageValid){
         scrollToError(imgPickerKey);
@@ -168,12 +180,10 @@ class AddAnimalController extends GetxController {
       }else{
         scrollToError(sterilizationKey);
       }
-
-      return false;
     }
   }
 
-  Future<OperationResponse<AnimalDTO>> addAnimal(){
+  Future<void> _addAnimal() async{
     final animal = AnimalDTO(
       name: nameController.text, 
       sex: sexController.selectedValue!, 
@@ -187,7 +197,28 @@ class AddAnimalController extends GetxController {
       vaccinationHistory: vaccinationController.getValues().map((el) => el as AnimalVaccinationDTO).toList(),
     );
 
-    return _repo.addAnimal(animal, File(imgPickerController.selectedImage!.path));
+    if(_connectionController.isConnected){
+
+    }
+
+    final saveToLocal = await TUIHelpers.showResponsiveModal<bool>(child: const SaveToDraftsDialog());
+    if(saveToLocal != null && saveToLocal){
+      final result = await TUIHelpers.showResponsiveModal<OperationResponse<AnimalDTO>>(
+        child: AsyncGenericLoader(asyncFunction: () async{
+          return _repo.saveAnimalLocally(animal, File(imgPickerController.selectedImage!.path));
+        })
+      );
+
+      if( result == null || !result.isSuccessful){
+        TNavigationService.until(TAppRoutes.home);
+      }else{
+        TNavigationService.until(TAppRoutes.home);
+        if(result.data != null){
+          TLogger.info(jsonEncode(result.data!.toMap()));
+          TNavigationService.toNamed(TAppRoutes.viewAnimalDetails, arguments: result.data);
+        }
+      }
+    }
   }
 
   void scrollToError(GlobalKey key){

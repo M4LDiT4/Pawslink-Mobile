@@ -1,8 +1,10 @@
 // initialize tlhis when you are in add animal section
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:mobile_app_template/core/utils/helpers/ui_helpers.dart';
+import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/core/widgets/dialogs/save_to_drafts/save_to_drafts_dialog.dart';
 import 'package:mobile_app_template/domain/entities/animal_dto.dart';
 import 'package:mobile_app_template/domain/services/api/animal_api_service/animal_api_service.dart';
@@ -25,8 +27,9 @@ class AnimalDatabaseRepository {
     AnimalDTO animalDto,
     File profilePicture
   ) async{
-     final connectionController = Get.find<ConnectionController>();
-     if(connectionController.isConnected){
+    //  final connectionController = Get.find<ConnectionController>();
+    const connectionController = false;
+     if(connectionController){
       // SAVE TO CLOUD
       final response = await _cloudService.addAnimal(
         animalDto,
@@ -47,5 +50,18 @@ class AnimalDatabaseRepository {
       }
       return OperationResponse(isSuccessful: false, statusCode: 200);
      }
+  }
+
+  Future<OperationResponse<AnimalDTO>> saveAnimalLocally(AnimalDTO animalDto, File profilePicture)async{
+    try{
+      final response = await _localService.addAnimal(animalDto, profilePicture);
+      return response;
+    }catch(err, stack){
+      TLogger.error('Saving animal locally failed: ${err.toString()}');
+      TLogger.debug('Stack:\n$stack');
+      return OperationResponse<AnimalDTO>.failedResponse(
+        message: 'Failed to save animal locally'
+      );
+    }
   }
 }

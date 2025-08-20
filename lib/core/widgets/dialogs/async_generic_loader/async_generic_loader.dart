@@ -65,7 +65,7 @@ class _AsyncGenericLoaderState<T> extends State<AsyncGenericLoader<T>> with Sing
   }
 
   void _exitDialog(){
-    TNavigationService.back(result: _response ?? OperationResponse.successfulResponse());
+    TNavigationService.back(result: _response ?? OperationResponse<T>.successfulResponse());
   }
 
   void _retryRequest(){
@@ -85,7 +85,7 @@ class _AsyncGenericLoaderState<T> extends State<AsyncGenericLoader<T>> with Sing
   }
 
   void _handleCancel(){
-    TNavigationService.back(result: OperationResponse.failedResponse());
+    TNavigationService.back(result: OperationResponse<T>.failedResponse());
   }
 
   @override

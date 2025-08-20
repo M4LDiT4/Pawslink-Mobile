@@ -5,12 +5,10 @@ import 'package:mobile_app_template/core/constants/text_strings.dart';
 import 'package:mobile_app_template/core/enums/animal_sex.dart';
 import 'package:mobile_app_template/core/enums/animal_species.dart';
 import 'package:mobile_app_template/core/enums/animal_status.dart';
-import 'package:mobile_app_template/core/utils/helpers/ui_helpers.dart';
 import 'package:mobile_app_template/core/widgets/buttons/form_button/form_button.dart';
 import 'package:mobile_app_template/core/widgets/composite/record_list_field/forms/animal_medication_form.dart';
 import 'package:mobile_app_template/core/widgets/composite/record_list_field/forms/animal_vaccination_form.dart';
 import 'package:mobile_app_template/core/widgets/composite/record_list_field/record_list_field.dart';
-import 'package:mobile_app_template/core/widgets/dialogs/async_generic_loader/async_generic_loader.dart';
 import 'package:mobile_app_template/core/widgets/dropdowns/generic_dropdown.dart';
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
 import 'package:mobile_app_template/core/widgets/pickers/date_pickers/generic_date_picker.dart';
@@ -19,9 +17,7 @@ import 'package:mobile_app_template/core/widgets/text_fields/generic_text_field/
 import 'package:mobile_app_template/core/widgets/text_fields/tag_input/tag_input.dart';
 import 'package:mobile_app_template/core/widgets/texts/section_title.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
-import 'package:mobile_app_template/domain/entities/animal_dto.dart';
 import 'package:mobile_app_template/features/animal_database/controllers/add_animal_controller.dart';
-import 'package:mobile_app_template/network/operation_response.dart';
 import 'package:mobile_app_template/services/navigation/navigation_service.dart';
 
 class AddAnimalScreeen extends StatelessWidget {
@@ -36,13 +32,7 @@ class AddAnimalScreeen extends StatelessWidget {
 
   void _handleCancel() => TNavigationService.back();
   void _handleSave() async{
-    final isValid = controller.handleSubmit();
-    if(isValid){
-      await TUIHelpers.showResponsiveModal<OperationResponse<AnimalDTO>>(
-        child: AsyncGenericLoader(asyncFunction: controller.addAnimal)
-      );
-      
-    }
+    controller.handleSubmit();
   }
 
   @override

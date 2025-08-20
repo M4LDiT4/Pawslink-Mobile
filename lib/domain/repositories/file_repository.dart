@@ -141,6 +141,9 @@ class LocalFileRepository {
 
     final file = File(filePath);
 
+    // Ensure parent directories exist
+    await file.parent.create(recursive: true);
+
     await file.writeAsBytes(data);
     return file;
   }

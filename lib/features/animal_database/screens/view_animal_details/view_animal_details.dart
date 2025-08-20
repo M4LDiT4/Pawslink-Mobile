@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
@@ -13,6 +15,7 @@ import 'package:mobile_app_template/core/utils/formatters/formatter.dart';
 import 'package:mobile_app_template/core/utils/helpers/string_helper.dart';
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
+import 'package:mobile_app_template/features/animal_database/controllers/view_animal_details_controller.dart';
 import 'package:mobile_app_template/features/animal_database/widgets/date_label_listtile.dart';
 import 'package:mobile_app_template/features/animal_database/widgets/utility_button.dart';
 import 'package:mobile_app_template/features/animal_database/widgets/value_label_column.dart';
@@ -27,6 +30,7 @@ class ViewAnimalDetailsScreen extends StatefulWidget {
 
 class _ViewAnimalDetailsScreenState extends State<ViewAnimalDetailsScreen> {
   final ScrollController _scrollController = ScrollController();
+  late final ViewAnimalDetailsController _controller;
   bool _showFab = false;
 
   @override
@@ -39,11 +43,15 @@ class _ViewAnimalDetailsScreenState extends State<ViewAnimalDetailsScreen> {
         setState(() => _showFab = false);
       }
     });
+    _controller = Get.find<ViewAnimalDetailsController>();
   }
 
   void _navigateToGenerateQrCode(){
     TNavigationService.toNamed(TAppRoutes.qrCodeGenerator);
   }
+
+  
+
 
   @override
   void dispose() {
@@ -53,6 +61,7 @@ class _ViewAnimalDetailsScreenState extends State<ViewAnimalDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final animal = _controller.animal;
     final isDarkMode = TDeviceUtils.isDarkMode();
     return Scaffold(
       appBar: const GenericAppbar(),
@@ -67,30 +76,24 @@ class _ViewAnimalDetailsScreenState extends State<ViewAnimalDetailsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.asset(TImages.catIcon),
-              _buildHeader(context, "name", AnimalSpecies.cat, AnimalSex.male, isDarkMode),
+              _buildImage(),
+              _buildHeader(context, animal.name, animal.species, animal.sex, isDarkMode),
               const FixedSeparator(space: TSizes.spaceBetweenItems),
-              _buildQuickFacts("CUB", AnimalStatus.adopted),
+              _buildQuickFacts(animal.location, animal.status),
               const FixedSeparator(space: TSizes.spaceBetweenSections),
-              _buildTraits(["happy", "cheerful", "happy", "cheerful"]),
+              _buildTraits(animal.traitsAndPersonality),
               const FixedSeparator(space: TSizes.spaceBetweenSections),
-              _buildSterilizationDetails(true, DateTime.now()),
+              _buildSterilizationDetails(animal.sterilizationDate != null, animal.sterilizationDate),
               const FixedSeparator(space: TSizes.spaceBetweenSections),
-              _buildHealthRecord([
-                _ListItem(label: "deworming", date: DateTime.now()),
-                _ListItem(label: "trangkaso", date: DateTime.now()),
-              ]),
+              _buildHealthRecord(
+                animal.medicationHistory.map((el) => _ListItem(label: el.medicationName, date: el.dateGiven)).toList()
+              ),
               const FixedSeparator(space: TSizes.spaceBetweenSections),
-              _buildVaxRecord([
-                _ListItem(label: "rabies", date: DateTime.now()),
-                _ListItem(label: "dengue", date: DateTime.now()),
-              ]),
+              _buildVaxRecord(
+                animal.vaccinationHistory.map((el) => _ListItem(label: el.vaccineName, date: el.dateGiven)).toList()
+              ),
               const FixedSeparator(space: TSizes.spaceBetweenSections),
-              _buildNotes([
-                "Prefers quiet environments and minimal handling.",
-                "Eats primarily dry food, twice a day.",
-                "Gets nervous around strangers but warms up quickly.",
-              ], context),
+              _buildNotes(animal.notes, context),
             ],
           ),
         ),
@@ -112,6 +115,21 @@ class _ViewAnimalDetailsScreenState extends State<ViewAnimalDetailsScreen> {
             )
           : null,
     );
+  }
+
+  Widget _buildImage(){
+    final animal = _controller.animal;
+    if(animal.profileImagePath != null){
+      return Image.file(File(_controller.animal.profileImagePath!));
+    }else if(animal.profileImageLink != null){
+      return Image.network(animal.profileImageLink!);
+    }
+    String iconLink = TImages.catIcon;
+    if(animal.species == AnimalSpecies.dog){
+      iconLink = TImages.dogIcon;
+    }
+
+    return Image.asset(iconLink);
   }
 
   Widget _buildHeader(BuildContext context, String name, AnimalSpecies species, AnimalSex sex, bool isDarkMode) {

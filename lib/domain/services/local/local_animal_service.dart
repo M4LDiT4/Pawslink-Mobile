@@ -71,7 +71,7 @@ class LocalAnimalService {
       );
 
     }catch(err){
-      TLogger.error(err.toString());
+      TLogger.error("Failed to save the data locally ${err.toString()}");
       return OperationResponse.failedResponse(
         message: 'Failed to save the animal to local database'
       );

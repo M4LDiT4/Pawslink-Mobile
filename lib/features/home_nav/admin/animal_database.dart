@@ -8,11 +8,9 @@ import 'package:mobile_app_template/core/utils/device/device_utility.dart';
 import 'package:mobile_app_template/core/widgets/buttons/admin/admin_home_actionbutton.dart';
 import 'package:mobile_app_template/domain/repositories/animal_database_repository.dart';
 import 'package:mobile_app_template/domain/services/api/animal_api_service/animal_api_service.dart';
-import 'package:mobile_app_template/domain/services/local/animal_repository.dart';
 import 'package:mobile_app_template/domain/services/local/local_animal_service.dart';
 import 'package:mobile_app_template/network/dio/app_dio.dart';
 import 'package:mobile_app_template/network/dio/dio_network_client.dart';
-import 'package:mobile_app_template/services/api/animal_api.dart';
 import 'package:mobile_app_template/services/navigation/navigation_service.dart';
 
 class AnimalDatabaseScreen extends StatefulWidget {
@@ -44,8 +42,7 @@ class _AnimalDatabaseScreenState extends State<AnimalDatabaseScreen> {
 
   @override
   void dispose(){
-    getIt.unregister<AnimalRepository>();
-    getIt.unregister<AnimalApi>();
+    getIt.unregister<AnimalDatabaseRepository>();
     super.dispose();
   }
 
