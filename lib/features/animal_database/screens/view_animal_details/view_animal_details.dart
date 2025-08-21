@@ -126,7 +126,28 @@ class _ViewAnimalDetailsScreenState extends State<ViewAnimalDetailsScreen> {
     if(animal.profileImagePath != null){
       return Image.file(File(_controller.animal.profileImagePath!));
     }else if(animal.profileImageLink != null){
-      return Image.network(animal.profileImageLink!);
+      return Image.network(
+        animal.profileImageLink!,
+        fit: BoxFit.cover,
+        loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+          if (loadingProgress == null) {
+            return child; // Image loaded
+          }
+          return Center(
+            child: CircularProgressIndicator(
+              value: loadingProgress.expectedTotalBytes != null
+                  ? loadingProgress.cumulativeBytesLoaded /
+                      loadingProgress.expectedTotalBytes!
+                  : null, // Shows progress if total size known
+            ),
+          );
+        },
+        errorBuilder: (context, error, stackTrace) => const Icon(
+          Icons.broken_image,
+          size: 48,
+          color: Colors.grey,
+        ),
+      );
     }
     String iconLink = TImages.catIcon;
     if(animal.species == AnimalSpecies.dog){
