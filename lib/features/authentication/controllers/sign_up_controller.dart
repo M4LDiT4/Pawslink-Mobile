@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
 import 'package:mobile_app_template/core/utils/helpers/ui_helpers.dart';
-import 'package:mobile_app_template/network/response.dart';
+import 'package:mobile_app_template/core/widgets/dialogs/async_generic_loader/async_generic_loader.dart';
+import 'package:mobile_app_template/domain/services/authentication/app_authentication_service.dart';
+import 'package:mobile_app_template/network/operation_response.dart';
 import 'package:mobile_app_template/core/utils/validation/validator.dart';
-import 'package:mobile_app_template/core/widgets/dialogs/animated_dialog.dart';
-import 'package:mobile_app_template/core/widgets/dialogs/loading_dialog/loading_dialog.dart';
-import 'package:mobile_app_template/services/api/authentication.dart';
 import 'package:mobile_app_template/services/navigation/navigation_service.dart';
 
 class SignUpControiller extends GetxController {
@@ -17,8 +16,8 @@ class SignUpControiller extends GetxController {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
 
-  Future<TResponse> _registerUser()async{
-    final response = await TAuthenticationService().signUp(
+  Future<OperationResponse> _registerUser()async{
+    final response = await AppAuthenticationService().signUp(
       usernameController.text, 
       emailController.text, 
       passController.text 
@@ -28,10 +27,9 @@ class SignUpControiller extends GetxController {
 
   void validate(BuildContext context) async{
     if(formKey.currentState!.validate()){
-      final result = await AnimatedDialog.show(
-        context, 
-        child: LoadingDialog(
-          asyncFunction: _registerUser,
+      final result = await TUIHelpers.showResponsiveModal(
+        child: AsyncGenericLoader(
+          asyncFunction: _registerUser
         )
       );
 

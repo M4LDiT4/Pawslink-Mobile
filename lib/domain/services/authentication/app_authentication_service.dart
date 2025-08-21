@@ -136,7 +136,7 @@ class AppAuthenticationService {
   ///     LocalSecureStorageService.accessToken
   ///   )
   /// ```
-  Future<void> rotateTokens() async {
+  Future<void> rotateToken() async {
     _checkIfPreConditionValid();
 
     final refreshToken = await _localSecureStorage!.getData(
@@ -173,6 +173,15 @@ class AppAuthenticationService {
     }
     await _saveTokens(token);
   }
+
+  Future<String?> getAccessToken() async{
+    _checkIfPreConditionValid();
+    final accessToken = await _localSecureStorage!.getData(
+      LocalSecureStorageService.accessToken
+    );
+    return accessToken;
+  }
+
   _AuthToken _parseAuthResponse (dynamic data) {
     TLogger.debug(data.toString());
     if(data is Map<String, String>){

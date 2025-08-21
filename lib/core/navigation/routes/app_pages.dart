@@ -8,7 +8,6 @@ import 'package:mobile_app_template/core/bindings/controllers/add_event.dart';
 import 'package:mobile_app_template/core/bindings/controllers/view_animal.dart';
 import 'package:mobile_app_template/core/bindings/controllers/view_event.dart';
 import 'package:mobile_app_template/features/animal_database/screens/add_animal/add_animal.dart';
-import 'package:mobile_app_template/features/animal_database/screens/add_animal/add_animal_summary.dart';
 import 'package:mobile_app_template/features/animal_database/screens/qr_code/generate_qr_code.dart';
 import 'package:mobile_app_template/features/animal_database/screens/qr_code/qr_code_scanner.dart';
 import 'package:mobile_app_template/features/animal_database/screens/view_animal/view_animal.dart';
@@ -57,12 +56,6 @@ class TAppPages {
       transition: Transition.fadeIn, // or slide, zoom, etc.
       transitionDuration: const Duration(milliseconds: 500),
       binding: AddAnimalControllerBinding()
-    ),
-    GetPage(
-      name: TAppRoutes.addAnimalSummary, 
-      page: () => AddAnimalSummary(),
-      transition: Transition.fadeIn, // or slide, zoom, etc.
-      transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
       name: TAppRoutes.viewAnimal, 

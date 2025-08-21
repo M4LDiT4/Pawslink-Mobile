@@ -3,9 +3,9 @@ import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_store.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
+import 'package:mobile_app_template/domain/services/authentication/app_authentication_service.dart';
 import 'package:mobile_app_template/network/dio/auth_interceptor.dart';
 import 'package:mobile_app_template/network/dio/connection_interceptor.dart';
-import 'package:mobile_app_template/services/api/authentication.dart';
 import 'package:path_provider/path_provider.dart';
 
 class AppDio {
@@ -49,8 +49,8 @@ class AppDio {
         ConnectionInterceptor(),
 
         AuthInterceptor(
-          getAccessToken: TAuthenticationService().getAccesstoken, 
-          rotateToken: TAuthenticationService().rotateToken, 
+          getAccessToken: AppAuthenticationService().getAccessToken, 
+          rotateToken: AppAuthenticationService().rotateToken, 
           dio: newDio
         ),
 

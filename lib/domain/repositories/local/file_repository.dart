@@ -7,7 +7,6 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:path/path.dart' as p;
 
 import 'package:file_magic_number/file_magic_number.dart';
