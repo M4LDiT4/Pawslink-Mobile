@@ -31,7 +31,7 @@ class DioNetworkClient extends NetworkClient {
         Response(
           requestOptions: RequestOptions(path: fallbackPath),
           statusCode: _mapDioErrorToStatusCode(err),
-          data: {'error': err.message?? 'No response received'}
+          data: {'error': err.message}
         );
       
       return _responseHandler(fallbackResponse, dataParser);
