@@ -6,9 +6,9 @@ import 'package:mobile_app_template/core/dependency_injection/dependency_injecti
 import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
 import 'package:mobile_app_template/core/utils/device/device_utility.dart';
 import 'package:mobile_app_template/core/widgets/buttons/admin/admin_home_actionbutton.dart';
-import 'package:mobile_app_template/domain/repositories/animal_database_repository.dart';
-import 'package:mobile_app_template/domain/services/api/animal_api_service/animal_api_service.dart';
-import 'package:mobile_app_template/domain/services/local/local_animal_service.dart';
+import 'package:mobile_app_template/domain/services/animal%20database/animal_database_service.dart';
+import 'package:mobile_app_template/domain/repositories/api/animal_api_repository.dart';
+import 'package:mobile_app_template/domain/repositories/local/local_animal_service.dart';
 import 'package:mobile_app_template/network/dio/app_dio.dart';
 import 'package:mobile_app_template/network/dio/dio_network_client.dart';
 import 'package:mobile_app_template/services/navigation/navigation_service.dart';
@@ -25,15 +25,15 @@ class _AnimalDatabaseScreenState extends State<AnimalDatabaseScreen> {
   void initState(){
     super.initState();
 
-    final localAnimalService = LocalAnimalService(getIt<Isar>());
+    final localAnimalService = LocalAnimalRepository(getIt<Isar>());
 
-    final animalApiService = AnimalApiService();
+    final animalApiService = AnimalApiRepository();
     animalApiService.init(DioNetworkClient(AppDio().dio));
 
     getIt.registerLazySingleton(()=>animalApiService);
 
     getIt.registerLazySingleton(
-      ()=> AnimalDatabaseRepository(
+      ()=> AnimalDatabaseService(
         animalApiService: animalApiService, 
         localAnimalService: localAnimalService)
       );
@@ -42,7 +42,7 @@ class _AnimalDatabaseScreenState extends State<AnimalDatabaseScreen> {
 
   @override
   void dispose(){
-    getIt.unregister<AnimalDatabaseRepository>();
+    getIt.unregister<AnimalDatabaseService>();
     super.dispose();
   }
 

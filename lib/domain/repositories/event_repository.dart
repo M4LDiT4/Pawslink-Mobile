@@ -7,7 +7,7 @@ import 'package:isar/isar.dart';
 import 'package:mobile_app_template/network/response.dart';
 import 'package:mobile_app_template/data/local_storage/isar/helpers/filter_helper.dart';
 import 'package:mobile_app_template/data/local_storage/isar/model/event_model.dart';
-import 'package:mobile_app_template/domain/repositories/file_repository.dart';
+import 'package:mobile_app_template/domain/repositories/local/file_repository.dart';
 
 /// ### EventRepository
 /// Provides implementations for local storage CRUD operations ofr [Event] objects

@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_app_template/core/enums/filter_condition_type.dart';
 import 'package:mobile_app_template/domain/entities/base_dto.dart';
-import 'package:mobile_app_template/domain/services/api/api_filter_config.dart';
+import 'package:mobile_app_template/domain/repositories/api/api_filter_config.dart';
 
 class MockLocalData {
   final String name;

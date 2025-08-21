@@ -24,7 +24,7 @@ import 'package:mobile_app_template/core/widgets/text_fields/tag_input/tag_input
 import 'package:mobile_app_template/domain/entities/animal_dto.dart';
 import 'package:mobile_app_template/domain/entities/animal_medication_dto.dart';
 import 'package:mobile_app_template/domain/entities/animal_vaccination_dto.dart';
-import 'package:mobile_app_template/domain/repositories/animal_database_repository.dart';
+import 'package:mobile_app_template/domain/services/animal%20database/animal_database_service.dart';
 import 'package:mobile_app_template/network/internet_connection/connection_controller.dart';
 import 'package:mobile_app_template/network/operation_response.dart';
 import 'package:mobile_app_template/services/navigation/navigation_service.dart';
@@ -59,7 +59,7 @@ class AddAnimalController extends GetxController {
 
   final RxBool _isSterilized = false.obs;
 
-  late final AnimalDatabaseRepository _repo;
+  late final AnimalDatabaseService _repo;
   late final ConnectionController _connectionController;
 
   AddAnimalController({
@@ -74,7 +74,7 @@ class AddAnimalController extends GetxController {
     }else{
       _initWithNoData();
     }
-    _repo = getIt<AnimalDatabaseRepository>();
+    _repo = getIt<AnimalDatabaseService>();
     _connectionController = Get.find<ConnectionController>();
   }
 

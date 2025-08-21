@@ -1,29 +1,22 @@
 // initialize tlhis when you are in add animal section
 import 'dart:io';
-import 'dart:typed_data';
-import 'dart:ui' as ui;
-
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:mobile_app_template/core/utils/helpers/app_exception.dart';
 import 'package:mobile_app_template/core/utils/helpers/ui_helpers.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/core/widgets/dialogs/save_to_drafts/save_to_drafts_dialog.dart';
 import 'package:mobile_app_template/domain/entities/animal_dto.dart';
-import 'package:mobile_app_template/domain/services/api/animal_api_service/animal_api_service.dart';
-import 'package:mobile_app_template/domain/services/local/local_animal_service.dart';
-import 'package:mobile_app_template/network/internet_connection/connection_controller.dart';
+import 'package:mobile_app_template/domain/repositories/api/animal_api_repository.dart';
+import 'package:mobile_app_template/domain/repositories/local/local_animal_service.dart';
 import 'package:mobile_app_template/network/operation_response.dart';
 
-class AnimalDatabaseRepository {
-  final AnimalApiService _cloudService;
-  final LocalAnimalService _localService;
+class AnimalDatabaseService {
+  final AnimalApiRepository _cloudRepo;
+  final LocalAnimalRepository _localService;
   // add local service here
 
-  AnimalDatabaseRepository({
-    required AnimalApiService animalApiService,
-    required LocalAnimalService localAnimalService
-  }): _cloudService = animalApiService,
+  AnimalDatabaseService({
+    required AnimalApiRepository animalApiService,
+    required LocalAnimalRepository localAnimalService
+  }): _cloudRepo = animalApiService,
       _localService = localAnimalService;
 
   Future<OperationResponse<AnimalDTO>> addAnimal(
@@ -34,7 +27,7 @@ class AnimalDatabaseRepository {
     const connectionController = false;
      if(connectionController){
       // SAVE TO CLOUD
-      final response = await _cloudService.addAnimal(
+      final response = await _cloudRepo.addAnimal(
         animalDto,
         profilePicture: profilePicture
       );

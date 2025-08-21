@@ -4,24 +4,24 @@ import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/domain/entities/animal_dto.dart';
-import 'package:mobile_app_template/domain/services/api/api_filter_config.dart';
-import 'package:mobile_app_template/domain/services/api/api_sort_config.dart';
+import 'package:mobile_app_template/domain/repositories/api/api_filter_config.dart';
+import 'package:mobile_app_template/domain/repositories/api/api_sort_config.dart';
 import 'package:mobile_app_template/network/multipart_file_data.dart';
 import 'package:mobile_app_template/network/network_client.dart';
 import 'package:mobile_app_template/network/operation_response.dart';
 
-class AnimalApiService {
+class AnimalApiRepository {
   NetworkClient? _client;
   Uri? _baseUrl;
   final String _basePath = "animal-database";
   final String _addAnimalPath = "animal";
   final String _getAnimalPath = 'animal';
 
-  AnimalApiService._internal();
+  AnimalApiRepository._internal();
 
-  static final AnimalApiService _instance = AnimalApiService._internal();
+  static final AnimalApiRepository _instance = AnimalApiRepository._internal();
 
-  factory AnimalApiService() => _instance;
+  factory AnimalApiRepository() => _instance;
 
   void init(NetworkClient client){
     // make sure not to re-initialize network client

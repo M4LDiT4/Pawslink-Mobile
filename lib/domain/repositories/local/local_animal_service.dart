@@ -7,13 +7,13 @@ import 'package:mobile_app_template/domain/entities/animal_dto.dart';
 import 'package:mobile_app_template/domain/models/local_animal_medication_record.dart';
 import 'package:mobile_app_template/domain/models/local_animal_model.dart';
 import 'package:mobile_app_template/domain/models/local_animal_vaccination_history.dart';
-import 'package:mobile_app_template/domain/repositories/file_repository.dart';
+import 'package:mobile_app_template/domain/repositories/local/file_repository.dart';
 import 'package:mobile_app_template/network/operation_response.dart';
 
-class LocalAnimalService {
+class LocalAnimalRepository {
   final Isar _db;
 
-  LocalAnimalService(this._db);
+  LocalAnimalRepository(this._db);
 
   Future<OperationResponse<AnimalDTO>> addAnimal(
     AnimalDTO animalDto,
