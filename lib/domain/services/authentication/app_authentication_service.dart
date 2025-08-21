@@ -17,8 +17,8 @@ class AppAuthenticationService {
 
   static const String _signIn = "/sign-in";
   static const String _signUp = "/sign-up";
-  static const String _baseAuth = "/auth";
-  static const String _refresh = "refresh";
+  static const String _baseAuth = "auth";
+  static const String _refresh = "/refresh";
 
   AppAuthenticationService._internal();
 
@@ -184,7 +184,7 @@ class AppAuthenticationService {
 
   _AuthToken _parseAuthResponse (dynamic data) {
     TLogger.debug(data.toString());
-    if(data is Map<String, String>){
+    if(data is Map<String, dynamic>){
       return _AuthToken(
         accessToken: data['accessToken'], 
         refreshToken: data['refreshToken']

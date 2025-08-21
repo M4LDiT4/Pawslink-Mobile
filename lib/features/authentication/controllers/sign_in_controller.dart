@@ -25,12 +25,20 @@ class SignInController extends GetxController{
   void submit(BuildContext context) async{
     if(formkey.currentState!.validate()){
       final response = await TUIHelpers.showResponsiveModal(
-        child: AsyncGenericLoader(asyncFunction: _signIn) 
+        isDismissible: false,
+        child: AsyncGenericLoader(
+
+          asyncFunction: _signIn
+        ) 
       );
       if(response.isSuccessful){
         Get.offAllNamed(TAppRoutes.home);
       }else {
-        TUIHelpers.showStateSnackBar("Failed to sign in", state: SnackBarState.error);
+        TUIHelpers.showStateSnackBar(
+          "Failed to sign in", 
+          state: SnackBarState.error,
+          snackPosition: SnackPosition.TOP
+        );
       }
     }
   }

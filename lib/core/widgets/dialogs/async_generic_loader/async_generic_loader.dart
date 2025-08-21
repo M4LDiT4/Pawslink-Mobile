@@ -11,16 +11,19 @@ class AsyncGenericLoader<T> extends StatefulWidget {
   final String _errorMessage;
   final String _successMessage;
   final String _loadingMessage;
+  final String _title;
 
   const AsyncGenericLoader({
     super.key,
     required this.asyncFunction,
     String? errorMessage,
     String? successMessage,
-    String? loadingMessage 
+    String? loadingMessage,
+    String? title
   }): _errorMessage = errorMessage ?? "Something went wrong",
       _successMessage = successMessage ?? "Operation Successful!",
-      _loadingMessage = loadingMessage ?? "Please wait...";
+      _loadingMessage = loadingMessage ?? "Please wait...",
+      _title = title?? 'Processing';
 
   @override
   State<AsyncGenericLoader<T>> createState() => _AsyncGenericLoaderState<T>();
@@ -256,7 +259,7 @@ class _AsyncGenericLoaderState<T> extends State<AsyncGenericLoader<T>> with Sing
   Widget _buildTextContent(){
     String content = "Sucess!";
     if(_status == WidgetStatus.loading){
-      content = "Processing...";
+      content = widget._title;
     }
     else if(_status == WidgetStatus.error){
       content = "Oopss..";
