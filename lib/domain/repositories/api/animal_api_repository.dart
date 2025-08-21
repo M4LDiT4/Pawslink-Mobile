@@ -37,9 +37,16 @@ class AnimalApiRepository {
 
   Future<OperationResponse<AnimalDTO>> addAnimal(AnimalDTO animal, {File? profilePicture}) async{
     try{
+      final base = _baseUrl!;
+      final url = Uri(
+        scheme: base.scheme,
+        port: base.port,
+        host: base.host,
+        path: '${base.path}/$_addAnimalPath'
+      );
       _checkIfPreConditionValid();
       final savedAnimal = await _client!.post<AnimalDTO>(
-        "${_baseUrl!.path}/$_addAnimalPath", 
+        url.toString(), 
         dataParser: (item) => AnimalDTO.fromMap(item),
         fields: animal.toMap(),
         files: profilePicture != null? [

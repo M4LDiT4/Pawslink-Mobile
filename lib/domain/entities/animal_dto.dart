@@ -162,19 +162,19 @@ class AnimalDTO extends BaseDto{
   Map<String, String> toMap(){
     final Map<String, String> animal = {
       'name': name,
-      'sex': sex.label,
-      'status': status.label,
-      'species': species.label,
+      'sex': sex.name,
+      'status': status.name,
+      'species': species.name,
       'location': location,
       'coatColor': jsonEncode(coatColor),
       'notes': jsonEncode(notes),
       'traitsAndPersonality': jsonEncode(traitsAndPersonality),
-      'medicationHistory': jsonEncode(
+      'medicationRecords': jsonEncode(
           medicationHistory.map(
             (item) => item.toMap()
           ).toList()
         ),
-      'vaccinationHistory': jsonEncode(
+      'vaccinationRecords': jsonEncode(
         vaccinationHistory.map(
           (item) =>item.toMap()
         ).toList()
@@ -199,12 +199,12 @@ class AnimalDTO extends BaseDto{
   /// Converts [Map] of key type [String] and value type [dynamic] to [AnimalDTO]
   factory AnimalDTO.fromMap(Map<String, dynamic> animalJSON){
 
-    final medicationRecordList = (jsonDecode(animalJSON['medicationHistory'] ?? "[]") as List)
+    final medicationRecordList = (jsonDecode(animalJSON['medicationRecords'] ?? "[]") as List)
       .map(
         (item) => AnimalMedicationDTO.fromMap(item)
       ).toList();
     
-    final vaccinationRecordList = (jsonDecode(animalJSON['vaccinationHistory']?? '[]') as List)
+    final vaccinationRecordList = (jsonDecode(animalJSON['vaccinationRecords']?? '[]') as List)
       .map(
         (item) => AnimalVaccinationDTO.fromMap(item)
       ).toList();

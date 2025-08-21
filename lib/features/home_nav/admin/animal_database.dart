@@ -30,8 +30,6 @@ class _AnimalDatabaseScreenState extends State<AnimalDatabaseScreen> {
     final animalApiService = AnimalApiRepository();
     animalApiService.init(DioNetworkClient(AppDio().dio));
 
-    getIt.registerLazySingleton(()=>animalApiService);
-
     getIt.registerLazySingleton(
       ()=> AnimalDatabaseService(
         animalApiService: animalApiService, 

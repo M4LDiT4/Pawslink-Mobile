@@ -34,6 +34,7 @@ class OperationResponse<T> {
       String targetField = "data"
     }
   ){
+    TLogger.info(response.toString());
     final data = response.data;
     if(data == null){
       return OperationResponse.nullResponse(
@@ -79,7 +80,7 @@ class OperationResponse<T> {
       ,
       statusCode: response.statusCode ?? statusCode ?? 400,
       data: parsedData,
-      message: message ?? "No message provided"
+      message: message
     );
     
   }

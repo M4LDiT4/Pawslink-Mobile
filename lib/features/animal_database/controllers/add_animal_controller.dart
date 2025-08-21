@@ -191,32 +191,45 @@ class AddAnimalController extends GetxController {
       species: speciesController.selectedValue!, 
       location: locationController.text,
       coatColor: coatController.items,
+      age: ageController.text.isNotEmpty? int.parse(ageController.text): 0,
       traitsAndPersonality: traitsController.items,
       notes: notesController.items,
       medicationHistory: medicationController.getValues().map((el) => el as AnimalMedicationDTO).toList(),
       vaccinationHistory: vaccinationController.getValues().map((el) => el as AnimalVaccinationDTO).toList(),
     );
 
+    OperationResponse<AnimalDTO>? result;
     if(_connectionController.isConnected){
-
+      result = await TUIHelpers.showResponsiveModal(
+        child:AsyncGenericLoader(
+          asyncFunction: () async {
+            return _repo.saveAnimalToCloud(animal, File(imgPickerController.selectedImage!.path));
+          }
+        ) 
+      );
+    }else{
+      final saveToLocal = await TUIHelpers.showResponsiveModal<bool>(child: const SaveToDraftsDialog());
+      if(saveToLocal != null && saveToLocal){
+        result = await TUIHelpers.showResponsiveModal<OperationResponse<AnimalDTO>>(
+          child: AsyncGenericLoader(asyncFunction: () async{
+            return _repo.saveAnimalLocally(animal, File(imgPickerController.selectedImage!.path));
+          })
+        );
+      }
     }
 
-    final saveToLocal = await TUIHelpers.showResponsiveModal<bool>(child: const SaveToDraftsDialog());
-    if(saveToLocal != null && saveToLocal){
-      final result = await TUIHelpers.showResponsiveModal<OperationResponse<AnimalDTO>>(
-        child: AsyncGenericLoader(asyncFunction: () async{
-          return _repo.saveAnimalLocally(animal, File(imgPickerController.selectedImage!.path));
-        })
+    if( result == null || !result.isSuccessful){
+      TUIHelpers.showStateSnackBar(
+        "Failed to add animal",
+        state: SnackBarState.error,
+        snackPosition: SnackPosition.TOP
       );
-
-      if( result == null || !result.isSuccessful){
-        TNavigationService.until(TAppRoutes.home);
-      }else{
-        TNavigationService.until(TAppRoutes.home);
-        if(result.data != null){
-          TLogger.info(jsonEncode(result.data!.toMap()));
-          TNavigationService.toNamed(TAppRoutes.viewAnimalDetails, arguments: result.data);
-        }
+      // TNavigationService.until(TAppRoutes.home);
+    }else{
+      TNavigationService.until(TAppRoutes.home);
+      if(result.data != null){
+        TLogger.info(jsonEncode(result.data!.toMap()));
+        TNavigationService.toNamed(TAppRoutes.viewAnimalDetails, arguments: result.data);
       }
     }
   }
