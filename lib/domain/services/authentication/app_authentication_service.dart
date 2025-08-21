@@ -152,7 +152,7 @@ class AppAuthenticationService {
       scheme: base.scheme,
       host: base.host,
       port: base.port,
-      path:  '${base.path}$_baseAuth{$_refresh'
+      path:  '${base.path}$_baseAuth$_refresh'
     );
 
     final payload = {

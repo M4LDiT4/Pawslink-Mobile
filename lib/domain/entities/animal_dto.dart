@@ -221,7 +221,8 @@ class AnimalDTO extends BaseDto{
       notes: TListHelpers.parseStringList(animalJSON['notes']?? '[]'),
       traitsAndPersonality: TListHelpers.parseStringList(animalJSON['traitsAndPersonality'] ?? '[]'),
       medicationHistory: medicationRecordList,
-      vaccinationHistory: vaccinationRecordList
+      vaccinationHistory: vaccinationRecordList,
+      profileImageLink: animalJSON['profileImage'],
     );
 
     return animal;

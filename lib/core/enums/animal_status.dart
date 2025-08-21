@@ -48,23 +48,12 @@ extension AnimalStatusTextColorExtension on AnimalStatus {
 }
 
 AnimalStatus animalStatusFromString(String string) {
-  final lower = string.toLowerCase();
-
-  if (lower == TText.transient.toLowerCase()) {
-    return AnimalStatus.transient;
-  } else if (lower == TText.adopted.toLowerCase()) {
-    return AnimalStatus.adopted;
-  } else if (lower == TText.onCampus.toLowerCase()) {
-    return AnimalStatus.onCampus;
-  } else if (lower == TText.owned.toLowerCase()) {
-    return AnimalStatus.owned;
-  } else if (lower == TText.rainbowBridge.toLowerCase()) {
-    return AnimalStatus.rainbowBridge;
-  } else if (lower == TText.unknown.toLowerCase()) {
-    return AnimalStatus.unknown;
-  } else {
-    throw UnsupportedError(
-      "Expects: [${TText.transient}, ${TText.adopted}, ${TText.onCampus}, ${TText.owned}, ${TText.rainbowBridge}, ${TText.unknown}] given: $string"
+  try {
+    return AnimalStatus.values.firstWhere(
+      (status) => status.name.toLowerCase() == string.toLowerCase(),
+      orElse: () => AnimalStatus.unknown,
     );
+  } catch (_) {
+    return AnimalStatus.unknown;
   }
 }
