@@ -6,6 +6,7 @@ import 'package:mobile_app_template/core/enums/animal_sex.dart';
 import 'package:mobile_app_template/core/enums/animal_species.dart';
 import 'package:mobile_app_template/core/enums/animal_status.dart';
 import 'package:mobile_app_template/core/widgets/buttons/form_button/form_button.dart';
+import 'package:mobile_app_template/core/widgets/buttons/secondary_elevated_button.dart';
 import 'package:mobile_app_template/core/widgets/composite/record_list_field/forms/animal_medication_form.dart';
 import 'package:mobile_app_template/core/widgets/composite/record_list_field/forms/animal_vaccination_form.dart';
 import 'package:mobile_app_template/core/widgets/composite/record_list_field/record_list_field.dart';
@@ -183,18 +184,29 @@ class AddAnimalScreeen extends StatelessWidget {
   }
 
   Widget _buildActionButtons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+    return Column(
       children: [
-        FormButton(
-          onPressed: _handleCancel,
-          type: FormButtonType.cancel,
-          child: const Text(TText.cancel),
+        const FixedSeparator(space: TSizes.spaceBetweenSections),
+        Row(
+          children: [
+            Expanded(
+              child: SecondaryElevatedButton(
+                onPressed: _handleCancel, 
+                child: const Text("Cancel")
+              )
+            ),
+          ],
         ),
-        FormButton(
-          onPressed: _handleSave,
-          child: const Text(TText.save),
-        ),
+        const FixedSeparator(space: TSizes.spaceBetweenItems),
+        Row(
+          children: [
+            Expanded(
+              child:ElevatedButton(
+                onPressed: _handleSave, 
+                child: const Text('Save')
+              )
+            )
+        ],)
       ],
     );
   }

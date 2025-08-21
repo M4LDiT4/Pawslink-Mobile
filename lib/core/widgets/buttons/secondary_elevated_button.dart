@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app_template/core/utils/helpers/number_helpers.dart';
 
 class SecondaryElevatedButton extends StatelessWidget {
   
@@ -14,7 +15,7 @@ class SecondaryElevatedButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: Theme.of(context).colorScheme.surface,
+        backgroundColor: Theme.of(context).colorScheme.primary.withAlpha(TNumberHelper.getAlphaWithOpacity(0.15)),
         foregroundColor: Theme.of(context).colorScheme.primary,
         side: BorderSide(
           color: Theme.of(context).colorScheme.primary,

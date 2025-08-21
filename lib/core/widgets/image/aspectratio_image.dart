@@ -59,8 +59,22 @@ class _AspectRatioImageState extends State<AspectRatioImage> {
   @override
   Widget build(BuildContext context) {
     if (_aspectRatio == null) {
-      return widget.placeholder ??
-          const Center(child: CircularProgressIndicator());
+      return Padding(
+        padding: const EdgeInsets.all(20),
+        child: widget.placeholder ??
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                     CircularProgressIndicator(),
+                     Text("Loading Image")
+                  ],
+                ),
+              ],
+            ),
+      );
     }
     return LayoutBuilder(
       builder: (context, constraints) {
