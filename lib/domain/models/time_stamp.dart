@@ -2,10 +2,10 @@ import 'package:isar/isar.dart';
 
 mixin Timestamped {
   @Index()
-  late DateTime? createdAt;
+  DateTime? createdAt;
 
   @Index()
-  late DateTime? updatedAt;
+  DateTime? updatedAt;
 }
 
 extension TimestampedCollection<T extends Timestamped> on IsarCollection<T> {

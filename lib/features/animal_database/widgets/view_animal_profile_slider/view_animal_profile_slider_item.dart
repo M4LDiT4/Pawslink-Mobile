@@ -1,14 +1,22 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:mobile_app_template/core/enums/animal_species.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:mobile_app_template/core/constants/image_strings.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/enums/animal_sex.dart';
+import 'package:mobile_app_template/domain/entities/animal_dto.dart';
 
 class ViewAnimalProfileSliderItem extends StatelessWidget {
+  final AnimalDTO? animal;
   final bool isLoading;
 
-  const ViewAnimalProfileSliderItem({super.key, this.isLoading = false});
+  const ViewAnimalProfileSliderItem({
+    super.key,
+    this.animal,
+    this.isLoading = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +82,12 @@ class ViewAnimalProfileSliderItem extends StatelessWidget {
     }
 
     Widget buildRealCard() {
+      // Determine image to show
+      final imagePath = animal?.profileImagePath;
+      final fallbackImage = (animal?.species == AnimalSpecies.cat)
+          ? TImages.catIcon
+          : TImages.dogIcon;
+
       return Card(
         elevation: 4,
         child: SizedBox(
@@ -81,40 +95,54 @@ class ViewAnimalProfileSliderItem extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(TSizes.paddingmd),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(TSizes.borderRadiussm),
                   child: SizedBox(
                     width: double.infinity,
                     height: 160,
-                    child: Image.asset(
-                      TImages.catIcon,
-                      fit: BoxFit.cover,
-                    ),
+                    child: imagePath != null
+                        ? Image.file(
+                            File(imagePath),
+                            fit: BoxFit.cover,
+                          )
+                        : Image.asset(
+                            fallbackImage,
+                            fit: BoxFit.cover,
+                          ),
                   ),
                 ),
                 const SizedBox(height: 8),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "Name",
-                      style: Theme.of(context).textTheme.titleMedium,
+                    Flexible(
+                      child: Text(
+                        animal?.name ?? "Unknown",
+                        style: Theme.of(context).textTheme.titleMedium,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                     Icon(
-                      Icons.male,
-                      color: AnimalSex.male.color,
-                    )
+                      animal?.sex.icon ?? Icons.male,
+                      color: animal?.sex.color ?? Colors.blue,
+                    ),
                   ],
                 ),
                 const SizedBox(height: 6),
-                const Row(
+                Row(
                   children: [
-                    Icon(Iconsax.location, size: TSizes.iconsm),
-                    SizedBox(width: 4),
-                    Text("Location"),
+                    const Icon(Iconsax.location, size: TSizes.iconsm),
+                    const SizedBox(width: 4),
+                    Flexible(
+                      child: Text(
+                        animal?.location ?? "Unknown",
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                   ],
-                )
+                ),
               ],
             ),
           ),
@@ -123,8 +151,7 @@ class ViewAnimalProfileSliderItem extends StatelessWidget {
     }
 
     return SizedBox(
-      child: 
-        isLoading ? buildShimmerCard() : buildRealCard(),
+      child: isLoading || animal == null ? buildShimmerCard() : buildRealCard(),
     );
   }
 }

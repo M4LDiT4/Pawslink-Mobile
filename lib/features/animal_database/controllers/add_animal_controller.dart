@@ -199,15 +199,15 @@ class AddAnimalController extends GetxController {
     );
 
     OperationResponse<AnimalDTO>? result;
-    if(_connectionController.isConnected){
-      result = await TUIHelpers.showResponsiveModal(
-        child:AsyncGenericLoader(
-          asyncFunction: () async {
-            return _repo.saveAnimalToCloud(animal, File(imgPickerController.selectedImage!.path));
-          }
-        ) 
-      );
-    }else{
+    // if(_connectionController.isConnected){
+    //   result = await TUIHelpers.showResponsiveModal(
+    //     child:AsyncGenericLoader(
+    //       asyncFunction: () async {
+    //         return _repo.saveAnimalToCloud(animal, File(imgPickerController.selectedImage!.path));
+    //       }
+    //     ) 
+    //   );
+    // }else{
       final saveToLocal = await TUIHelpers.showResponsiveModal<bool>(child: const SaveToDraftsDialog());
       if(saveToLocal != null && saveToLocal){
         result = await TUIHelpers.showResponsiveModal<OperationResponse<AnimalDTO>>(
@@ -216,7 +216,7 @@ class AddAnimalController extends GetxController {
           })
         );
       }
-    }
+    // }
 
     if( result == null || !result.isSuccessful){
       TUIHelpers.showStateSnackBar(

@@ -9,6 +9,7 @@ import 'package:mobile_app_template/data/local_storage/isar/helpers/filter_helpe
 import 'package:mobile_app_template/domain/entities/animal_dto.dart';
 import 'package:mobile_app_template/domain/repositories/api/animal_api_repository.dart';
 import 'package:mobile_app_template/domain/repositories/local/local_animal_repository.dart';
+import 'package:mobile_app_template/domain/services/local/animal_repository.dart';
 import 'package:mobile_app_template/network/operation_response.dart';
 import 'package:path/path.dart';
 
@@ -53,17 +54,23 @@ class AnimalDatabaseService {
 
   Future<OperationResponse<List<AnimalDTO>>> getLocalAnimals({
     String? name,
-    FilterConditionType? nameCondition,   // NEW
-
+    FilterConditionType? nameCondition,  
     String? location,
-    FilterConditionType? locationCondition, // NEW
+    FilterConditionType? locationCondition, 
 
     AnimalSex? sex,
     AnimalSpecies? species,
     AnimalStatus? status,
 
     int? age,
-    FilterConditionType? ageCondition,   // NEW
+    FilterConditionType? ageCondition,   
+
+    AnimalSortBy? sortBy,
+    Sort? sortOrder,
+
+    int? page,
+    int? itemsPerPage,
+
   }) async {
     final result = await _localRepo.getAnimals(
       name: _toFilter(name, strategy: nameCondition ?? FilterConditionType.equalTo),
@@ -72,6 +79,10 @@ class AnimalDatabaseService {
       species: _toFilter(species),
       status: _toFilter(status),
       age: _toFilter(age, strategy: ageCondition ?? FilterConditionType.equalTo),
+      sortBy: sortBy,
+      sortOrder: sortOrder,
+      pageNum: page,
+      itemsPerPage: itemsPerPage
     );
 
     if(result.data == null){
@@ -136,9 +147,9 @@ class AnimalDatabaseService {
         AnimalStatus.adopted.name: _localRepo.countAnimals(status: AnimalStatus.adopted),
         AnimalStatus.onCampus.name: _localRepo.countAnimals(status: AnimalStatus.onCampus),
         AnimalStatus.owned.name: _localRepo.countAnimals(status: AnimalStatus.owned),
-        AnimalStatus.transient.name: _localRepo.countAnimals(status: AnimalStatus.owned),
-        AnimalStatus.rainbowBridge.name: _localRepo.countAnimals(status: AnimalStatus.owned),
-        AnimalStatus.unknown.name: _localRepo.countAnimals(status: AnimalStatus.owned),
+        AnimalStatus.transient.name: _localRepo.countAnimals(status: AnimalStatus.transient),
+        AnimalStatus.rainbowBridge.name: _localRepo.countAnimals(status: AnimalStatus.rainbowBridge),
+        AnimalStatus.unknown.name: _localRepo.countAnimals(status: AnimalStatus.unknown),
       };
 
       final results = await Future.wait(futureMap.entries.map(
