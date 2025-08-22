@@ -11,7 +11,7 @@ import 'package:mobile_app_template/core/widgets/text_fields/tag_input/tag_input
 import 'package:mobile_app_template/core/widgets/text_fields/tag_input/tag_input_controller.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
 import 'package:mobile_app_template/domain/entities/animal_vaccination_dto.dart';
-import 'package:mobile_app_template/services/navigation/navigation_service.dart';
+import 'package:mobile_app_template/navigation/navigation_service.dart';
 
 class AnimalVaccinationForm extends StatefulWidget {
   final String title;

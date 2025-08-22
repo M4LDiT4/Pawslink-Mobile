@@ -18,50 +18,60 @@ const LocalAnimalMedicationRecordSchema = CollectionSchema(
   name: r'LocalAnimalMedicationRecord',
   id: -8581976793897382670,
   properties: {
-    r'dateGiven': PropertySchema(
+    r'createdAt': PropertySchema(
       id: 0,
+      name: r'createdAt',
+      type: IsarType.dateTime,
+    ),
+    r'dateGiven': PropertySchema(
+      id: 1,
       name: r'dateGiven',
       type: IsarType.dateTime,
     ),
     r'dosage': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'dosage',
       type: IsarType.string,
     ),
     r'durationInDays': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'durationInDays',
       type: IsarType.long,
     ),
     r'medicationName': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'medicationName',
       type: IsarType.string,
     ),
     r'notes': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'notes',
       type: IsarType.stringList,
     ),
     r'prescribedBy': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'prescribedBy',
       type: IsarType.string,
     ),
     r'reason': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'reason',
       type: IsarType.string,
     ),
     r'remoteAnimalId': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'remoteAnimalId',
       type: IsarType.string,
     ),
     r'route': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'route',
       type: IsarType.string,
+    ),
+    r'updatedAt': PropertySchema(
+      id: 10,
+      name: r'updatedAt',
+      type: IsarType.dateTime,
     )
   },
   estimateSize: _localAnimalMedicationRecordEstimateSize,
@@ -69,7 +79,34 @@ const LocalAnimalMedicationRecordSchema = CollectionSchema(
   deserialize: _localAnimalMedicationRecordDeserialize,
   deserializeProp: _localAnimalMedicationRecordDeserializeProp,
   idName: r'id',
-  indexes: {},
+  indexes: {
+    r'createdAt': IndexSchema(
+      id: -3433535483987302584,
+      name: r'createdAt',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'createdAt',
+          type: IndexType.value,
+          caseSensitive: false,
+        )
+      ],
+    ),
+    r'updatedAt': IndexSchema(
+      id: -6238191080293565125,
+      name: r'updatedAt',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'updatedAt',
+          type: IndexType.value,
+          caseSensitive: false,
+        )
+      ],
+    )
+  },
   links: {},
   embeddedSchemas: {},
   getId: _localAnimalMedicationRecordGetId,
@@ -111,15 +148,17 @@ void _localAnimalMedicationRecordSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeDateTime(offsets[0], object.dateGiven);
-  writer.writeString(offsets[1], object.dosage);
-  writer.writeLong(offsets[2], object.durationInDays);
-  writer.writeString(offsets[3], object.medicationName);
-  writer.writeStringList(offsets[4], object.notes);
-  writer.writeString(offsets[5], object.prescribedBy);
-  writer.writeString(offsets[6], object.reason);
-  writer.writeString(offsets[7], object.remoteAnimalId);
-  writer.writeString(offsets[8], object.route);
+  writer.writeDateTime(offsets[0], object.createdAt);
+  writer.writeDateTime(offsets[1], object.dateGiven);
+  writer.writeString(offsets[2], object.dosage);
+  writer.writeLong(offsets[3], object.durationInDays);
+  writer.writeString(offsets[4], object.medicationName);
+  writer.writeStringList(offsets[5], object.notes);
+  writer.writeString(offsets[6], object.prescribedBy);
+  writer.writeString(offsets[7], object.reason);
+  writer.writeString(offsets[8], object.remoteAnimalId);
+  writer.writeString(offsets[9], object.route);
+  writer.writeDateTime(offsets[10], object.updatedAt);
 }
 
 LocalAnimalMedicationRecord _localAnimalMedicationRecordDeserialize(
@@ -129,16 +168,18 @@ LocalAnimalMedicationRecord _localAnimalMedicationRecordDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = LocalAnimalMedicationRecord();
-  object.dateGiven = reader.readDateTime(offsets[0]);
-  object.dosage = reader.readString(offsets[1]);
-  object.durationInDays = reader.readLong(offsets[2]);
+  object.createdAt = reader.readDateTimeOrNull(offsets[0]);
+  object.dateGiven = reader.readDateTime(offsets[1]);
+  object.dosage = reader.readString(offsets[2]);
+  object.durationInDays = reader.readLong(offsets[3]);
   object.id = id;
-  object.medicationName = reader.readString(offsets[3]);
-  object.notes = reader.readStringList(offsets[4]) ?? [];
-  object.prescribedBy = reader.readString(offsets[5]);
-  object.reason = reader.readString(offsets[6]);
-  object.remoteAnimalId = reader.readStringOrNull(offsets[7]);
-  object.route = reader.readString(offsets[8]);
+  object.medicationName = reader.readString(offsets[4]);
+  object.notes = reader.readStringList(offsets[5]) ?? [];
+  object.prescribedBy = reader.readString(offsets[6]);
+  object.reason = reader.readString(offsets[7]);
+  object.remoteAnimalId = reader.readStringOrNull(offsets[8]);
+  object.route = reader.readString(offsets[9]);
+  object.updatedAt = reader.readDateTimeOrNull(offsets[10]);
   return object;
 }
 
@@ -150,23 +191,27 @@ P _localAnimalMedicationRecordDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 1:
-      return (reader.readString(offset)) as P;
+      return (reader.readDateTime(offset)) as P;
     case 2:
-      return (reader.readLong(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 3:
-      return (reader.readString(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 4:
-      return (reader.readStringList(offset) ?? []) as P;
-    case 5:
       return (reader.readString(offset)) as P;
+    case 5:
+      return (reader.readStringList(offset) ?? []) as P;
     case 6:
       return (reader.readString(offset)) as P;
     case 7:
-      return (reader.readStringOrNull(offset)) as P;
-    case 8:
       return (reader.readString(offset)) as P;
+    case 8:
+      return (reader.readStringOrNull(offset)) as P;
+    case 9:
+      return (reader.readString(offset)) as P;
+    case 10:
+      return (reader.readDateTimeOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -192,6 +237,24 @@ extension LocalAnimalMedicationRecordQueryWhereSort on QueryBuilder<
       QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterWhere> anyCreatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'createdAt'),
+      );
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterWhere> anyUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'updatedAt'),
+      );
     });
   }
 }
@@ -265,12 +328,316 @@ extension LocalAnimalMedicationRecordQueryWhere on QueryBuilder<
       ));
     });
   }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterWhereClause> createdAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'createdAt',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterWhereClause> createdAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'createdAt',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterWhereClause> createdAtEqualTo(DateTime? createdAt) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'createdAt',
+        value: [createdAt],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterWhereClause> createdAtNotEqualTo(DateTime? createdAt) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'createdAt',
+              lower: [],
+              upper: [createdAt],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'createdAt',
+              lower: [createdAt],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'createdAt',
+              lower: [createdAt],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'createdAt',
+              lower: [],
+              upper: [createdAt],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterWhereClause> createdAtGreaterThan(
+    DateTime? createdAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'createdAt',
+        lower: [createdAt],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterWhereClause> createdAtLessThan(
+    DateTime? createdAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'createdAt',
+        lower: [],
+        upper: [createdAt],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterWhereClause> createdAtBetween(
+    DateTime? lowerCreatedAt,
+    DateTime? upperCreatedAt, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'createdAt',
+        lower: [lowerCreatedAt],
+        includeLower: includeLower,
+        upper: [upperCreatedAt],
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterWhereClause> updatedAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'updatedAt',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterWhereClause> updatedAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'updatedAt',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterWhereClause> updatedAtEqualTo(DateTime? updatedAt) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'updatedAt',
+        value: [updatedAt],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterWhereClause> updatedAtNotEqualTo(DateTime? updatedAt) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'updatedAt',
+              lower: [],
+              upper: [updatedAt],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'updatedAt',
+              lower: [updatedAt],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'updatedAt',
+              lower: [updatedAt],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'updatedAt',
+              lower: [],
+              upper: [updatedAt],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterWhereClause> updatedAtGreaterThan(
+    DateTime? updatedAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'updatedAt',
+        lower: [updatedAt],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterWhereClause> updatedAtLessThan(
+    DateTime? updatedAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'updatedAt',
+        lower: [],
+        upper: [updatedAt],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterWhereClause> updatedAtBetween(
+    DateTime? lowerUpdatedAt,
+    DateTime? upperUpdatedAt, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'updatedAt',
+        lower: [lowerUpdatedAt],
+        includeLower: includeLower,
+        upper: [upperUpdatedAt],
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension LocalAnimalMedicationRecordQueryFilter on QueryBuilder<
     LocalAnimalMedicationRecord,
     LocalAnimalMedicationRecord,
     QFilterCondition> {
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterFilterCondition> createdAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'createdAt',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterFilterCondition> createdAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'createdAt',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterFilterCondition> createdAtEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'createdAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterFilterCondition> createdAtGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'createdAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterFilterCondition> createdAtLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'createdAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterFilterCondition> createdAtBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'createdAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
       QAfterFilterCondition> dateGivenEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
@@ -1511,6 +1878,80 @@ extension LocalAnimalMedicationRecordQueryFilter on QueryBuilder<
       ));
     });
   }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterFilterCondition> updatedAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'updatedAt',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterFilterCondition> updatedAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'updatedAt',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterFilterCondition> updatedAtEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterFilterCondition> updatedAtGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterFilterCondition> updatedAtLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterFilterCondition> updatedAtBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'updatedAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension LocalAnimalMedicationRecordQueryObject on QueryBuilder<
@@ -1525,6 +1966,20 @@ extension LocalAnimalMedicationRecordQueryLinks on QueryBuilder<
 
 extension LocalAnimalMedicationRecordQuerySortBy on QueryBuilder<
     LocalAnimalMedicationRecord, LocalAnimalMedicationRecord, QSortBy> {
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterSortBy> sortByCreatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createdAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterSortBy> sortByCreatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createdAt', Sort.desc);
+    });
+  }
+
   QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
       QAfterSortBy> sortByDateGiven() {
     return QueryBuilder.apply(this, (query) {
@@ -1636,10 +2091,38 @@ extension LocalAnimalMedicationRecordQuerySortBy on QueryBuilder<
       return query.addSortBy(r'route', Sort.desc);
     });
   }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterSortBy> sortByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterSortBy> sortByUpdatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.desc);
+    });
+  }
 }
 
 extension LocalAnimalMedicationRecordQuerySortThenBy on QueryBuilder<
     LocalAnimalMedicationRecord, LocalAnimalMedicationRecord, QSortThenBy> {
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterSortBy> thenByCreatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createdAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterSortBy> thenByCreatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createdAt', Sort.desc);
+    });
+  }
+
   QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
       QAfterSortBy> thenByDateGiven() {
     return QueryBuilder.apply(this, (query) {
@@ -1765,10 +2248,31 @@ extension LocalAnimalMedicationRecordQuerySortThenBy on QueryBuilder<
       return query.addSortBy(r'route', Sort.desc);
     });
   }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterSortBy> thenByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterSortBy> thenByUpdatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.desc);
+    });
+  }
 }
 
 extension LocalAnimalMedicationRecordQueryWhereDistinct on QueryBuilder<
     LocalAnimalMedicationRecord, LocalAnimalMedicationRecord, QDistinct> {
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QDistinct> distinctByCreatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'createdAt');
+    });
+  }
+
   QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
       QDistinct> distinctByDateGiven() {
     return QueryBuilder.apply(this, (query) {
@@ -1833,6 +2337,13 @@ extension LocalAnimalMedicationRecordQueryWhereDistinct on QueryBuilder<
       return query.addDistinctBy(r'route', caseSensitive: caseSensitive);
     });
   }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QDistinct> distinctByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'updatedAt');
+    });
+  }
 }
 
 extension LocalAnimalMedicationRecordQueryProperty on QueryBuilder<
@@ -1841,6 +2352,13 @@ extension LocalAnimalMedicationRecordQueryProperty on QueryBuilder<
       idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, DateTime?, QQueryOperations>
+      createdAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'createdAt');
     });
   }
 
@@ -1904,6 +2422,13 @@ extension LocalAnimalMedicationRecordQueryProperty on QueryBuilder<
       routeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'route');
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, DateTime?, QQueryOperations>
+      updatedAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'updatedAt');
     });
   }
 }

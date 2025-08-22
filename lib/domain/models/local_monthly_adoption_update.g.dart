@@ -28,36 +28,46 @@ const LocalMonthlyAdoptionUpdateSchema = CollectionSchema(
       name: r'behaviorNotes',
       type: IsarType.stringList,
     ),
-    r'healthStatus': PropertySchema(
+    r'createdAt': PropertySchema(
       id: 2,
+      name: r'createdAt',
+      type: IsarType.dateTime,
+    ),
+    r'healthStatus': PropertySchema(
+      id: 3,
       name: r'healthStatus',
       type: IsarType.string,
       enumMap: _LocalMonthlyAdoptionUpdatehealthStatusEnumValueMap,
     ),
     r'localImagePaths': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'localImagePaths',
       type: IsarType.stringList,
     ),
     r'month': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'month',
       type: IsarType.dateTime,
     ),
     r'remarks': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'remarks',
       type: IsarType.stringList,
     ),
     r'remoteId': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'remoteId',
       type: IsarType.string,
     ),
     r'remoteImageUrls': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'remoteImageUrls',
       type: IsarType.stringList,
+    ),
+    r'updatedAt': PropertySchema(
+      id: 9,
+      name: r'updatedAt',
+      type: IsarType.dateTime,
     )
   },
   estimateSize: _localMonthlyAdoptionUpdateEstimateSize,
@@ -65,7 +75,34 @@ const LocalMonthlyAdoptionUpdateSchema = CollectionSchema(
   deserialize: _localMonthlyAdoptionUpdateDeserialize,
   deserializeProp: _localMonthlyAdoptionUpdateDeserializeProp,
   idName: r'id',
-  indexes: {},
+  indexes: {
+    r'createdAt': IndexSchema(
+      id: -3433535483987302584,
+      name: r'createdAt',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'createdAt',
+          type: IndexType.value,
+          caseSensitive: false,
+        )
+      ],
+    ),
+    r'updatedAt': IndexSchema(
+      id: -6238191080293565125,
+      name: r'updatedAt',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'updatedAt',
+          type: IndexType.value,
+          caseSensitive: false,
+        )
+      ],
+    )
+  },
   links: {
     r'medicationUpdates': LinkSchema(
       id: -7767217694513957913,
@@ -140,12 +177,14 @@ void _localMonthlyAdoptionUpdateSerialize(
 ) {
   writer.writeString(offsets[0], object.adoptionId);
   writer.writeStringList(offsets[1], object.behaviorNotes);
-  writer.writeString(offsets[2], object.healthStatus.name);
-  writer.writeStringList(offsets[3], object.localImagePaths);
-  writer.writeDateTime(offsets[4], object.month);
-  writer.writeStringList(offsets[5], object.remarks);
-  writer.writeString(offsets[6], object.remoteId);
-  writer.writeStringList(offsets[7], object.remoteImageUrls);
+  writer.writeDateTime(offsets[2], object.createdAt);
+  writer.writeString(offsets[3], object.healthStatus.name);
+  writer.writeStringList(offsets[4], object.localImagePaths);
+  writer.writeDateTime(offsets[5], object.month);
+  writer.writeStringList(offsets[6], object.remarks);
+  writer.writeString(offsets[7], object.remoteId);
+  writer.writeStringList(offsets[8], object.remoteImageUrls);
+  writer.writeDateTime(offsets[9], object.updatedAt);
 }
 
 LocalMonthlyAdoptionUpdate _localMonthlyAdoptionUpdateDeserialize(
@@ -157,15 +196,17 @@ LocalMonthlyAdoptionUpdate _localMonthlyAdoptionUpdateDeserialize(
   final object = LocalMonthlyAdoptionUpdate();
   object.adoptionId = reader.readString(offsets[0]);
   object.behaviorNotes = reader.readStringList(offsets[1]) ?? [];
+  object.createdAt = reader.readDateTimeOrNull(offsets[2]);
   object.healthStatus = _LocalMonthlyAdoptionUpdatehealthStatusValueEnumMap[
-          reader.readStringOrNull(offsets[2])] ??
+          reader.readStringOrNull(offsets[3])] ??
       AnimalHealthStatus.healthy;
   object.id = id;
-  object.localImagePaths = reader.readStringList(offsets[3]) ?? [];
-  object.month = reader.readDateTime(offsets[4]);
-  object.remarks = reader.readStringList(offsets[5]) ?? [];
-  object.remoteId = reader.readStringOrNull(offsets[6]);
-  object.remoteImageUrls = reader.readStringList(offsets[7]) ?? [];
+  object.localImagePaths = reader.readStringList(offsets[4]) ?? [];
+  object.month = reader.readDateTime(offsets[5]);
+  object.remarks = reader.readStringList(offsets[6]) ?? [];
+  object.remoteId = reader.readStringOrNull(offsets[7]);
+  object.remoteImageUrls = reader.readStringList(offsets[8]) ?? [];
+  object.updatedAt = reader.readDateTimeOrNull(offsets[9]);
   return object;
 }
 
@@ -181,19 +222,23 @@ P _localMonthlyAdoptionUpdateDeserializeProp<P>(
     case 1:
       return (reader.readStringList(offset) ?? []) as P;
     case 2:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 3:
       return (_LocalMonthlyAdoptionUpdatehealthStatusValueEnumMap[
               reader.readStringOrNull(offset)] ??
           AnimalHealthStatus.healthy) as P;
-    case 3:
-      return (reader.readStringList(offset) ?? []) as P;
     case 4:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readStringList(offset) ?? []) as P;
     case 5:
-      return (reader.readStringList(offset) ?? []) as P;
+      return (reader.readDateTime(offset)) as P;
     case 6:
-      return (reader.readStringOrNull(offset)) as P;
-    case 7:
       return (reader.readStringList(offset) ?? []) as P;
+    case 7:
+      return (reader.readStringOrNull(offset)) as P;
+    case 8:
+      return (reader.readStringList(offset) ?? []) as P;
+    case 9:
+      return (reader.readDateTimeOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -246,6 +291,24 @@ extension LocalMonthlyAdoptionUpdateQueryWhereSort on QueryBuilder<
       QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterWhere> anyCreatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'createdAt'),
+      );
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterWhere> anyUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'updatedAt'),
+      );
     });
   }
 }
@@ -315,6 +378,236 @@ extension LocalMonthlyAdoptionUpdateQueryWhere on QueryBuilder<
         lower: lowerId,
         includeLower: includeLower,
         upper: upperId,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterWhereClause> createdAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'createdAt',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterWhereClause> createdAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'createdAt',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterWhereClause> createdAtEqualTo(DateTime? createdAt) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'createdAt',
+        value: [createdAt],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterWhereClause> createdAtNotEqualTo(DateTime? createdAt) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'createdAt',
+              lower: [],
+              upper: [createdAt],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'createdAt',
+              lower: [createdAt],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'createdAt',
+              lower: [createdAt],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'createdAt',
+              lower: [],
+              upper: [createdAt],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterWhereClause> createdAtGreaterThan(
+    DateTime? createdAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'createdAt',
+        lower: [createdAt],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterWhereClause> createdAtLessThan(
+    DateTime? createdAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'createdAt',
+        lower: [],
+        upper: [createdAt],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterWhereClause> createdAtBetween(
+    DateTime? lowerCreatedAt,
+    DateTime? upperCreatedAt, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'createdAt',
+        lower: [lowerCreatedAt],
+        includeLower: includeLower,
+        upper: [upperCreatedAt],
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterWhereClause> updatedAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'updatedAt',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterWhereClause> updatedAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'updatedAt',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterWhereClause> updatedAtEqualTo(DateTime? updatedAt) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'updatedAt',
+        value: [updatedAt],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterWhereClause> updatedAtNotEqualTo(DateTime? updatedAt) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'updatedAt',
+              lower: [],
+              upper: [updatedAt],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'updatedAt',
+              lower: [updatedAt],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'updatedAt',
+              lower: [updatedAt],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'updatedAt',
+              lower: [],
+              upper: [updatedAt],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterWhereClause> updatedAtGreaterThan(
+    DateTime? updatedAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'updatedAt',
+        lower: [updatedAt],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterWhereClause> updatedAtLessThan(
+    DateTime? updatedAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'updatedAt',
+        lower: [],
+        upper: [updatedAt],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterWhereClause> updatedAtBetween(
+    DateTime? lowerUpdatedAt,
+    DateTime? upperUpdatedAt, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'updatedAt',
+        lower: [lowerUpdatedAt],
+        includeLower: includeLower,
+        upper: [upperUpdatedAt],
         includeUpper: includeUpper,
       ));
     });
@@ -685,6 +978,80 @@ extension LocalMonthlyAdoptionUpdateQueryFilter on QueryBuilder<
         upper,
         includeUpper,
       );
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterFilterCondition> createdAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'createdAt',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterFilterCondition> createdAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'createdAt',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterFilterCondition> createdAtEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'createdAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterFilterCondition> createdAtGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'createdAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterFilterCondition> createdAtLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'createdAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterFilterCondition> createdAtBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'createdAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
     });
   }
 
@@ -1778,6 +2145,80 @@ extension LocalMonthlyAdoptionUpdateQueryFilter on QueryBuilder<
       );
     });
   }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterFilterCondition> updatedAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'updatedAt',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterFilterCondition> updatedAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'updatedAt',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterFilterCondition> updatedAtEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterFilterCondition> updatedAtGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterFilterCondition> updatedAtLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterFilterCondition> updatedAtBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'updatedAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension LocalMonthlyAdoptionUpdateQueryObject on QueryBuilder<
@@ -1930,6 +2371,20 @@ extension LocalMonthlyAdoptionUpdateQuerySortBy on QueryBuilder<
   }
 
   QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterSortBy> sortByCreatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createdAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterSortBy> sortByCreatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createdAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
       QAfterSortBy> sortByHealthStatus() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'healthStatus', Sort.asc);
@@ -1970,6 +2425,20 @@ extension LocalMonthlyAdoptionUpdateQuerySortBy on QueryBuilder<
       return query.addSortBy(r'remoteId', Sort.desc);
     });
   }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterSortBy> sortByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterSortBy> sortByUpdatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.desc);
+    });
+  }
 }
 
 extension LocalMonthlyAdoptionUpdateQuerySortThenBy on QueryBuilder<
@@ -1985,6 +2454,20 @@ extension LocalMonthlyAdoptionUpdateQuerySortThenBy on QueryBuilder<
       QAfterSortBy> thenByAdoptionIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'adoptionId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterSortBy> thenByCreatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createdAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterSortBy> thenByCreatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createdAt', Sort.desc);
     });
   }
 
@@ -2043,6 +2526,20 @@ extension LocalMonthlyAdoptionUpdateQuerySortThenBy on QueryBuilder<
       return query.addSortBy(r'remoteId', Sort.desc);
     });
   }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterSortBy> thenByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QAfterSortBy> thenByUpdatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.desc);
+    });
+  }
 }
 
 extension LocalMonthlyAdoptionUpdateQueryWhereDistinct on QueryBuilder<
@@ -2058,6 +2555,13 @@ extension LocalMonthlyAdoptionUpdateQueryWhereDistinct on QueryBuilder<
       QDistinct> distinctByBehaviorNotes() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'behaviorNotes');
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QDistinct> distinctByCreatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'createdAt');
     });
   }
 
@@ -2102,6 +2606,13 @@ extension LocalMonthlyAdoptionUpdateQueryWhereDistinct on QueryBuilder<
       return query.addDistinctBy(r'remoteImageUrls');
     });
   }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, LocalMonthlyAdoptionUpdate,
+      QDistinct> distinctByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'updatedAt');
+    });
+  }
 }
 
 extension LocalMonthlyAdoptionUpdateQueryProperty on QueryBuilder<
@@ -2123,6 +2634,13 @@ extension LocalMonthlyAdoptionUpdateQueryProperty on QueryBuilder<
       behaviorNotesProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'behaviorNotes');
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, DateTime?, QQueryOperations>
+      createdAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'createdAt');
     });
   }
 
@@ -2165,6 +2683,13 @@ extension LocalMonthlyAdoptionUpdateQueryProperty on QueryBuilder<
       remoteImageUrlsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'remoteImageUrls');
+    });
+  }
+
+  QueryBuilder<LocalMonthlyAdoptionUpdate, DateTime?, QQueryOperations>
+      updatedAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'updatedAt');
     });
   }
 }

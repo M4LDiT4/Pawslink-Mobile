@@ -8,10 +8,10 @@ import 'package:mobile_app_template/core/utils/device/device_utility.dart';
 import 'package:mobile_app_template/core/widgets/buttons/admin/admin_home_actionbutton.dart';
 import 'package:mobile_app_template/domain/services/animal%20database/animal_database_service.dart';
 import 'package:mobile_app_template/domain/repositories/api/animal_api_repository.dart';
-import 'package:mobile_app_template/domain/repositories/local/local_animal_service.dart';
+import 'package:mobile_app_template/domain/repositories/local/local_animal_repository.dart';
 import 'package:mobile_app_template/network/dio/app_dio.dart';
 import 'package:mobile_app_template/network/dio/dio_network_client.dart';
-import 'package:mobile_app_template/services/navigation/navigation_service.dart';
+import 'package:mobile_app_template/navigation/navigation_service.dart';
 
 class AnimalDatabaseScreen extends StatefulWidget {
   const AnimalDatabaseScreen({super.key});
@@ -33,7 +33,7 @@ class _AnimalDatabaseScreenState extends State<AnimalDatabaseScreen> {
     getIt.registerLazySingleton(
       ()=> AnimalDatabaseService(
         animalApiService: animalApiService, 
-        localAnimalService: localAnimalService)
+        localAnimalRepo: localAnimalService)
       );
 
   }

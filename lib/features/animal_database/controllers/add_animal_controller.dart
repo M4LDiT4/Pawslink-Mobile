@@ -27,7 +27,7 @@ import 'package:mobile_app_template/domain/entities/animal_vaccination_dto.dart'
 import 'package:mobile_app_template/domain/services/animal%20database/animal_database_service.dart';
 import 'package:mobile_app_template/network/internet_connection/connection_controller.dart';
 import 'package:mobile_app_template/network/operation_response.dart';
-import 'package:mobile_app_template/services/navigation/navigation_service.dart';
+import 'package:mobile_app_template/navigation/navigation_service.dart';
 
 class AddAnimalController extends GetxController {
   AnimalDTO? prevAnimal;

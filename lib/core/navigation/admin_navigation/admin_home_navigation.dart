@@ -5,8 +5,8 @@ import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
 
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
 import 'package:mobile_app_template/core/navigation/admin_navigation/admin_navigation_controller.dart';
-import 'package:mobile_app_template/services/local_storage/local_secure_storage.dart';
-import 'package:mobile_app_template/services/navigation/navigation_service.dart';
+import 'package:mobile_app_template/domain/services/local_storage/local_secure_storage.dart';
+import 'package:mobile_app_template/navigation/navigation_service.dart';
 
 class AdminHomeNavigation extends StatefulWidget {
   const AdminHomeNavigation({super.key});

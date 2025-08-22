@@ -1,0 +1,222 @@
+import 'dart:io';
+
+import 'package:bson/bson.dart';
+import 'package:isar/isar.dart';
+import 'package:mobile_app_template/core/enums/animal_sex.dart';
+import 'package:mobile_app_template/core/enums/animal_species.dart';
+import 'package:mobile_app_template/core/enums/animal_status.dart';
+import 'package:mobile_app_template/core/utils/logger/logger.dart';
+import 'package:mobile_app_template/data/local_storage/isar/helpers/filter_helper.dart';
+import 'package:mobile_app_template/domain/entities/animal_dto.dart';
+import 'package:mobile_app_template/domain/models/local_animal_medication_record.dart';
+import 'package:mobile_app_template/domain/models/local_animal_model.dart';
+import 'package:mobile_app_template/domain/models/local_animal_vaccination_history.dart';
+import 'package:mobile_app_template/domain/repositories/local/file_repository.dart';
+import 'package:mobile_app_template/domain/services/local/animal_repository.dart';
+import 'package:mobile_app_template/network/operation_response.dart';
+
+class LocalAnimalRepository {
+  final Isar _db;
+
+  LocalAnimalRepository(this._db);
+
+  Future<OperationResponse<AnimalDTO>> addAnimal(
+    AnimalDTO animalDto,
+    File profilePicture
+  )async {
+    File? imageFile;
+    try{
+      final localAnimal = animalDto.toLocalModel();
+
+      final vaccinations = animalDto.vaccinationHistory
+        .map((item) => item.toLocalModel())
+        .toList();
+      final medications = animalDto.medicationHistory
+        .map((item) => item.toLocalModel())
+        .toList();
+      
+      localAnimal.medicationHistory.addAll(medications);
+      localAnimal.vaccinationHistory.addAll(vaccinations);
+
+      final pictureInBytes = await profilePicture.readAsBytes();
+
+      await _db.writeTxn(() async {
+        await _db.localAnimalMedicationRecords.putAll(medications);
+        await _db.localAnimalVaccinationRecords.putAll(vaccinations);
+
+        await localAnimal.medicationHistory.save();
+        await localAnimal.vaccinationHistory.save();
+
+        final remoteId = ObjectId().oid;
+
+        localAnimal.remoteId = remoteId;
+        await _db.localAnimalModels.put(localAnimal);
+
+        imageFile = await LocalFileRepository.saveFile(
+          remoteId,
+          pictureInBytes ,
+          folders: [remoteId],
+          isPublic: false
+        );
+
+        if(imageFile == null){
+          throw Exception('Failed to save the animal profile picture');
+        }
+
+        localAnimal.profileImagePath = imageFile!.path;
+
+        await _db.localAnimalModels.put(localAnimal);
+      });
+
+      return OperationResponse<AnimalDTO>(
+        isSuccessful: true, 
+        statusCode: 200,
+        message: 'Animal saved to local database successfully',
+        data: AnimalDTO.fromLocalAnimalModel(localAnimal)
+      );
+
+    }catch(err){
+      TLogger.error("Failed to save the data locally ${err.toString()}");
+      return OperationResponse.failedResponse(
+        message: 'Failed to save the animal to local database'
+      );
+    }
+  }
+
+  Future<OperationResponse<List<LocalAnimalModel>>> getAnimals({
+    DynamicIsarFilter? name,
+    DynamicIsarFilter? species,
+    DynamicIsarFilter? status,
+    DynamicIsarFilter? location,
+    DynamicIsarFilter? age,
+    DynamicIsarFilter? sex,
+    AnimalSortBy sortBy = AnimalSortBy.updatedAt,
+    Sort sortOrder = Sort.asc,
+    int pageNum = 1,
+    int itemsPerPage = 10,
+  })async{
+    try{
+      QueryBuilder<LocalAnimalModel, LocalAnimalModel, QWhere> whereQuery = _db.localAnimalModels.where();
+      QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition> filtered = whereQuery.filter()
+        .optional(
+        name != null,
+        (q) => q.nameContains(name!.value)
+      )
+      .optional(
+        location != null, 
+        (q) => q.locationContains(location!.value)
+      )
+      .optional(
+        age != null, 
+        (q){
+          final strategy = age!.strategy;
+          switch(strategy){
+            case FilterConditionType.greaterThan:
+              return q.ageGreaterThan(age.value);
+            case FilterConditionType.lessThan:
+              return q.ageLessThan(age.value);
+            default:
+              return q.ageEqualTo(age.value);
+          }
+        }
+      )
+      .optional(
+        species != null, 
+        (q) => q.speciesEqualTo(species!.value)
+      )
+      .optional(
+        status != null, 
+        (q) => q.statusEqualTo(status!.value)
+      )
+      .optional(
+        sex != null, 
+        (q) => q.sexEqualTo(sex!.value)
+      );
+
+       QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterSortBy> sorted;
+      
+      if(sortOrder == Sort.asc){
+        switch(sortBy){
+          case AnimalSortBy.name:
+            sorted = filtered.sortByName();
+            break;
+          case AnimalSortBy.age:
+            sorted = filtered.sortByAge();
+            break;
+          default:
+            sorted = filtered.sortByUpdatedAt();
+            break;
+        }
+      }else{
+        switch(sortBy){
+          case AnimalSortBy.name:
+            sorted = filtered.sortByNameDesc();
+            break;
+          case AnimalSortBy.age:
+            sorted = filtered.sortByAgeDesc();
+            break;
+          default:
+            sorted = filtered.sortByUpdatedAtDesc();
+            break;
+        }
+      }
+
+      final offset = (pageNum -1) * itemsPerPage;
+      
+      final result = await sorted.offset(offset).limit(itemsPerPage).findAll();
+
+      return OperationResponse<List<LocalAnimalModel>>(
+        isSuccessful: true, 
+        statusCode: 200,
+        data: result
+      );
+    }catch(err){
+      TLogger.error("Failed to get animals: ${err.toString()}");
+      return OperationResponse<List<LocalAnimalModel>>(
+        isSuccessful: false, 
+        statusCode: 400,
+        data: [],
+        message: "Failed to load animals"
+      );
+    }
+  }
+  Future<OperationResponse<int>> countAnimals({
+    String? name,
+    AnimalSpecies? species,
+    AnimalStatus? status,
+    String? location,
+    AnimalSex? sex,
+    bool? isSterilized
+  }) async {
+    try {
+      QueryBuilder<LocalAnimalModel, LocalAnimalModel, QWhere> whereQuery = 
+        _db.localAnimalModels.where();
+
+      final filtered = whereQuery.filter()
+        .optional(name != null, (q) => q.nameContains(name!))
+        .optional(location != null, (q) => q.locationContains(location!))
+        .optional(species != null, (q) => q.speciesEqualTo(species!))
+        .optional(status != null, (q) => q.statusEqualTo(status!))
+        .optional(sex != null, (q) => q.sexEqualTo(sex!))
+        .optional(isSterilized != null, (q)=> isSterilized!? q.sterilizatonDateIsNotNull(): q.sterilizatonDateIsNull())
+        ;
+
+      final total = await filtered.count();
+
+      return OperationResponse<int>(
+        isSuccessful: true,
+        statusCode: 200,
+        data: total,
+      );
+    } catch (err) {
+      TLogger.error("Failed to count animals: ${err.toString()}");
+      return OperationResponse<int>(
+        isSuccessful: false,
+        statusCode: 400,
+        data: 0,
+        message: "Failed to count animals",
+      );
+    }
+  }
+  
+}

@@ -10,7 +10,7 @@ import 'package:mobile_app_template/core/global_states/initialize_global_state.d
 import 'package:mobile_app_template/domain/services/authentication/app_authentication_service.dart';
 import 'package:mobile_app_template/network/dio/app_dio.dart';
 import 'package:mobile_app_template/network/dio/dio_network_client.dart';
-import 'package:mobile_app_template/services/local_storage/local_secure_storage.dart';
+import 'package:mobile_app_template/domain/services/local_storage/local_secure_storage.dart';
 
 import 'app.dart';
 void main() async {

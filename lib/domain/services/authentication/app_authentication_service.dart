@@ -3,7 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/network/network_client.dart';
 import 'package:mobile_app_template/network/operation_response.dart';
-import 'package:mobile_app_template/services/local_storage/local_secure_storage.dart';
+import 'package:mobile_app_template/domain/services/local_storage/local_secure_storage.dart';
 
 /// Service for handling app authentication and sessions
 /// 

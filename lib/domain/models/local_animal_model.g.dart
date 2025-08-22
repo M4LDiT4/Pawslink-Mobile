@@ -27,63 +27,73 @@ const LocalAnimalModelSchema = CollectionSchema(
       name: r'coatColor',
       type: IsarType.stringList,
     ),
-    r'imagePaths': PropertySchema(
+    r'createdAt': PropertySchema(
       id: 2,
+      name: r'createdAt',
+      type: IsarType.dateTime,
+    ),
+    r'imagePaths': PropertySchema(
+      id: 3,
       name: r'imagePaths',
       type: IsarType.stringList,
     ),
     r'location': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'location',
       type: IsarType.string,
     ),
     r'name': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'name',
       type: IsarType.string,
     ),
     r'notes': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'notes',
       type: IsarType.stringList,
     ),
     r'profileImagePath': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'profileImagePath',
       type: IsarType.string,
     ),
     r'remoteId': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'remoteId',
       type: IsarType.string,
     ),
     r'sex': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'sex',
       type: IsarType.string,
       enumMap: _LocalAnimalModelsexEnumValueMap,
     ),
     r'species': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'species',
       type: IsarType.string,
       enumMap: _LocalAnimalModelspeciesEnumValueMap,
     ),
     r'status': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'status',
       type: IsarType.string,
       enumMap: _LocalAnimalModelstatusEnumValueMap,
     ),
     r'sterilizatonDate': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'sterilizatonDate',
       type: IsarType.dateTime,
     ),
     r'traitsAndPersonality': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'traitsAndPersonality',
       type: IsarType.stringList,
+    ),
+    r'updatedAt': PropertySchema(
+      id: 14,
+      name: r'updatedAt',
+      type: IsarType.dateTime,
     )
   },
   estimateSize: _localAnimalModelEstimateSize,
@@ -91,7 +101,34 @@ const LocalAnimalModelSchema = CollectionSchema(
   deserialize: _localAnimalModelDeserialize,
   deserializeProp: _localAnimalModelDeserializeProp,
   idName: r'id',
-  indexes: {},
+  indexes: {
+    r'createdAt': IndexSchema(
+      id: -3433535483987302584,
+      name: r'createdAt',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'createdAt',
+          type: IndexType.value,
+          caseSensitive: false,
+        )
+      ],
+    ),
+    r'updatedAt': IndexSchema(
+      id: -6238191080293565125,
+      name: r'updatedAt',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'updatedAt',
+          type: IndexType.value,
+          caseSensitive: false,
+        )
+      ],
+    )
+  },
   links: {
     r'vaccinationHistory': LinkSchema(
       id: -5238092616886229582,
@@ -175,17 +212,19 @@ void _localAnimalModelSerialize(
 ) {
   writer.writeLong(offsets[0], object.age);
   writer.writeStringList(offsets[1], object.coatColor);
-  writer.writeStringList(offsets[2], object.imagePaths);
-  writer.writeString(offsets[3], object.location);
-  writer.writeString(offsets[4], object.name);
-  writer.writeStringList(offsets[5], object.notes);
-  writer.writeString(offsets[6], object.profileImagePath);
-  writer.writeString(offsets[7], object.remoteId);
-  writer.writeString(offsets[8], object.sex.name);
-  writer.writeString(offsets[9], object.species.name);
-  writer.writeString(offsets[10], object.status.name);
-  writer.writeDateTime(offsets[11], object.sterilizatonDate);
-  writer.writeStringList(offsets[12], object.traitsAndPersonality);
+  writer.writeDateTime(offsets[2], object.createdAt);
+  writer.writeStringList(offsets[3], object.imagePaths);
+  writer.writeString(offsets[4], object.location);
+  writer.writeString(offsets[5], object.name);
+  writer.writeStringList(offsets[6], object.notes);
+  writer.writeString(offsets[7], object.profileImagePath);
+  writer.writeString(offsets[8], object.remoteId);
+  writer.writeString(offsets[9], object.sex.name);
+  writer.writeString(offsets[10], object.species.name);
+  writer.writeString(offsets[11], object.status.name);
+  writer.writeDateTime(offsets[12], object.sterilizatonDate);
+  writer.writeStringList(offsets[13], object.traitsAndPersonality);
+  writer.writeDateTime(offsets[14], object.updatedAt);
 }
 
 LocalAnimalModel _localAnimalModelDeserialize(
@@ -197,24 +236,26 @@ LocalAnimalModel _localAnimalModelDeserialize(
   final object = LocalAnimalModel();
   object.age = reader.readLongOrNull(offsets[0]);
   object.coatColor = reader.readStringList(offsets[1]) ?? [];
+  object.createdAt = reader.readDateTimeOrNull(offsets[2]);
   object.id = id;
-  object.imagePaths = reader.readStringList(offsets[2]) ?? [];
-  object.location = reader.readString(offsets[3]);
-  object.name = reader.readString(offsets[4]);
-  object.notes = reader.readStringList(offsets[5]) ?? [];
-  object.profileImagePath = reader.readStringOrNull(offsets[6]);
-  object.remoteId = reader.readStringOrNull(offsets[7]);
+  object.imagePaths = reader.readStringList(offsets[3]) ?? [];
+  object.location = reader.readString(offsets[4]);
+  object.name = reader.readString(offsets[5]);
+  object.notes = reader.readStringList(offsets[6]) ?? [];
+  object.profileImagePath = reader.readStringOrNull(offsets[7]);
+  object.remoteId = reader.readStringOrNull(offsets[8]);
   object.sex =
-      _LocalAnimalModelsexValueEnumMap[reader.readStringOrNull(offsets[8])] ??
+      _LocalAnimalModelsexValueEnumMap[reader.readStringOrNull(offsets[9])] ??
           AnimalSex.male;
   object.species = _LocalAnimalModelspeciesValueEnumMap[
-          reader.readStringOrNull(offsets[9])] ??
+          reader.readStringOrNull(offsets[10])] ??
       AnimalSpecies.dog;
   object.status = _LocalAnimalModelstatusValueEnumMap[
-          reader.readStringOrNull(offsets[10])] ??
+          reader.readStringOrNull(offsets[11])] ??
       AnimalStatus.transient;
-  object.sterilizatonDate = reader.readDateTimeOrNull(offsets[11]);
-  object.traitsAndPersonality = reader.readStringList(offsets[12]) ?? [];
+  object.sterilizatonDate = reader.readDateTimeOrNull(offsets[12]);
+  object.traitsAndPersonality = reader.readStringList(offsets[13]) ?? [];
+  object.updatedAt = reader.readDateTimeOrNull(offsets[14]);
   return object;
 }
 
@@ -230,33 +271,37 @@ P _localAnimalModelDeserializeProp<P>(
     case 1:
       return (reader.readStringList(offset) ?? []) as P;
     case 2:
-      return (reader.readStringList(offset) ?? []) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 3:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringList(offset) ?? []) as P;
     case 4:
       return (reader.readString(offset)) as P;
     case 5:
-      return (reader.readStringList(offset) ?? []) as P;
+      return (reader.readString(offset)) as P;
     case 6:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readStringList(offset) ?? []) as P;
     case 7:
       return (reader.readStringOrNull(offset)) as P;
     case 8:
+      return (reader.readStringOrNull(offset)) as P;
+    case 9:
       return (_LocalAnimalModelsexValueEnumMap[
               reader.readStringOrNull(offset)] ??
           AnimalSex.male) as P;
-    case 9:
+    case 10:
       return (_LocalAnimalModelspeciesValueEnumMap[
               reader.readStringOrNull(offset)] ??
           AnimalSpecies.dog) as P;
-    case 10:
+    case 11:
       return (_LocalAnimalModelstatusValueEnumMap[
               reader.readStringOrNull(offset)] ??
           AnimalStatus.transient) as P;
-    case 11:
-      return (reader.readDateTimeOrNull(offset)) as P;
     case 12:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 13:
       return (reader.readStringList(offset) ?? []) as P;
+    case 14:
+      return (reader.readDateTimeOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -284,17 +329,17 @@ const _LocalAnimalModelspeciesValueEnumMap = {
 };
 const _LocalAnimalModelstatusEnumValueMap = {
   r'transient': r'transient',
-  r'rainbow_bridge': r'rainbow_bridge',
+  r'rainbowBridge': r'rainbowBridge',
   r'adopted': r'adopted',
-  r'on_campus': r'on_campus',
+  r'onCampus': r'onCampus',
   r'owned': r'owned',
   r'unknown': r'unknown',
 };
 const _LocalAnimalModelstatusValueEnumMap = {
   r'transient': AnimalStatus.transient,
-  r'rainbow_bridge': AnimalStatus.rainbowBridge,
+  r'rainbowBridge': AnimalStatus.rainbowBridge,
   r'adopted': AnimalStatus.adopted,
-  r'on_campus': AnimalStatus.onCampus,
+  r'onCampus': AnimalStatus.onCampus,
   r'owned': AnimalStatus.owned,
   r'unknown': AnimalStatus.unknown,
 };
@@ -327,6 +372,22 @@ extension LocalAnimalModelQueryWhereSort
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterWhere> anyCreatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'createdAt'),
+      );
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterWhere> anyUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'updatedAt'),
+      );
     });
   }
 }
@@ -395,6 +456,236 @@ extension LocalAnimalModelQueryWhere
         lower: lowerId,
         includeLower: includeLower,
         upper: upperId,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterWhereClause>
+      createdAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'createdAt',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterWhereClause>
+      createdAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'createdAt',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterWhereClause>
+      createdAtEqualTo(DateTime? createdAt) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'createdAt',
+        value: [createdAt],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterWhereClause>
+      createdAtNotEqualTo(DateTime? createdAt) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'createdAt',
+              lower: [],
+              upper: [createdAt],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'createdAt',
+              lower: [createdAt],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'createdAt',
+              lower: [createdAt],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'createdAt',
+              lower: [],
+              upper: [createdAt],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterWhereClause>
+      createdAtGreaterThan(
+    DateTime? createdAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'createdAt',
+        lower: [createdAt],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterWhereClause>
+      createdAtLessThan(
+    DateTime? createdAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'createdAt',
+        lower: [],
+        upper: [createdAt],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterWhereClause>
+      createdAtBetween(
+    DateTime? lowerCreatedAt,
+    DateTime? upperCreatedAt, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'createdAt',
+        lower: [lowerCreatedAt],
+        includeLower: includeLower,
+        upper: [upperCreatedAt],
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterWhereClause>
+      updatedAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'updatedAt',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterWhereClause>
+      updatedAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'updatedAt',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterWhereClause>
+      updatedAtEqualTo(DateTime? updatedAt) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'updatedAt',
+        value: [updatedAt],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterWhereClause>
+      updatedAtNotEqualTo(DateTime? updatedAt) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'updatedAt',
+              lower: [],
+              upper: [updatedAt],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'updatedAt',
+              lower: [updatedAt],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'updatedAt',
+              lower: [updatedAt],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'updatedAt',
+              lower: [],
+              upper: [updatedAt],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterWhereClause>
+      updatedAtGreaterThan(
+    DateTime? updatedAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'updatedAt',
+        lower: [updatedAt],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterWhereClause>
+      updatedAtLessThan(
+    DateTime? updatedAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'updatedAt',
+        lower: [],
+        upper: [updatedAt],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterWhereClause>
+      updatedAtBetween(
+    DateTime? lowerUpdatedAt,
+    DateTime? upperUpdatedAt, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'updatedAt',
+        lower: [lowerUpdatedAt],
+        includeLower: includeLower,
+        upper: [upperUpdatedAt],
         includeUpper: includeUpper,
       ));
     });
@@ -699,6 +990,80 @@ extension LocalAnimalModelQueryFilter
         upper,
         includeUpper,
       );
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      createdAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'createdAt',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      createdAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'createdAt',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      createdAtEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'createdAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      createdAtGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'createdAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      createdAtLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'createdAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      createdAtBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'createdAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
     });
   }
 
@@ -2496,6 +2861,80 @@ extension LocalAnimalModelQueryFilter
       );
     });
   }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      updatedAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'updatedAt',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      updatedAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'updatedAt',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      updatedAtEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      updatedAtGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      updatedAtLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      updatedAtBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'updatedAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension LocalAnimalModelQueryObject
@@ -2645,6 +3084,20 @@ extension LocalAnimalModelQuerySortBy
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterSortBy>
+      sortByCreatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createdAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterSortBy>
+      sortByCreatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createdAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterSortBy>
       sortByLocation() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'location', Sort.asc);
@@ -2753,6 +3206,20 @@ extension LocalAnimalModelQuerySortBy
       return query.addSortBy(r'sterilizatonDate', Sort.desc);
     });
   }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterSortBy>
+      sortByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterSortBy>
+      sortByUpdatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.desc);
+    });
+  }
 }
 
 extension LocalAnimalModelQuerySortThenBy
@@ -2767,6 +3234,20 @@ extension LocalAnimalModelQuerySortThenBy
       thenByAgeDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'age', Sort.desc);
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterSortBy>
+      thenByCreatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createdAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterSortBy>
+      thenByCreatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createdAt', Sort.desc);
     });
   }
 
@@ -2892,6 +3373,20 @@ extension LocalAnimalModelQuerySortThenBy
       return query.addSortBy(r'sterilizatonDate', Sort.desc);
     });
   }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterSortBy>
+      thenByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterSortBy>
+      thenByUpdatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.desc);
+    });
+  }
 }
 
 extension LocalAnimalModelQueryWhereDistinct
@@ -2906,6 +3401,13 @@ extension LocalAnimalModelQueryWhereDistinct
       distinctByCoatColor() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'coatColor');
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QDistinct>
+      distinctByCreatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'createdAt');
     });
   }
 
@@ -2986,6 +3488,13 @@ extension LocalAnimalModelQueryWhereDistinct
       return query.addDistinctBy(r'traitsAndPersonality');
     });
   }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QDistinct>
+      distinctByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'updatedAt');
+    });
+  }
 }
 
 extension LocalAnimalModelQueryProperty
@@ -3006,6 +3515,13 @@ extension LocalAnimalModelQueryProperty
       coatColorProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'coatColor');
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, DateTime?, QQueryOperations>
+      createdAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'createdAt');
     });
   }
 
@@ -3079,6 +3595,13 @@ extension LocalAnimalModelQueryProperty
       traitsAndPersonalityProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'traitsAndPersonality');
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, DateTime?, QQueryOperations>
+      updatedAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'updatedAt');
     });
   }
 }

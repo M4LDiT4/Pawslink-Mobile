@@ -2,14 +2,33 @@ import 'package:mobile_app_template/core/enums/animal_status.dart';
 import 'package:mobile_app_template/core/widgets/charts/generic_donut_chart.dart';
 
 class GeneralAnimalSummary {
-  int adopted = 0;
-  int onCampus = 0;
-  int owned = 0;
-  int transient = 0;
-  int rainbowBridge = 0;
-  int cat = 0;
-  int dog = 0;
+  int adopted;
+  int onCampus;
+  int owned;
+  int transient;
+  int rainbowBridge;
+  int unknown;
+  int cat;
+  int dog;
 
+  GeneralAnimalSummary({
+    int? adopted,
+    int? onCampus,
+    int? owned,
+    int? transient,
+    int? rainbowBridge,
+    int? unknown,
+    int? cat,
+    int? dog,
+  })  : adopted = adopted ?? 0,
+        onCampus = onCampus ?? 0,
+        owned = owned ?? 0,
+        transient = transient ?? 0,
+        rainbowBridge = rainbowBridge ?? 0,
+        unknown = unknown ?? 0,
+        cat = cat ?? 0,
+        dog = dog ?? 0;
+        
   List<GenericDonutChartParams> toDonutChartParams() {
     return [
       GenericDonutChartParams(
@@ -37,16 +56,23 @@ class GeneralAnimalSummary {
         title: "Rainbow bridge",
         color: AnimalStatus.rainbowBridge.color,
       ),
+      GenericDonutChartParams(
+        value: unknown.toDouble(), 
+        title: "Unknown", 
+        color: AnimalStatus.unknown.color
+      )
     ];
   }
 
   bool hasData() {
-    return adopted > 0 ||
-        onCampus > 0 ||
-        owned > 0 ||
-        transient > 0 ||
-        rainbowBridge > 0 ||
-        cat > 0 ||
-        dog > 0;
+    return adopted > 0 
+    || onCampus > 0 
+    || owned > 0 
+    || transient > 0 
+    || rainbowBridge > 0 
+    || cat > 0 
+    || dog > 0
+    || unknown > 0;
   }
 }
+

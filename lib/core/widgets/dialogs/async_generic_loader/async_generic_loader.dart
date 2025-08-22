@@ -4,7 +4,7 @@ import 'package:mobile_app_template/core/constants/colors.dart';
 import 'package:mobile_app_template/core/constants/lottie_strings.dart';
 import 'package:mobile_app_template/core/enums/widget_status.dart';
 import 'package:mobile_app_template/network/operation_response.dart';
-import 'package:mobile_app_template/services/navigation/navigation_service.dart';
+import 'package:mobile_app_template/navigation/navigation_service.dart';
 
 class AsyncGenericLoader<T> extends StatefulWidget {
   final Future<OperationResponse<T>> Function() asyncFunction;

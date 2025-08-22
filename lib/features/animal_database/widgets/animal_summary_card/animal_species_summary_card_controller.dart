@@ -1,11 +1,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:mobile_app_template/core/dependency_injection/dependency_injection.dart';
+import 'package:mobile_app_template/core/enums/animal_sex.dart';
 import 'package:mobile_app_template/core/enums/animal_species.dart';
 import 'package:mobile_app_template/core/enums/widget_status.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/core/widgets/charts/generic_donut_chart.dart';
-import 'package:mobile_app_template/domain/services/local/animal_repository.dart';
+import 'package:mobile_app_template/domain/services/animal%20database/animal_database_service.dart';
 import 'package:mobile_app_template/features/animal_database/widgets/animal_summary_card/animal_species_summary.dart';
 
 class AnimalSpeciesSummaryCardController extends ChangeNotifier {
@@ -14,7 +15,7 @@ class AnimalSpeciesSummaryCardController extends ChangeNotifier {
   late AnimalSpecies _species;
 
   //repositories
-  late AnimalRepository _localRepo;
+  late AnimalDatabaseService _localRepo;
 
 
   //controller states
@@ -27,7 +28,7 @@ class AnimalSpeciesSummaryCardController extends ChangeNotifier {
   }) {
     _species = species;
     _errorMessage = "Failed to query ${species.name} animal data";
-    _localRepo = getIt.get<AnimalRepository>();
+    _localRepo = getIt.get<AnimalDatabaseService>();
     _setLoading();
   }
 
@@ -48,9 +49,20 @@ class AnimalSpeciesSummaryCardController extends ChangeNotifier {
   Future<void> getAnimalSpeciesSummaryData() async {
     try{
       _setLoading();
-      final summaryData = await _localRepo.getAnimalSpeciesSummaryData(_species);
-      if(summaryData.success){
-        _summary = summaryData.data!;
+      final response = await _localRepo.getSpeciesSummary(_species);
+      if(response.isSuccessful){
+        final data = response.data;
+        if(data != null){
+          _summary = AnimalSpeciesSummary(
+            femaleCount: data[AnimalSex.female.name],
+            maleCount:  data[AnimalSex.male.name],
+            unknownCount: data[AnimalSex.unknown.name],
+            neuteredCount: data['neutered'],
+            spayedCount: data['spayed']
+          );
+        }else{
+          _summary = AnimalSpeciesSummary();
+        }
         _status = WidgetStatus.idle;
       }else {
         _status = WidgetStatus.error;

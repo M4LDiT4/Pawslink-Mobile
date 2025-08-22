@@ -7,7 +7,7 @@ import 'package:mobile_app_template/core/widgets/dialogs/async_generic_loader/as
 import 'package:mobile_app_template/domain/services/authentication/app_authentication_service.dart';
 import 'package:mobile_app_template/network/operation_response.dart';
 import 'package:mobile_app_template/core/utils/validation/validator.dart';
-import 'package:mobile_app_template/services/navigation/navigation_service.dart';
+import 'package:mobile_app_template/navigation/navigation_service.dart';
 
 class SignUpControiller extends GetxController {
 

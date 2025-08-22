@@ -5,11 +5,12 @@ import 'package:mobile_app_template/core/enums/animal_species.dart';
 import 'package:mobile_app_template/core/enums/animal_status.dart';
 import 'package:mobile_app_template/domain/models/local_animal_medication_record.dart';
 import 'package:mobile_app_template/domain/models/local_animal_vaccination_history.dart';
+import 'package:mobile_app_template/domain/models/time_stamp.dart';
 
 part 'local_animal_model.g.dart';
 
 @collection 
-class LocalAnimalModel {
+class LocalAnimalModel with Timestamped {
   Id id = Isar.autoIncrement;
   late String? remoteId; //if null then it is saved only locally, otherwise there is a cloud copy of this
   late String name;

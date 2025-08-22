@@ -12,7 +12,7 @@ import 'package:mobile_app_template/core/widgets/buttons/admin/admin_home_action
 import 'package:mobile_app_template/core/widgets/dialogs/async_generic_loader/async_generic_loader.dart';
 import 'package:mobile_app_template/domain/repositories/event_repository.dart';
 import 'package:mobile_app_template/network/operation_response.dart';
-import 'package:mobile_app_template/services/navigation/navigation_service.dart';
+import 'package:mobile_app_template/navigation/navigation_service.dart';
 
 class AdminEventsScreens extends StatefulWidget {
   const AdminEventsScreens({super.key});

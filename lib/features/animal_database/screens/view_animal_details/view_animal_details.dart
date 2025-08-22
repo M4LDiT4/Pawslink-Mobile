@@ -19,7 +19,7 @@ import 'package:mobile_app_template/features/animal_database/controllers/view_an
 import 'package:mobile_app_template/features/animal_database/widgets/date_label_listtile.dart';
 import 'package:mobile_app_template/features/animal_database/widgets/utility_button.dart';
 import 'package:mobile_app_template/features/animal_database/widgets/value_label_column.dart';
-import 'package:mobile_app_template/services/navigation/navigation_service.dart';
+import 'package:mobile_app_template/navigation/navigation_service.dart';
 
 class ViewAnimalDetailsScreen extends StatefulWidget {
   const ViewAnimalDetailsScreen({super.key});

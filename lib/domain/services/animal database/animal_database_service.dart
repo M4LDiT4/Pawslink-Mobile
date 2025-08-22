@@ -1,56 +1,31 @@
 // initialize tlhis when you are in add animal section
 import 'dart:io';
-import 'package:get/get.dart';
-import 'package:mobile_app_template/core/utils/helpers/ui_helpers.dart';
+import 'package:isar/isar.dart';
+import 'package:mobile_app_template/core/enums/animal_sex.dart';
+import 'package:mobile_app_template/core/enums/animal_species.dart';
+import 'package:mobile_app_template/core/enums/animal_status.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
-import 'package:mobile_app_template/core/widgets/dialogs/save_to_drafts/save_to_drafts_dialog.dart';
+import 'package:mobile_app_template/data/local_storage/isar/helpers/filter_helper.dart';
 import 'package:mobile_app_template/domain/entities/animal_dto.dart';
 import 'package:mobile_app_template/domain/repositories/api/animal_api_repository.dart';
-import 'package:mobile_app_template/domain/repositories/local/local_animal_service.dart';
-import 'package:mobile_app_template/network/internet_connection/connection_controller.dart';
+import 'package:mobile_app_template/domain/repositories/local/local_animal_repository.dart';
 import 'package:mobile_app_template/network/operation_response.dart';
+import 'package:path/path.dart';
 
 class AnimalDatabaseService {
   final AnimalApiRepository _cloudRepo;
-  final LocalAnimalRepository _localService;
+  final LocalAnimalRepository _localRepo;
 
   AnimalDatabaseService({
     required AnimalApiRepository animalApiService,
-    required LocalAnimalRepository localAnimalService
+    required LocalAnimalRepository localAnimalRepo
   }): _cloudRepo = animalApiService,
-      _localService = localAnimalService;
+      _localRepo = localAnimalRepo;
 
-  Future<OperationResponse<AnimalDTO>> addAnimal(
-    AnimalDTO animalDto,
-    File profilePicture
-  ) async{
-    //  final connectionController = Get.find<ConnectionController>();
-    final connectionController = Get.find<ConnectionController>();
-    if(connectionController.isConnected){
-    final response = await _cloudRepo.addAnimal(
-      animalDto,
-      profilePicture: profilePicture
-    );
-    return response;
-    }else{
-      final saveToDrafts = await TUIHelpers.showResponsiveModal<bool>(
-        child: const SaveToDraftsDialog()
-      );
-
-      if(saveToDrafts != null && saveToDrafts){
-        final response = await _localService.addAnimal(
-          animalDto, 
-          profilePicture
-        );
-        return response;
-      }
-      return OperationResponse(isSuccessful: false, statusCode: 200);
-    }
-  }
 
   Future<OperationResponse<AnimalDTO>> saveAnimalLocally(AnimalDTO animalDto, File profilePicture)async{
     try{
-      final response = await _localService.addAnimal(animalDto, profilePicture);
+      final response = await _localRepo.addAnimal(animalDto, profilePicture);
       return response;
     }catch(err, stack){
       TLogger.debug('Stack:\n$stack');
@@ -72,6 +47,167 @@ class AnimalDatabaseService {
       TLogger.debug('Stack:\n$stack');
       return OperationResponse<AnimalDTO>.failedResponse(
         message: 'Failed to save animal to cloud'
+      );
+    }
+  }
+
+  Future<OperationResponse<List<AnimalDTO>>> getLocalAnimals({
+    String? name,
+    FilterConditionType? nameCondition,   // NEW
+
+    String? location,
+    FilterConditionType? locationCondition, // NEW
+
+    AnimalSex? sex,
+    AnimalSpecies? species,
+    AnimalStatus? status,
+
+    int? age,
+    FilterConditionType? ageCondition,   // NEW
+  }) async {
+    final result = await _localRepo.getAnimals(
+      name: _toFilter(name, strategy: nameCondition ?? FilterConditionType.equalTo),
+      location: _toFilter(location, strategy: locationCondition ?? FilterConditionType.equalTo),
+      sex: _toFilter(sex),      // enums always equalTo
+      species: _toFilter(species),
+      status: _toFilter(status),
+      age: _toFilter(age, strategy: ageCondition ?? FilterConditionType.equalTo),
+    );
+
+    if(result.data == null){
+      return OperationResponse(
+        isSuccessful: true, 
+        statusCode: 200,
+        data: null,
+        message: 'No animals found.'
+      );
+    }
+    final animals = result.data!.map((item) => AnimalDTO.fromLocalAnimalModel(item)).toList();
+    return OperationResponse(
+      isSuccessful: true, 
+      statusCode: 200,
+      data: animals
+    );
+  } 
+
+  // get using api
+
+
+  DynamicIsarFilter<T>? _toFilter<T>(
+    T? value, {
+    FilterConditionType strategy = FilterConditionType.equalTo,
+  }) {
+    if (value == null) return null;
+
+    // Validation: make sure only valid strategies apply to certain types
+    if (value is String) {
+      // Strings: allow contains, startsWith, endsWith, equalTo
+      if (strategy == FilterConditionType.greaterThan ||
+          strategy == FilterConditionType.lessThan) {
+        throw ArgumentError(
+            "Invalid strategy $strategy for String. Use contains/startsWith/endsWith/equalTo instead.");
+      }
+    } else if (value is Enum) {
+      // Enums: only equalTo makes sense
+      if (strategy != FilterConditionType.equalTo) {
+        throw ArgumentError(
+            "Invalid strategy $strategy for Enum. Only equalTo is supported.");
+      }
+    } else if (value is num) {
+      // Numbers: allow equalTo, greaterThan, lessThan, between
+      if (strategy == FilterConditionType.contains ||
+          strategy == FilterConditionType.startsWith ||
+          strategy == FilterConditionType.endsWith) {
+        throw ArgumentError(
+            "Invalid strategy $strategy for numeric values. Use equalTo/greaterThan/lessThan/between instead.");
+      }
+    }
+
+    return DynamicIsarFilter<T>(
+      value: value,
+      strategy: strategy,
+    );
+  }
+
+  // local counts
+  Future<OperationResponse<Map<String, int>>> getAnimalStatusSummaryData()async{
+    try{
+      final Map<String, Future<OperationResponse<int>>> futureMap = {
+        AnimalStatus.adopted.name: _localRepo.countAnimals(status: AnimalStatus.adopted),
+        AnimalStatus.onCampus.name: _localRepo.countAnimals(status: AnimalStatus.onCampus),
+        AnimalStatus.owned.name: _localRepo.countAnimals(status: AnimalStatus.owned),
+        AnimalStatus.transient.name: _localRepo.countAnimals(status: AnimalStatus.owned),
+        AnimalStatus.rainbowBridge.name: _localRepo.countAnimals(status: AnimalStatus.owned),
+        AnimalStatus.unknown.name: _localRepo.countAnimals(status: AnimalStatus.owned),
+      };
+
+      final results = await Future.wait(futureMap.entries.map(
+        (entry) async {
+          final response = await entry.value;
+          return MapEntry(entry.key, response.data ?? 0);
+        }
+      ));
+      
+      final resolvedMap = Map.fromEntries(results);
+      
+      return OperationResponse(
+        isSuccessful: true, 
+        statusCode: 200,
+        data: resolvedMap
+      );
+    }catch(err){
+      TLogger.error("Failed to get general animal summary data: ${err.toString()}");
+      return OperationResponse.failedResponse(
+        message: "Failed to get status-based summary"
+      );
+    }
+  }
+
+  Future<OperationResponse<Map<String, int>>> getSpeciesSummary(AnimalSpecies species) async{
+    try{
+      final Map<String, Future<OperationResponse<int>>> futureMap = {
+        AnimalSex.female.name: _localRepo.countAnimals(species: species, sex: AnimalSex.female),
+        AnimalSex.male.name: _localRepo.countAnimals(species: species, sex: AnimalSex.male),
+        AnimalSex.unknown.name: _localRepo.countAnimals(species: species, sex: AnimalSex.unknown),
+        'neutered': _localRepo.countAnimals(species: species, sex: AnimalSex.male, isSterilized: true),
+        'spayed': _localRepo.countAnimals(species: species, sex: AnimalSex.female, isSterilized: true),
+      };
+      final results = await Future.wait(
+        futureMap.entries.map(
+          (entry) async {
+            final response = await entry.value;
+            return MapEntry(entry.key, response.data ?? 0);
+          }
+        )
+      );
+
+      final resolvedMap = Map.fromEntries(results);
+
+      return OperationResponse(
+        isSuccessful: true, 
+        statusCode: 200,
+        data:resolvedMap
+      );
+    }catch(err){
+      TLogger.error("Failed to get species (${species.name}) data : ${err.toString()}");
+      return OperationResponse.failedResponse(
+        message: "Failed to get species based summary"
+      );
+    }
+  }
+
+  Future<OperationResponse<int>> getSpeciesCount(AnimalSpecies species) async {
+    try{
+      final response =await _localRepo.countAnimals(species: species);
+      return OperationResponse(
+        isSuccessful: true, 
+        statusCode: 200,
+        data: response.data
+      );
+    }catch(err){
+      TLogger.error("Failed to get count for species ${species.name}");
+      return OperationResponse.failedResponse(
+        message: "Failed to get the count for species ${species.toString()}"
       );
     }
   }

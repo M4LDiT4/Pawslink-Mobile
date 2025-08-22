@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mobile_app_template/core/constants/lottie_strings.dart';
 import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
-import 'package:mobile_app_template/services/local_storage/local_secure_storage.dart';
-import 'package:mobile_app_template/services/navigation/navigation_service.dart';
+import 'package:mobile_app_template/domain/services/local_storage/local_secure_storage.dart';
+import 'package:mobile_app_template/navigation/navigation_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
