@@ -12,7 +12,7 @@ part 'local_animal_model.g.dart';
 @collection 
 class LocalAnimalModel with Timestamped {
   Id id = Isar.autoIncrement;
-  late String? remoteId; //if null then it is saved only locally, otherwise there is a cloud copy of this
+  late String? remoteId; 
   late String name;
   late int? age;
   @Enumerated(EnumType.name)

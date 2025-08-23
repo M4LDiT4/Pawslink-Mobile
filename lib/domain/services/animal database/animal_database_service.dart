@@ -244,4 +244,28 @@ class AnimalDatabaseService {
       );
     }
   }
+
+  Future<OperationResponse<AnimalDTO>> getAnimalByBSONId(String bsonId) async {
+    try{
+      final response = await _localRepo.getAnimalsByBSONId(bsonId);
+      if(!response.isSuccessful || response.data == null){
+        throw Exception("Failed to get data for bsonId $bsonId");
+      }
+      final animals = response.data!;
+      if(animals.length > 1){
+        throw Exception("BSON ID should be unique for each animal, yet returned with more than one result");
+      }
+
+      return OperationResponse(
+        isSuccessful: true, 
+        statusCode: 200,
+        data: AnimalDTO.fromLocalAnimalModel(animals.first)
+      );
+    }catch(err){
+      TLogger.error("Failed to get the animal with bson id $bsonId: ${err.toString()}");
+      return OperationResponse.failedResponse(
+        message: "An Error occured while retrieving animal data"
+      );
+    }
+  }
 }
