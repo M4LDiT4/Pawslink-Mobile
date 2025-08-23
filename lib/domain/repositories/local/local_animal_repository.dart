@@ -210,5 +210,26 @@ class LocalAnimalRepository {
       );
     }
   }
+
+  Future<OperationResponse<List<LocalAnimalModel>>> searchAnimalByString(String query)async{
+    try{
+      final animals = await _db.localAnimalModels
+        .filter()
+        .nameContains(query)
+        .limit(10)
+        .findAll();
+      return OperationResponse(
+        isSuccessful: true,
+        statusCode: 200,
+        data: animals,
+      );
+
+    }catch(err){
+      TLogger.error('Error occured while search for animals');
+      return OperationResponse.failedResponse(
+        message: 'Error fetching animal with name containing $query'
+      );
+    }
+  }
   
 }

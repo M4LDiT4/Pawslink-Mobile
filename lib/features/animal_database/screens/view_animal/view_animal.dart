@@ -11,8 +11,10 @@ import 'package:mobile_app_template/core/widgets/dropdowns/generic_dropdown.dart
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
 import 'package:mobile_app_template/domain/services/local/animal_repository.dart';
 import 'package:mobile_app_template/features/animal_database/controllers/view_animal_list_controller.dart';
+import 'package:mobile_app_template/features/animal_database/screens/search_animal_screen.dart';
 import 'package:mobile_app_template/features/animal_database/screens/view_animal/animal_list.dart';
 import 'package:mobile_app_template/features/animal_database/screens/view_animal/view_animal_summary.dart';
+import 'package:mobile_app_template/navigation/navigation_service.dart';
 
 class ViewAnimalScreen extends StatefulWidget {
   const ViewAnimalScreen({super.key});
@@ -104,6 +106,10 @@ class _ViewAnimalScreenState extends State<ViewAnimalScreen> with TickerProvider
     );
   }
 
+  void _handleSearch(){
+    TNavigationService.to( const SearchAnimalPage());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,7 +122,7 @@ class _ViewAnimalScreenState extends State<ViewAnimalScreen> with TickerProvider
               } else if (value == "filter") {
                 _showFilterModal();
               } else if (value == "search") {
-                // handle logout
+                _handleSearch();
               }else if (value == "check-updates"){
                 // handle updates
               }

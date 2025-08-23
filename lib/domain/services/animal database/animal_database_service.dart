@@ -11,7 +11,6 @@ import 'package:mobile_app_template/domain/repositories/api/animal_api_repositor
 import 'package:mobile_app_template/domain/repositories/local/local_animal_repository.dart';
 import 'package:mobile_app_template/domain/services/local/animal_repository.dart';
 import 'package:mobile_app_template/network/operation_response.dart';
-import 'package:path/path.dart';
 
 class AnimalDatabaseService {
   final AnimalApiRepository _cloudRepo;
@@ -219,6 +218,29 @@ class AnimalDatabaseService {
       TLogger.error("Failed to get count for species ${species.name}");
       return OperationResponse.failedResponse(
         message: "Failed to get the count for species ${species.toString()}"
+      );
+    }
+  }
+
+  Future<OperationResponse<List<AnimalDTO>>> searchAnimalByNameLocally(String query) async{
+    try{
+      final result = await _localRepo.searchAnimalByString(query);
+      if(result.data == null){
+        return OperationResponse.successfulResponse(
+          message: 'No animals found'
+        );
+      }
+      final animals = result.data!.map((animal) => AnimalDTO.fromLocalAnimalModel(animal))
+        .toList();
+      return OperationResponse(
+        isSuccessful: true, 
+        statusCode: 200,
+        data: animals
+      );
+    }catch(err){
+      TLogger.error('Error in animal database service while searching for animal with name containing $query');
+      return OperationResponse.failedResponse(
+        message: 'Failed to query animal $query'
       );
     }
   }
