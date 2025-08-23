@@ -1,159 +1,81 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_app_template/core/enums/animal_sex.dart';
-import 'package:mobile_app_template/core/enums/animal_status.dart';
-import 'package:mobile_app_template/data/model/animal_profile_item.dart';
+import 'package:get/get.dart';
+import 'package:mobile_app_template/core/enums/widget_status.dart';
+import 'package:mobile_app_template/features/animal_database/controllers/view_animal_list_controller.dart';
 import 'package:mobile_app_template/features/animal_database/widgets/animal_profile_list_item.dart';
 
 class AnimalListScreen extends StatefulWidget {
-  const AnimalListScreen({
-    super.key
-  });
+  const AnimalListScreen({super.key});
 
   @override
-  AnimalListScreenState createState() => AnimalListScreenState();
+  State<AnimalListScreen> createState() => _AnimalListScreenState();
 }
 
-class AnimalListScreenState extends State<AnimalListScreen> {
-  List<AnimalProfile> items = [
-    AnimalProfile(
-      animalPofileLink: 'https://example.com/images/dog1.jpg',
-      name: 'Max',
-      location: 'New York, NY',
-      sex: AnimalSex.male,
-      status: AnimalStatus.onCampus,
-      id: 'dog001',
-    ),
-    AnimalProfile(
-      animalPofileLink: 'https://example.com/images/cat1.jpg',
-      name: 'Luna',
-      location: 'San Francisco, CA',
-      sex: AnimalSex.female,
-      status: AnimalStatus.adopted,
-      id: 'cat001',
-    ),
-    AnimalProfile(
-      animalPofileLink: 'https://example.com/images/dog2.jpg',
-      name: 'Charlie',
-      location: 'Chicago, IL',
-      sex: AnimalSex.male,
-      status: AnimalStatus.adopted,
-      id: 'dog002',
-    ),
-    AnimalProfile(
-      animalPofileLink: 'https://example.com/images/cat2.jpg',
-      name: 'Bella',
-      location: 'Austin, TX',
-      sex: AnimalSex.female,
-      status: AnimalStatus.rainbowBridge,
-      id: 'cat002',
-    ),
-    AnimalProfile(
-      animalPofileLink: 'https://example.com/images/dog3.jpg',
-      name: 'Cooper',
-      location: 'Seattle, WA',
-      sex: AnimalSex.male,
-      status: AnimalStatus.adopted,
-      id: 'dog003',
-    ),
-  ]; // Initial 20 items
+class _AnimalListScreenState extends State<AnimalListScreen> {
+  final ViewAnimalListController controller = Get.find<ViewAnimalListController>();
   final ScrollController _scrollController = ScrollController();
-  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
-
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
           _scrollController.position.maxScrollExtent - 100) {
-        // Near the bottom
-        if (!isLoading) {
-          loadMoreItems();
+        if (controller.status.value != WidgetStatus.loading &&
+            controller.canLoadMore.value) {
+          controller.loadAnimals();
         }
       }
     });
   }
 
-  Future<void> loadMoreItems() async {
-    setState(() {
-      isLoading = true;
-    });
-
-    // Simulate a delay like fetching data from network
-    await Future.delayed(const Duration(seconds: 2));
-
-    // Add 20 more items
-    final nextItems = [
-      AnimalProfile(
-        animalPofileLink: 'https://example.com/images/dog1.jpg',
-        name: 'Max',
-        location: 'New York, NY',
-        sex: AnimalSex.male,
-        status: AnimalStatus.onCampus,
-        id: 'dog001',
-      ),
-      AnimalProfile(
-        animalPofileLink: 'https://example.com/images/cat1.jpg',
-        name: 'Luna',
-        location: 'San Francisco, CA',
-        sex: AnimalSex.female,
-        status: AnimalStatus.adopted,
-        id: 'cat001',
-      ),
-      AnimalProfile(
-        animalPofileLink: 'https://example.com/images/dog2.jpg',
-        name: 'Charlie',
-        location: 'Chicago, IL',
-        sex: AnimalSex.male,
-        status: AnimalStatus.adopted,
-        id: 'dog002',
-      ),
-      AnimalProfile(
-        animalPofileLink: 'https://example.com/images/cat2.jpg',
-        name: 'Bella',
-        location: 'Austin, TX',
-        sex: AnimalSex.female,
-        status: AnimalStatus.rainbowBridge,
-        id: 'cat002',
-      ),
-      AnimalProfile(
-        animalPofileLink: 'https://example.com/images/dog3.jpg',
-        name: 'Cooper',
-        location: 'Seattle, WA',
-        sex: AnimalSex.male,
-        status: AnimalStatus.adopted,
-        id: 'dog003',
-      ),
-    ];
-    setState(() {
-      items.addAll(nextItems);
-      isLoading = false;
-    });
-  }
-
-
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      controller: _scrollController,
-      itemCount: items.length + (isLoading ? 1 : 0),
-      itemBuilder: (context, index) {
-        if (index == items.length) {
-          // Show loading indicator at the bottom
-          return const Padding(
-            padding: EdgeInsets.all(16),
-            child: Center(child: CircularProgressIndicator()),
-          );
+    return Scaffold(
+      appBar: AppBar(title: const Text("Animals")),
+      body: Obx(() {
+        final items = controller.animals;
+        final isLoading = controller.status.value == WidgetStatus.loading;
+        final canLoadMore = controller.canLoadMore.value;
+
+        if (items.isEmpty && isLoading) {
+          return const Center(child: CircularProgressIndicator());
         }
-        return AnimalProfileListItem(profile: items[index]);
-      },
+
+        if (items.isEmpty) {
+          return const Center(child: Text("No animals found"));
+        }
+
+        return ListView.builder(
+          controller: _scrollController,
+          itemCount: items.length +
+              (isLoading ? 1 : 0) +
+              (!canLoadMore && !isLoading ? 1 : 0),
+          itemBuilder: (context, index) {
+            if (index < items.length) {
+              return AnimalProfileListItem(profile: items[index]);
+            }
+
+            // Loader at the end while fetching
+            if (isLoading && index == items.length) {
+              return const Padding(
+                padding: EdgeInsets.all(16),
+                child: Center(child: CircularProgressIndicator()),
+              );
+            }
+
+            // End of content marker
+            if (!canLoadMore && index == items.length) {
+              return const Padding(
+                padding: EdgeInsets.all(16),
+                child: Center(child: Text("End of content")),
+              );
+            }
+
+            return const SizedBox.shrink();
+          },
+        );
+      }),
     );
   }
 }

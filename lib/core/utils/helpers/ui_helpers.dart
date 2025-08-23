@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mobile_app_template/navigation/navigation_service.dart';
 
 /// ## TUIHelpers
 /// Auxiliary class for generic UI 
@@ -135,22 +136,6 @@ class TUIHelpers {
     );
   }
 
-  static Future<T?> showDefaultDialog<T>(
-    Widget child,
-    {
-      bool isDismissible = false,
-    }
-  ){
-    return Get.defaultDialog<T>(
-      title: "",//remove the title to make it customizable
-      titlePadding: EdgeInsets.zero, //remove the padding for the title
-      content: PopScope(
-        canPop: isDismissible,
-        child: child 
-      )
-    );
-  }
-
   static Future<T?> showResponsiveModal<T>({
     required Widget child,
     bool isDismissible = true,
@@ -181,6 +166,55 @@ class TUIHelpers {
       barrierDismissible: isDismissible,
     );
   }
+
+  static Future<T?> showDefaultDialog<T>(
+    Widget child, {
+    bool isDismissible = false,
+    VoidCallback? onConfirm,
+    VoidCallback? onCancel,
+    String? title,
+    String confirmText = "Confirm",
+    String cancelText = "Cancel",
+  }) {
+    return Get.defaultDialog<T>(
+      title: title ?? "",
+      titlePadding: const EdgeInsets.only(top: 16),
+      content: PopScope(
+        canPop: isDismissible,
+        child: child,
+      ),
+      actions: [
+        Row(
+          children: [
+            Expanded(
+              child: TextButton(
+                onPressed: () {
+                  if(onCancel != null) onCancel();
+                  Get.back(result: false);
+                } ,
+                child:  Text(cancelText),
+              ),
+            ),
+            Container(
+              width: 1,
+              height: 20,
+              color: Colors.grey, // divider
+            ),
+            Expanded(
+              child: TextButton(
+                onPressed: () {
+                  if(onConfirm != null) onConfirm();
+                  Get.back(result: true);
+                },
+                child: Text(confirmText),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
 }
 
 enum SnackBarState { neutral, success, error }

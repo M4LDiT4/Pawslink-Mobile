@@ -4,12 +4,12 @@ import 'package:isar/isar.dart';
 import 'package:mobile_app_template/core/dependency_injection/dependency_injection.dart';
 import 'package:mobile_app_template/core/enums/widget_status.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
-import 'package:mobile_app_template/domain/entities/animal_dto.dart';
+import 'package:mobile_app_template/data/model/animal_profile_item.dart';
 import 'package:mobile_app_template/domain/services/animal%20database/animal_database_service.dart';
 import 'package:mobile_app_template/domain/services/local/animal_repository.dart';
 
 class ViewAnimalSliderController extends ChangeNotifier {
-  List<AnimalDTO> _animals = [];
+  List<AnimalProfile> _animals = [];
   WidgetStatus _status = WidgetStatus.idle;
   late AnimalDatabaseService _localRepo;
   bool _hasLoaded = false;
@@ -41,7 +41,22 @@ class ViewAnimalSliderController extends ChangeNotifier {
         itemsPerPage: 10
       );
       if(response.isSuccessful && response.data != null){
-        _animals = response.data!;
+        final data = response.data!;
+        for(int i = 0; i < data.length ; i++){
+          final animal = data[i];
+          if(animal.remoteId != null){
+            _animals.add(
+              AnimalProfile(
+                name: animal.name, 
+                location: animal.location, 
+                sex: animal.sex, 
+                id: animal.remoteId!, 
+                status: animal.status, 
+                species: animal.species
+              )
+            );
+          }
+        }
       }else if(response.data == null){
         //get the cache if ever
         _animals = [];
@@ -49,14 +64,14 @@ class ViewAnimalSliderController extends ChangeNotifier {
         throw Exception('Operation failed: ${response.message.toString()}');
       }
       _status = WidgetStatus.idle;
-      notifyListeners();
     }catch(err){
       TLogger.error('Failed to get latest modified animals: ${err.toString()}');
       _status = WidgetStatus.error;
+    }finally{
       notifyListeners();
     }
   }
   WidgetStatus get status => _status;
-  List<AnimalDTO> get animals => List.unmodifiable(_animals);
+  List<AnimalProfile> get animals => List.unmodifiable(_animals);
   bool get hasLoaded => _hasLoaded;
 }
