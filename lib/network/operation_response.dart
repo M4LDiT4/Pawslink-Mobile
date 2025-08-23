@@ -28,61 +28,62 @@ class OperationResponse<T> {
   /// - This parser-constructor assumes that the `data` field can be parsed directly by the `parser` function
   /// - If [response.data] is an instance of [Map], it assumes that the data is stored in the `targetField` field 
   factory OperationResponse.fromDioResponse(
-    Response response,
-    {
-      required  Function(dynamic) parser,
-      String targetField = "data"
-    }
-  ){
+    Response response, {
+    required Function(dynamic) parser,
+    String targetField = "data",
+  }) {
+    TLogger.info("Dio raw response: ${response.data}");
+
     final data = response.data;
-    if(data == null){
+    if (data == null) {
       return OperationResponse.nullResponse(
         statusCode: response.statusCode,
         message: 'Dio response is null',
-        isSuccessful: _reqSuccessByStatuscode(response.statusCode) ?? false 
+        isSuccessful: _reqSuccessByStatuscode(response.statusCode) ?? false,
       );
     }
+
     T? parsedData;
     String? message;
     int? statusCode;
     bool? success;
-    try{
-      // if data is string, decode as json, otherwise retain
-      final jsonData = data is String? jsonDecode(data): data;
-      //if jsonData is map, these are the assumptions
-      //jsonData
-      //  -may or may not have a message or error field
-      //  -may or may not have a statusCode field
-      //  -may or may not have a success field
-      //  -may nor may not have a field defined by `targetField`
-      // Note
-      //  -assumes that response data is in the `targetField` key
-      if(jsonData is Map<String, dynamic>){
+
+    try {
+      // If data is a string, decode JSON, otherwise keep as-is
+      final jsonData = data is String ? jsonDecode(data) : data;
+
+      if (jsonData is Map<String, dynamic>) {
         message = jsonData['message'] ?? jsonData['error'];
         statusCode = jsonData["statusCode"];
         success = jsonData['success'];
-        parsedData = parser(jsonData[targetField]);
-      }else{
+
+        // 👇 If `targetField` exists, parse that. Otherwise, parse the whole map.
+        final payload = jsonData.containsKey(targetField)
+            ? jsonData[targetField]
+            : jsonData;
+
+        parsedData = parser(payload);
+      } else {
+        // API returned a list or primitive
         parsedData = parser(jsonData);
       }
-    }catch(err, stack){
-      TLogger.error("Failed to parse dio Response to Operation Response: ${err.toString()}");
-      TLogger.debug("Stack: ${stack.toString()}");
+    } catch (err, stack) {
+      TLogger.error("Failed to parse Dio Response: $err");
+      TLogger.debug("Stack: $stack");
       parsedData = null;
     }
 
     return OperationResponse(
-      isSuccessful: _reqSuccessByStatuscode(response.statusCode) 
-        ?? _reqSuccessByStatuscode(statusCode) 
-        ??success 
-        ?? false
-      ,
+      isSuccessful: _reqSuccessByStatuscode(response.statusCode) ??
+          _reqSuccessByStatuscode(statusCode) ??
+          success ??
+          false,
       statusCode: response.statusCode ?? statusCode ?? 400,
       data: parsedData,
-      message: message ?? "No message provided"
+      message: message,
     );
-    
   }
+
 
   factory OperationResponse.nullResponse({
     String? message,

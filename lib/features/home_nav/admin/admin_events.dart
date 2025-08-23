@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+
 import 'package:isar/isar.dart';
 import 'package:mobile_app_template/core/constants/colors.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/dependency_injection/dependency_injection.dart';
 import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
 import 'package:mobile_app_template/core/utils/device/device_utility.dart';
+import 'package:mobile_app_template/core/utils/helpers/ui_helpers.dart';
+import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/core/widgets/buttons/admin/admin_home_actionbutton.dart';
+import 'package:mobile_app_template/core/widgets/dialogs/async_generic_loader/async_generic_loader.dart';
 import 'package:mobile_app_template/domain/repositories/event_repository.dart';
-import 'package:mobile_app_template/services/navigation/navigation_service.dart';
+import 'package:mobile_app_template/network/operation_response.dart';
+import 'package:mobile_app_template/navigation/navigation_service.dart';
 
 class AdminEventsScreens extends StatefulWidget {
   const AdminEventsScreens({super.key});
@@ -36,6 +41,22 @@ class _AdminEventsScreensState extends State<AdminEventsScreens> {
 
   void _navigateToViewEvent(){
     TNavigationService.toNamed(TAppRoutes.viewEvents);
+  }
+
+  Future<OperationResponse> waitSomeTime({int seconds = 2}) async {
+    await Future.delayed(Duration(seconds: seconds));
+    
+    // return OperationResponse.successfulResponse();
+    throw Exception("Failed");
+  }
+
+
+  void _showTrialDialog()async{
+    final response = await TUIHelpers.showDefaultDialog<OperationResponse>(
+      AsyncGenericLoader(asyncFunction: waitSomeTime),
+      isDismissible: false
+    );
+    TLogger.info(response?.isSuccessful.toString()?? "We do not know the status of the result");
   }
 
   @override
@@ -79,7 +100,7 @@ class _AdminEventsScreensState extends State<AdminEventsScreens> {
                 ),
                 AdminHomeActionButtons(
                   label: "Drafts",
-                  onPress: () {},
+                  onPress: _showTrialDialog,
                 ),
                 AdminHomeActionButtons(
                   label: "+ Add Events",

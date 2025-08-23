@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
 import 'package:mobile_app_template/core/utils/helpers/ui_helpers.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
-import 'package:mobile_app_template/services/navigation/navigation_service.dart';
+import 'package:mobile_app_template/navigation/navigation_service.dart';
 
 /// ## AuthInterceptor
 /// An interceptor for Dio that handles authentication by attaching access tokens to requests.

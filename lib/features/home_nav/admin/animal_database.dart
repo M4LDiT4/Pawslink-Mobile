@@ -6,9 +6,12 @@ import 'package:mobile_app_template/core/dependency_injection/dependency_injecti
 import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
 import 'package:mobile_app_template/core/utils/device/device_utility.dart';
 import 'package:mobile_app_template/core/widgets/buttons/admin/admin_home_actionbutton.dart';
-import 'package:mobile_app_template/domain/repositories/animal_repository.dart';
-import 'package:mobile_app_template/services/api/animal_api.dart';
-import 'package:mobile_app_template/services/navigation/navigation_service.dart';
+import 'package:mobile_app_template/domain/services/animal%20database/animal_database_service.dart';
+import 'package:mobile_app_template/domain/repositories/api/animal_api_repository.dart';
+import 'package:mobile_app_template/domain/repositories/local/local_animal_repository.dart';
+import 'package:mobile_app_template/network/dio/app_dio.dart';
+import 'package:mobile_app_template/network/dio/dio_network_client.dart';
+import 'package:mobile_app_template/navigation/navigation_service.dart';
 
 class AnimalDatabaseScreen extends StatefulWidget {
   const AnimalDatabaseScreen({super.key});
@@ -21,19 +24,23 @@ class _AnimalDatabaseScreenState extends State<AnimalDatabaseScreen> {
   @override
   void initState(){
     super.initState();
-    //register the animal repository in the service locator
-    //inject the isar dependency
-    getIt.registerLazySingleton(()=> AnimalRepository(getIt<Isar>()));
 
-    AnimalApi animalAPI = AnimalApi();
-    animalAPI.init();
-    getIt.registerLazySingleton(() => animalAPI);
+    final localAnimalService = LocalAnimalRepository(getIt<Isar>());
+
+    final animalApiService = AnimalApiRepository();
+    animalApiService.init(DioNetworkClient(AppDio().dio));
+
+    getIt.registerLazySingleton(
+      ()=> AnimalDatabaseService(
+        animalApiService: animalApiService, 
+        localAnimalRepo: localAnimalService)
+      );
+
   }
 
   @override
   void dispose(){
-    getIt.unregister<AnimalRepository>();
-    getIt.unregister<AnimalApi>();
+    getIt.unregister<AnimalDatabaseService>();
     super.dispose();
   }
 
@@ -60,6 +67,7 @@ class _AnimalDatabaseScreenState extends State<AnimalDatabaseScreen> {
       width: screenWidth,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
+        
         children: [
           SizedBox(
             width: double.infinity,

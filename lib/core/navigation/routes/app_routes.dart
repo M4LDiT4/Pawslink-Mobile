@@ -9,7 +9,6 @@ abstract class TAppRoutes {
   static const onboarding = "/onboarding";
   static const signup = '/signup';
   static const addAnimal = '/add-animal';
-  static const addAnimalSummary ='/add-animal/summary';
   static const viewAnimal = '/view-animal';
   static const splashScreen ='/';
   static const viewAnimalDetails = "/view-animal/details";

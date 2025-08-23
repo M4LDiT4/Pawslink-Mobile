@@ -1,13 +1,13 @@
 
 import 'package:isar/isar.dart';
-import 'package:mobile_app_template/data/local_storage/isar/model/animal_med_history_model.dart';
-import 'package:mobile_app_template/data/local_storage/isar/model/animal_model.dart';
-import 'package:mobile_app_template/data/local_storage/isar/model/animal_vax_history_model.dart';
-import 'package:mobile_app_template/data/local_storage/isar/model/event_model.dart';
+import 'package:mobile_app_template/domain/models/local_activity_log.dart';
+import 'package:mobile_app_template/domain/models/local_animal_medication_record.dart';
+import 'package:mobile_app_template/domain/models/local_animal_model.dart';
+import 'package:mobile_app_template/domain/models/local_animal_vaccination_history.dart';
 
 const isarSchemas = <CollectionSchema>[
-  AnimalSchema,
-  EventSchema,
-  AnimalVaccinationSchema,
-  AnimalMedicationSchema,
+  LocalAnimalModelSchema,
+  LocalAnimalVaccinationRecordSchema,
+  LocalAnimalMedicationRecordSchema,
+  LocalActivityLogSchema
 ];

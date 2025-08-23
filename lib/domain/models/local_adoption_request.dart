@@ -1,10 +1,11 @@
 import 'package:isar/isar.dart';
 import 'package:mobile_app_template/core/enums/adoption_request.dart';
+import 'package:mobile_app_template/domain/models/time_stamp.dart';
 
 part 'local_adoption_request.g.dart'; 
 
 @collection
-class LocalAdoptionRequest {
+class LocalAdoptionRequest with Timestamped{
   Id id = Isar.autoIncrement; // localId
 
   late String remoteId; //reference to the cloud instance of this adoption request

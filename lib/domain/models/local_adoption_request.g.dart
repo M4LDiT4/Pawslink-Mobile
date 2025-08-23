@@ -64,100 +64,110 @@ const LocalAdoptionRequestSchema = CollectionSchema(
       name: r'contactNumber',
       type: IsarType.string,
     ),
-    r'currenPetCount': PropertySchema(
+    r'createdAt': PropertySchema(
       id: 9,
+      name: r'createdAt',
+      type: IsarType.dateTime,
+    ),
+    r'currenPetCount': PropertySchema(
+      id: 10,
       name: r'currenPetCount',
       type: IsarType.long,
     ),
     r'emailAddress': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'emailAddress',
       type: IsarType.string,
     ),
     r'facebookLink': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'facebookLink',
       type: IsarType.string,
     ),
     r'firstName': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'firstName',
       type: IsarType.string,
     ),
     r'housingType': PropertySchema(
-      id: 13,
+      id: 14,
       name: r'housingType',
       type: IsarType.string,
     ),
     r'idImageUrl': PropertySchema(
-      id: 14,
+      id: 15,
       name: r'idImageUrl',
       type: IsarType.string,
     ),
     r'isStudent': PropertySchema(
-      id: 15,
+      id: 16,
       name: r'isStudent',
       type: IsarType.bool,
     ),
     r'lastName': PropertySchema(
-      id: 16,
+      id: 17,
       name: r'lastName',
       type: IsarType.string,
     ),
     r'oldestLivingPetAge': PropertySchema(
-      id: 17,
+      id: 18,
       name: r'oldestLivingPetAge',
       type: IsarType.long,
     ),
     r'petActivity': PropertySchema(
-      id: 18,
+      id: 19,
       name: r'petActivity',
       type: IsarType.string,
     ),
     r'petOwnershipDuration': PropertySchema(
-      id: 19,
+      id: 20,
       name: r'petOwnershipDuration',
       type: IsarType.long,
     ),
     r'referralSource': PropertySchema(
-      id: 20,
+      id: 21,
       name: r'referralSource',
       type: IsarType.string,
     ),
     r'regularVetClinic': PropertySchema(
-      id: 21,
+      id: 22,
       name: r'regularVetClinic',
       type: IsarType.string,
     ),
     r'remoteAnimalId': PropertySchema(
-      id: 22,
+      id: 23,
       name: r'remoteAnimalId',
       type: IsarType.string,
     ),
     r'remoteId': PropertySchema(
-      id: 23,
+      id: 24,
       name: r'remoteId',
       type: IsarType.string,
     ),
     r'remoteUserId': PropertySchema(
-      id: 24,
+      id: 25,
       name: r'remoteUserId',
       type: IsarType.string,
     ),
     r'restraintMethod': PropertySchema(
-      id: 25,
+      id: 26,
       name: r'restraintMethod',
       type: IsarType.string,
     ),
     r'statusIndex': PropertySchema(
-      id: 26,
+      id: 27,
       name: r'statusIndex',
       type: IsarType.string,
     ),
     r'sterilizationAwareness': PropertySchema(
-      id: 27,
+      id: 28,
       name: r'sterilizationAwareness',
       type: IsarType.bool,
+    ),
+    r'updatedAt': PropertySchema(
+      id: 29,
+      name: r'updatedAt',
+      type: IsarType.dateTime,
     )
   },
   estimateSize: _localAdoptionRequestEstimateSize,
@@ -176,6 +186,32 @@ const LocalAdoptionRequestSchema = CollectionSchema(
           name: r'statusIndex',
           type: IndexType.hash,
           caseSensitive: true,
+        )
+      ],
+    ),
+    r'createdAt': IndexSchema(
+      id: -3433535483987302584,
+      name: r'createdAt',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'createdAt',
+          type: IndexType.value,
+          caseSensitive: false,
+        )
+      ],
+    ),
+    r'updatedAt': IndexSchema(
+      id: -6238191080293565125,
+      name: r'updatedAt',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'updatedAt',
+          type: IndexType.value,
+          caseSensitive: false,
         )
       ],
     )
@@ -242,25 +278,27 @@ void _localAdoptionRequestSerialize(
   writer.writeString(offsets[6], object.completeAddress);
   writer.writeString(offsets[7], object.completeCurrentAddress);
   writer.writeString(offsets[8], object.contactNumber);
-  writer.writeLong(offsets[9], object.currenPetCount);
-  writer.writeString(offsets[10], object.emailAddress);
-  writer.writeString(offsets[11], object.facebookLink);
-  writer.writeString(offsets[12], object.firstName);
-  writer.writeString(offsets[13], object.housingType);
-  writer.writeString(offsets[14], object.idImageUrl);
-  writer.writeBool(offsets[15], object.isStudent);
-  writer.writeString(offsets[16], object.lastName);
-  writer.writeLong(offsets[17], object.oldestLivingPetAge);
-  writer.writeString(offsets[18], object.petActivity);
-  writer.writeLong(offsets[19], object.petOwnershipDuration);
-  writer.writeString(offsets[20], object.referralSource);
-  writer.writeString(offsets[21], object.regularVetClinic);
-  writer.writeString(offsets[22], object.remoteAnimalId);
-  writer.writeString(offsets[23], object.remoteId);
-  writer.writeString(offsets[24], object.remoteUserId);
-  writer.writeString(offsets[25], object.restraintMethod);
-  writer.writeString(offsets[26], object.statusIndex);
-  writer.writeBool(offsets[27], object.sterilizationAwareness);
+  writer.writeDateTime(offsets[9], object.createdAt);
+  writer.writeLong(offsets[10], object.currenPetCount);
+  writer.writeString(offsets[11], object.emailAddress);
+  writer.writeString(offsets[12], object.facebookLink);
+  writer.writeString(offsets[13], object.firstName);
+  writer.writeString(offsets[14], object.housingType);
+  writer.writeString(offsets[15], object.idImageUrl);
+  writer.writeBool(offsets[16], object.isStudent);
+  writer.writeString(offsets[17], object.lastName);
+  writer.writeLong(offsets[18], object.oldestLivingPetAge);
+  writer.writeString(offsets[19], object.petActivity);
+  writer.writeLong(offsets[20], object.petOwnershipDuration);
+  writer.writeString(offsets[21], object.referralSource);
+  writer.writeString(offsets[22], object.regularVetClinic);
+  writer.writeString(offsets[23], object.remoteAnimalId);
+  writer.writeString(offsets[24], object.remoteId);
+  writer.writeString(offsets[25], object.remoteUserId);
+  writer.writeString(offsets[26], object.restraintMethod);
+  writer.writeString(offsets[27], object.statusIndex);
+  writer.writeBool(offsets[28], object.sterilizationAwareness);
+  writer.writeDateTime(offsets[29], object.updatedAt);
 }
 
 LocalAdoptionRequest _localAdoptionRequestDeserialize(
@@ -281,25 +319,27 @@ LocalAdoptionRequest _localAdoptionRequestDeserialize(
   object.completeAddress = reader.readString(offsets[6]);
   object.completeCurrentAddress = reader.readString(offsets[7]);
   object.contactNumber = reader.readString(offsets[8]);
-  object.currenPetCount = reader.readLong(offsets[9]);
-  object.emailAddress = reader.readString(offsets[10]);
-  object.facebookLink = reader.readString(offsets[11]);
-  object.firstName = reader.readString(offsets[12]);
-  object.housingType = reader.readString(offsets[13]);
+  object.createdAt = reader.readDateTimeOrNull(offsets[9]);
+  object.currenPetCount = reader.readLong(offsets[10]);
+  object.emailAddress = reader.readString(offsets[11]);
+  object.facebookLink = reader.readString(offsets[12]);
+  object.firstName = reader.readString(offsets[13]);
+  object.housingType = reader.readString(offsets[14]);
   object.id = id;
-  object.idImageUrl = reader.readString(offsets[14]);
-  object.isStudent = reader.readBool(offsets[15]);
-  object.lastName = reader.readString(offsets[16]);
-  object.oldestLivingPetAge = reader.readLong(offsets[17]);
-  object.petActivity = reader.readString(offsets[18]);
-  object.petOwnershipDuration = reader.readLong(offsets[19]);
-  object.referralSource = reader.readString(offsets[20]);
-  object.regularVetClinic = reader.readStringOrNull(offsets[21]);
-  object.remoteAnimalId = reader.readString(offsets[22]);
-  object.remoteId = reader.readString(offsets[23]);
-  object.remoteUserId = reader.readString(offsets[24]);
-  object.restraintMethod = reader.readString(offsets[25]);
-  object.sterilizationAwareness = reader.readBool(offsets[27]);
+  object.idImageUrl = reader.readString(offsets[15]);
+  object.isStudent = reader.readBool(offsets[16]);
+  object.lastName = reader.readString(offsets[17]);
+  object.oldestLivingPetAge = reader.readLong(offsets[18]);
+  object.petActivity = reader.readString(offsets[19]);
+  object.petOwnershipDuration = reader.readLong(offsets[20]);
+  object.referralSource = reader.readString(offsets[21]);
+  object.regularVetClinic = reader.readStringOrNull(offsets[22]);
+  object.remoteAnimalId = reader.readString(offsets[23]);
+  object.remoteId = reader.readString(offsets[24]);
+  object.remoteUserId = reader.readString(offsets[25]);
+  object.restraintMethod = reader.readString(offsets[26]);
+  object.sterilizationAwareness = reader.readBool(offsets[28]);
+  object.updatedAt = reader.readDateTimeOrNull(offsets[29]);
   return object;
 }
 
@@ -331,9 +371,9 @@ P _localAdoptionRequestDeserializeProp<P>(
     case 8:
       return (reader.readString(offset)) as P;
     case 9:
-      return (reader.readLong(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 10:
-      return (reader.readString(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 11:
       return (reader.readString(offset)) as P;
     case 12:
@@ -343,21 +383,21 @@ P _localAdoptionRequestDeserializeProp<P>(
     case 14:
       return (reader.readString(offset)) as P;
     case 15:
-      return (reader.readBool(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 16:
-      return (reader.readString(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 17:
-      return (reader.readLong(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 18:
-      return (reader.readString(offset)) as P;
-    case 19:
       return (reader.readLong(offset)) as P;
+    case 19:
+      return (reader.readString(offset)) as P;
     case 20:
-      return (reader.readString(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 21:
-      return (reader.readStringOrNull(offset)) as P;
-    case 22:
       return (reader.readString(offset)) as P;
+    case 22:
+      return (reader.readStringOrNull(offset)) as P;
     case 23:
       return (reader.readString(offset)) as P;
     case 24:
@@ -367,7 +407,11 @@ P _localAdoptionRequestDeserializeProp<P>(
     case 26:
       return (reader.readString(offset)) as P;
     case 27:
+      return (reader.readString(offset)) as P;
+    case 28:
       return (reader.readBool(offset)) as P;
+    case 29:
+      return (reader.readDateTimeOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -410,6 +454,24 @@ extension LocalAdoptionRequestQueryWhereSort
       anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest, QAfterWhere>
+      anyCreatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'createdAt'),
+      );
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest, QAfterWhere>
+      anyUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'updatedAt'),
+      );
     });
   }
 }
@@ -526,6 +588,236 @@ extension LocalAdoptionRequestQueryWhere
               includeUpper: false,
             ));
       }
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest, QAfterWhereClause>
+      createdAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'createdAt',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest, QAfterWhereClause>
+      createdAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'createdAt',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest, QAfterWhereClause>
+      createdAtEqualTo(DateTime? createdAt) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'createdAt',
+        value: [createdAt],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest, QAfterWhereClause>
+      createdAtNotEqualTo(DateTime? createdAt) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'createdAt',
+              lower: [],
+              upper: [createdAt],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'createdAt',
+              lower: [createdAt],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'createdAt',
+              lower: [createdAt],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'createdAt',
+              lower: [],
+              upper: [createdAt],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest, QAfterWhereClause>
+      createdAtGreaterThan(
+    DateTime? createdAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'createdAt',
+        lower: [createdAt],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest, QAfterWhereClause>
+      createdAtLessThan(
+    DateTime? createdAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'createdAt',
+        lower: [],
+        upper: [createdAt],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest, QAfterWhereClause>
+      createdAtBetween(
+    DateTime? lowerCreatedAt,
+    DateTime? upperCreatedAt, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'createdAt',
+        lower: [lowerCreatedAt],
+        includeLower: includeLower,
+        upper: [upperCreatedAt],
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest, QAfterWhereClause>
+      updatedAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'updatedAt',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest, QAfterWhereClause>
+      updatedAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'updatedAt',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest, QAfterWhereClause>
+      updatedAtEqualTo(DateTime? updatedAt) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'updatedAt',
+        value: [updatedAt],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest, QAfterWhereClause>
+      updatedAtNotEqualTo(DateTime? updatedAt) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'updatedAt',
+              lower: [],
+              upper: [updatedAt],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'updatedAt',
+              lower: [updatedAt],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'updatedAt',
+              lower: [updatedAt],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'updatedAt',
+              lower: [],
+              upper: [updatedAt],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest, QAfterWhereClause>
+      updatedAtGreaterThan(
+    DateTime? updatedAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'updatedAt',
+        lower: [updatedAt],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest, QAfterWhereClause>
+      updatedAtLessThan(
+    DateTime? updatedAt, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'updatedAt',
+        lower: [],
+        upper: [updatedAt],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest, QAfterWhereClause>
+      updatedAtBetween(
+    DateTime? lowerUpdatedAt,
+    DateTime? upperUpdatedAt, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'updatedAt',
+        lower: [lowerUpdatedAt],
+        includeLower: includeLower,
+        upper: [upperUpdatedAt],
+        includeUpper: includeUpper,
+      ));
     });
   }
 }
@@ -1445,6 +1737,80 @@ extension LocalAdoptionRequestQueryFilter on QueryBuilder<LocalAdoptionRequest,
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'contactNumber',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest,
+      QAfterFilterCondition> createdAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'createdAt',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest,
+      QAfterFilterCondition> createdAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'createdAt',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest,
+      QAfterFilterCondition> createdAtEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'createdAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest,
+      QAfterFilterCondition> createdAtGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'createdAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest,
+      QAfterFilterCondition> createdAtLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'createdAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest,
+      QAfterFilterCondition> createdAtBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'createdAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -3642,6 +4008,80 @@ extension LocalAdoptionRequestQueryFilter on QueryBuilder<LocalAdoptionRequest,
       ));
     });
   }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest,
+      QAfterFilterCondition> updatedAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'updatedAt',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest,
+      QAfterFilterCondition> updatedAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'updatedAt',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest,
+      QAfterFilterCondition> updatedAtEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest,
+      QAfterFilterCondition> updatedAtGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest,
+      QAfterFilterCondition> updatedAtLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest,
+      QAfterFilterCondition> updatedAtBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'updatedAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension LocalAdoptionRequestQueryObject on QueryBuilder<LocalAdoptionRequest,
@@ -3761,6 +4201,20 @@ extension LocalAdoptionRequestQuerySortBy
       sortByContactNumberDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'contactNumber', Sort.desc);
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest, QAfterSortBy>
+      sortByCreatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createdAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest, QAfterSortBy>
+      sortByCreatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createdAt', Sort.desc);
     });
   }
 
@@ -4029,6 +4483,20 @@ extension LocalAdoptionRequestQuerySortBy
       return query.addSortBy(r'sterilizationAwareness', Sort.desc);
     });
   }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest, QAfterSortBy>
+      sortByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest, QAfterSortBy>
+      sortByUpdatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.desc);
+    });
+  }
 }
 
 extension LocalAdoptionRequestQuerySortThenBy
@@ -4142,6 +4610,20 @@ extension LocalAdoptionRequestQuerySortThenBy
       thenByContactNumberDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'contactNumber', Sort.desc);
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest, QAfterSortBy>
+      thenByCreatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createdAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest, QAfterSortBy>
+      thenByCreatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createdAt', Sort.desc);
     });
   }
 
@@ -4424,6 +4906,20 @@ extension LocalAdoptionRequestQuerySortThenBy
       return query.addSortBy(r'sterilizationAwareness', Sort.desc);
     });
   }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest, QAfterSortBy>
+      thenByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest, QAfterSortBy>
+      thenByUpdatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.desc);
+    });
+  }
 }
 
 extension LocalAdoptionRequestQueryWhereDistinct
@@ -4492,6 +4988,13 @@ extension LocalAdoptionRequestQueryWhereDistinct
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'contactNumber',
           caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest, QDistinct>
+      distinctByCreatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'createdAt');
     });
   }
 
@@ -4631,6 +5134,13 @@ extension LocalAdoptionRequestQueryWhereDistinct
       return query.addDistinctBy(r'sterilizationAwareness');
     });
   }
+
+  QueryBuilder<LocalAdoptionRequest, LocalAdoptionRequest, QDistinct>
+      distinctByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'updatedAt');
+    });
+  }
 }
 
 extension LocalAdoptionRequestQueryProperty on QueryBuilder<
@@ -4700,6 +5210,13 @@ extension LocalAdoptionRequestQueryProperty on QueryBuilder<
       contactNumberProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'contactNumber');
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, DateTime?, QQueryOperations>
+      createdAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'createdAt');
     });
   }
 
@@ -4833,6 +5350,13 @@ extension LocalAdoptionRequestQueryProperty on QueryBuilder<
       sterilizationAwarenessProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'sterilizationAwareness');
+    });
+  }
+
+  QueryBuilder<LocalAdoptionRequest, DateTime?, QQueryOperations>
+      updatedAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'updatedAt');
     });
   }
 }

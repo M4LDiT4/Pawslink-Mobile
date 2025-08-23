@@ -1,9 +1,10 @@
 import 'package:isar/isar.dart';
+import 'package:mobile_app_template/domain/models/time_stamp.dart';
 
 part 'local_animal_vaccination_history.g.dart';
 
 @collection
-class LocalAnimalVaccinationRecord {
+class LocalAnimalVaccinationRecord with Timestamped {
   Id id = Isar.autoIncrement;
 
   late String? remoteAnimalId; //if null then animal associated with this is saved locally. Can be used to reference cloud copy of animal

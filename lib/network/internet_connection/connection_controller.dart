@@ -35,10 +35,10 @@ class ConnectionController extends GetxController {
     _connectionStatusSubscription = _internetConnectionChecker.onStatusChange.listen((InternetConnectionStatus status){
       if(status == InternetConnectionStatus.connected){
         _hasInternetConnection.value = true;
-        TUIHelpers.showStateSnackBar("You are online", state: SnackBarState.success);
+        TUIHelpers.showStateSnackBar("You are online", state: SnackBarState.success, snackPosition: SnackPosition.TOP);
       }else{
         _hasInternetConnection.value = false;
-        TUIHelpers.showStateSnackBar("You are offline", state: SnackBarState.neutral);
+        TUIHelpers.showStateSnackBar("You are offline", state: SnackBarState.neutral, snackPosition: SnackPosition.TOP);
       }
     });
   }

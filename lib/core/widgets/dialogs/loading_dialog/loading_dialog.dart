@@ -8,7 +8,7 @@ import 'package:mobile_app_template/core/widgets/dialogs/loading_dialog/lottie_e
 import 'package:mobile_app_template/core/widgets/dialogs/loading_dialog/lottie_loading.dart';
 import 'package:mobile_app_template/core/widgets/dialogs/loading_dialog/lottie_success.dart';
 import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
-import 'package:mobile_app_template/services/navigation/navigation_service.dart';
+import 'package:mobile_app_template/navigation/navigation_service.dart';
 
 enum ProcessStatus { loading, success, error }
 

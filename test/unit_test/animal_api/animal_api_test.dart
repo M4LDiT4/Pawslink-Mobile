@@ -8,7 +8,7 @@ import 'package:mobile_app_template/core/enums/animal_sex.dart';
 import 'package:mobile_app_template/core/enums/animal_species.dart';
 import 'package:mobile_app_template/core/enums/animal_status.dart';
 import 'package:mobile_app_template/domain/entities/animal_dto.dart';
-import 'package:mobile_app_template/domain/services/api/animal_api_service/animal_api_service.dart';
+import 'package:mobile_app_template/domain/repositories/api/animal_api_repository.dart';
 import 'package:mobile_app_template/network/dio/dio_network_client.dart';
 import 'package:mobile_app_template/network/network_client.dart';
 import 'package:mobile_app_template/network/operation_response.dart';
@@ -19,20 +19,20 @@ import '../dio_network_client/dio_network_client_test.mocks.dart';
 void main(){
   group('Animal API: add animal', () {
     late MockDio mockDio;
-    late AnimalApiService apiService;
+    late AnimalApiRepository apiService;
     late NetworkClient networkClient;
     setUp(() async {
       await dotenv.load();
       mockDio = MockDio();
       networkClient = DioNetworkClient(mockDio);
-      apiService = AnimalApiService();
+      apiService = AnimalApiRepository();
     });
     test(
       "Not initializing the service throws an error", () async {
         final animal = AnimalDTO(
           name: 'Buddy',
           sex: AnimalSex.male,
-          status: AnimalStatus.rainbow_bridge,
+          status: AnimalStatus.rainbowBridge,
           species: AnimalSpecies.dog,
           location: 'Shelter A',
         );
@@ -50,7 +50,7 @@ void main(){
       final animal = AnimalDTO(
         name: 'Buddy',
         sex: AnimalSex.male,
-        status: AnimalStatus.rainbow_bridge,
+        status: AnimalStatus.rainbowBridge,
         species: AnimalSpecies.dog,
         location: 'Shelter A',
       );
@@ -96,7 +96,7 @@ void main(){
       final animal = AnimalDTO(
         name: 'Buddy',
         sex: AnimalSex.male,
-        status: AnimalStatus.rainbow_bridge,
+        status: AnimalStatus.rainbowBridge,
         species: AnimalSpecies.dog,
         location: 'Shelter A',
       );

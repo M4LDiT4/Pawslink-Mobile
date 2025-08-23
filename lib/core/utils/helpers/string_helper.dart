@@ -53,4 +53,15 @@ class TStringHelpers {
     final end = input.substring(input.length - visibleEnd);
     return '$start${'*' * (input.length - visibleStart - visibleEnd)}$end';
   }
+
+  static String camelCaseToWords(String input) {
+    // Insert a space before all caps except the first character
+    final spaced = input.replaceAllMapped(
+      RegExp(r'(?<=[a-z])([A-Z])'),
+      (Match m) => ' ${m.group(0)}',
+    );
+
+    // Capitalize the first letter
+    return spaced[0].toUpperCase() + spaced.substring(1);
+  }
 }

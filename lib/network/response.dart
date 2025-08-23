@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart' as dio;
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
 

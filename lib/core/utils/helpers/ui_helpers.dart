@@ -102,6 +102,7 @@ class TUIHelpers {
     String title = "Notice",
     SnackBarState state = SnackBarState.neutral,
     Duration duration = const Duration(seconds: 3),
+    SnackPosition snackPosition = SnackPosition.BOTTOM
   }) {
     Color backgroundColor;
     IconData icon;
@@ -127,12 +128,92 @@ class TUIHelpers {
       backgroundColor: backgroundColor,
       colorText: Colors.white,
       icon: Icon(icon, color: Colors.white),
-      snackPosition: SnackPosition.BOTTOM,
+      snackPosition: snackPosition,
       duration: duration,
       margin: const EdgeInsets.all(16),
       borderRadius: 12,
     );
   }
+
+  static Future<T?> showResponsiveModal<T>({
+    required Widget child,
+    bool isDismissible = true,
+    T? arguments
+  }) {
+    return Get.dialog<T>(
+      Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return ConstrainedBox(
+              constraints: BoxConstraints(
+                // Max height 80% of screen
+                maxHeight: MediaQuery.of(context).size.height * 0.8,
+                maxWidth: MediaQuery.of(context).size.width * 0.95,
+              ),
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.all(16),
+                child: child,
+              ),
+            );
+          },
+        ),
+      ),
+      arguments: arguments,
+      barrierDismissible: isDismissible,
+    );
+  }
+
+  static Future<T?> showDefaultDialog<T>(
+    Widget child, {
+    bool isDismissible = false,
+    VoidCallback? onConfirm,
+    VoidCallback? onCancel,
+    String? title,
+    String confirmText = "Confirm",
+    String cancelText = "Cancel",
+  }) {
+    return Get.defaultDialog<T>(
+      title: title ?? "",
+      titlePadding: const EdgeInsets.only(top: 16),
+      content: PopScope(
+        canPop: isDismissible,
+        child: child,
+      ),
+      actions: [
+        Row(
+          children: [
+            Expanded(
+              child: TextButton(
+                onPressed: () {
+                  if(onCancel != null) onCancel();
+                  Get.back(result: false);
+                } ,
+                child:  Text(cancelText),
+              ),
+            ),
+            Container(
+              width: 1,
+              height: 20,
+              color: Colors.grey, // divider
+            ),
+            Expanded(
+              child: TextButton(
+                onPressed: () {
+                  if(onConfirm != null) onConfirm();
+                  Get.back(result: true);
+                },
+                child: Text(confirmText),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
 }
 
 enum SnackBarState { neutral, success, error }

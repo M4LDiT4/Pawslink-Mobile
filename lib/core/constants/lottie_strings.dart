@@ -9,4 +9,6 @@ class TLottie {
   static String catLoader = "assets/lottie/cat-loader.json";
   static String rotatingCat= "assets/lottie/rotating_cat.json";
   static String dogBegging = "assets/lottie/dog_begging.json";
+  static String walkingDog = "assets/lottie/walking_dog.json";
+  static String errorCat = "assets/lottie/error_cat.json";
 }

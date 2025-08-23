@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_app_template/network/response.dart';
 import 'package:mobile_app_template/core/widgets/buttons/form_button/form_button.dart';
-import 'package:mobile_app_template/services/navigation/navigation_service.dart';
+import 'package:mobile_app_template/navigation/navigation_service.dart';
 
 class SaveToDraftsDialog extends StatelessWidget {
   const SaveToDraftsDialog({super.key});
 
   void _handleCancel(){
-    TNavigationService.back(result: TResponse.failed(message: "Will not save to drafts"));
+    TNavigationService.back(result: false);
   }
 
   void _handleConfirm(){
-    TNavigationService.back(result: TResponse.successful(message: "Saving to drafts"));
+    TNavigationService.back(result: true);
   }
 
   @override

@@ -339,17 +339,17 @@ const _AnimalspeciesValueEnumMap = {
 };
 const _AnimalstatusEnumValueMap = {
   r'transient': r'transient',
-  r'rainbow_bridge': r'rainbow_bridge',
+  r'rainbowBridge': r'rainbowBridge',
   r'adopted': r'adopted',
-  r'on_campus': r'on_campus',
+  r'onCampus': r'onCampus',
   r'owned': r'owned',
   r'unknown': r'unknown',
 };
 const _AnimalstatusValueEnumMap = {
   r'transient': AnimalStatus.transient,
-  r'rainbow_bridge': AnimalStatus.rainbow_bridge,
+  r'rainbowBridge': AnimalStatus.rainbowBridge,
   r'adopted': AnimalStatus.adopted,
-  r'on_campus': AnimalStatus.on_campus,
+  r'onCampus': AnimalStatus.onCampus,
   r'owned': AnimalStatus.owned,
   r'unknown': AnimalStatus.unknown,
 };

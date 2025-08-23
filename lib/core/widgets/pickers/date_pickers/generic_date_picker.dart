@@ -8,7 +8,6 @@ class GenericDatePickerButton extends StatefulWidget {
   const GenericDatePickerButton({
     super.key,
     required this.labelText,
-    this.initialDate,
     this.firstDate,
     this.lastDate,
     this.onDateSelected,
@@ -21,7 +20,6 @@ class GenericDatePickerButton extends StatefulWidget {
   });
 
   final String labelText;
-  final DateTime? initialDate;
   final DateTime? firstDate;
   final DateTime? lastDate;
   final Function(DateTime?)? onDateSelected;
@@ -48,13 +46,11 @@ class _GenericDatePickerButtonState extends State<GenericDatePickerButton> {
   GenericDatepickerController _setUpController() {
     if(widget.controller != null) {
       final ctrlr = widget.controller!;
-      ctrlr.initialDate(widget.initialDate);
       ctrlr.isRequired(widget.isRequired);
       ctrlr.errorText(widget.errorText);
       return ctrlr;
     }
     return GenericDatepickerController()
-      ..initialDate(widget.initialDate)
       ..isRequired(widget.isRequired)
       ..errorText(widget.errorText);
   }
@@ -164,7 +160,10 @@ class _GenericDatePickerButtonState extends State<GenericDatePickerButton> {
                         duration: const Duration(milliseconds: 400),
                         opacity: formattedDate.isNotEmpty ? 1 : 0.6,
                         child: Text(
-                          formattedDate.isNotEmpty ? formattedDate : 'Select a date',
+                          formattedDate.isNotEmpty ? formattedDate : widget.labelText,
+                          maxLines: 1,                           
+                          overflow: TextOverflow.ellipsis,    
+                          softWrap: false,     
                           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                             color: Theme.of(context).colorScheme.onSurface,
                           ),
