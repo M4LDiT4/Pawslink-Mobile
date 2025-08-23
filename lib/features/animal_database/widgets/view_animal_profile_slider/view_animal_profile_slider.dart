@@ -65,7 +65,7 @@ class _ViewAnimalProfileSliderState extends State<ViewAnimalProfileSlider> {
       return const Center(
         child: Text(
           "Failed to load animals",
-          style: const TextStyle(color: Colors.red),
+          style:  TextStyle(color: Colors.red),
         ),
       );
     }

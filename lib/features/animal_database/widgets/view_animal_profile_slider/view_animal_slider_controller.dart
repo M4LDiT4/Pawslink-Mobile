@@ -52,7 +52,8 @@ class ViewAnimalSliderController extends ChangeNotifier {
                 sex: animal.sex, 
                 id: animal.remoteId!, 
                 status: animal.status, 
-                species: animal.species
+                species: animal.species,
+                animalProfileLink: animal.profileImagePath
               )
             );
           }

@@ -38,7 +38,7 @@ class ViewAnimalProfileSliderItem extends StatelessWidget {
   // --- PRIVATE WIDGETS ---
 
   Widget _buildImage() {
-    final imagePath = animal.animalPofileLink;
+    final imagePath = animal.animalProfileLink;
     final fallbackImage = (animal.species == AnimalSpecies.cat)
         ? TImages.catIcon
         : TImages.dogIcon;

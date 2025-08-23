@@ -32,7 +32,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Animals")),
       body: Obx(() {
         final items = controller.animals;
         final isLoading = controller.status.value == WidgetStatus.loading;
@@ -46,7 +45,7 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
           return const Center(child: Text("No animals found"));
         }
 
-        return ListView.builder(
+        return ListView.separated(
           controller: _scrollController,
           itemCount: items.length +
               (isLoading ? 1 : 0) +
@@ -56,7 +55,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
               return AnimalProfileListItem(profile: items[index]);
             }
 
-            // Loader at the end while fetching
             if (isLoading && index == items.length) {
               return const Padding(
                 padding: EdgeInsets.all(16),
@@ -64,7 +62,6 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
               );
             }
 
-            // End of content marker
             if (!canLoadMore && index == items.length) {
               return const Padding(
                 padding: EdgeInsets.all(16),
@@ -72,6 +69,13 @@ class _AnimalListScreenState extends State<AnimalListScreen> {
               );
             }
 
+            return const SizedBox.shrink();
+          },
+          separatorBuilder: (_, index) {
+            // Show separator only between list items, not after loaders or end marker
+            if (index < items.length - 1) {
+              return const Divider(height: 1);
+            }
             return const SizedBox.shrink();
           },
         );

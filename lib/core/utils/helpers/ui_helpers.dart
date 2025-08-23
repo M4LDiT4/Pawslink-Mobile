@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mobile_app_template/navigation/navigation_service.dart';
 
 /// ## TUIHelpers
 /// Auxiliary class for generic UI 

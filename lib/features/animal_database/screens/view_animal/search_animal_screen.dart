@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_template/core/dependency_injection/dependency_injection.dart';
-import 'package:mobile_app_template/core/utils/helpers/string_helper.dart';
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
 import 'package:mobile_app_template/data/model/animal_profile_item.dart';
 import 'package:mobile_app_template/domain/entities/animal_dto.dart';

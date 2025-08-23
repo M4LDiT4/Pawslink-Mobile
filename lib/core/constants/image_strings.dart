@@ -30,4 +30,5 @@ class TImages{
   static const String search = "assets/icons/search.png";
   static const String filter ="assets/icons/filter.png";
   static const String sort = "assets/icons/sort.png";
+  static const String unknown = "assets/icons/unknown.png";
 }
