@@ -13,9 +13,9 @@ class ViewAnimalSliderController extends ChangeNotifier {
   WidgetStatus _status = WidgetStatus.idle;
   late AnimalDatabaseService _localRepo;
   bool _hasLoaded = false;
+  final TabController parentTab;
 
-
-  ViewAnimalSliderController(){
+  ViewAnimalSliderController({required this.parentTab}){
     _localRepo = getIt<AnimalDatabaseService>();
     _setLoading();
   }
@@ -71,6 +71,10 @@ class ViewAnimalSliderController extends ChangeNotifier {
     }finally{
       notifyListeners();
     }
+  }
+
+  void gotoAnimalList(){
+    parentTab.index= 1;
   }
   WidgetStatus get status => _status;
   List<AnimalProfile> get animals => List.unmodifiable(_animals);

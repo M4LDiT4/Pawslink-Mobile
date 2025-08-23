@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_template/core/constants/colors.dart';
+import 'package:mobile_app_template/core/dependency_injection/dependency_injection.dart';
 import 'package:mobile_app_template/core/enums/widget_status.dart';
 import 'package:mobile_app_template/features/animal_database/widgets/view_animal_profile_slider/view_animal_profile_slider_item.dart';
 import 'view_animal_slider_controller.dart';
@@ -17,8 +18,9 @@ class _ViewAnimalProfileSliderState extends State<ViewAnimalProfileSlider> {
   @override
   void initState() {
     super.initState();
-    _controller = ViewAnimalSliderController();
-    // Delay initial data load to ensure widget is mounted
+    _controller = getIt<ViewAnimalSliderController>();
+
+    // Load initial data after widget is mounted
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!_controller.hasLoaded) {
         _controller.loadInitialData();
@@ -33,20 +35,10 @@ class _ViewAnimalProfileSliderState extends State<ViewAnimalProfileSlider> {
       builder: (context, _) {
         return Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Text(
-                  "Recents",
-                  style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                        color: TColors.primary,
-                      ),
-                ),
-              ],
-            ),
+            _buildHeader(context),
             const SizedBox(height: 8),
-
-            // Build content based on controller state
             _buildContent(),
           ],
         );
@@ -54,28 +46,35 @@ class _ViewAnimalProfileSliderState extends State<ViewAnimalProfileSlider> {
     );
   }
 
+  Widget _buildHeader(BuildContext context) {
+    return Text(
+      "Recents",
+      style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+            color: TColors.primary,
+          ),
+    );
+  }
+
   Widget _buildContent() {
-    if (_controller.status == WidgetStatus.loading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+    switch (_controller.status) {
+      case WidgetStatus.loading:
+        return const Center(child: CircularProgressIndicator());
+      case WidgetStatus.error:
+        return const Center(
+          child: Text(
+            "Failed to load animals",
+            style: TextStyle(color: Colors.red),
+          ),
+        );
+      case WidgetStatus.idle:
+      default:
+        return _controller.animals.isEmpty
+            ? const Center(child: Text("No recent animals found"))
+            : _buildAnimalList();
     }
+  }
 
-    if (_controller.status == WidgetStatus.error) {
-      return const Center(
-        child: Text(
-          "Failed to load animals",
-          style:  TextStyle(color: Colors.red),
-        ),
-      );
-    }
-
-    if (_controller.animals.isEmpty) {
-      return const Center(
-        child: Text("No recent animals found"),
-      );
-    }
-
+  Widget _buildAnimalList() {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
@@ -85,9 +84,7 @@ class _ViewAnimalProfileSliderState extends State<ViewAnimalProfileSlider> {
             (animal) => ViewAnimalProfileSliderItem(animal: animal),
           ),
           TextButton(
-            onPressed: () {
-              // Navigate to full list page
-            },
+            onPressed:_controller.gotoAnimalList,
             child: const Text("View More"),
           ),
         ],
