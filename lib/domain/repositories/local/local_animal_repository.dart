@@ -7,6 +7,7 @@ import 'package:mobile_app_template/core/enums/animal_species.dart';
 import 'package:mobile_app_template/core/enums/animal_status.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/data/local_storage/isar/helpers/filter_helper.dart';
+import 'package:mobile_app_template/data/local_storage/isar/model/animal_model.dart';
 import 'package:mobile_app_template/domain/entities/animal_dto.dart';
 import 'package:mobile_app_template/domain/models/local_animal_medication_record.dart';
 import 'package:mobile_app_template/domain/models/local_animal_model.dart';
@@ -231,5 +232,23 @@ class LocalAnimalRepository {
       );
     }
   }
-  
+
+  Future<OperationResponse<List<LocalAnimalModel>>> getAnimalsByBSONId(String bsonId)async{
+    try{
+      final animals = await _db.localAnimalModels
+        .filter()
+        .remoteIdEqualTo(bsonId)
+        .findAll();
+      return OperationResponse(
+        isSuccessful: true,
+        statusCode: 200,
+        data: animals
+      );
+    }catch(err){
+      TLogger.error("Error occured while getting animal with BSON Id $bsonId");
+      return OperationResponse.failedResponse(
+        message: 'Failed to get animal associated with the BSON ID'
+      );
+    }
+  }
 }

@@ -37,31 +37,31 @@ class FilterModal extends StatelessWidget {
         const SizedBox(height: 16),
         Row(
           children: [
-            Expanded(child: GenericDropdown(
+             GenericDropdown(
               initialValue: sexController.selectedValue,
               options: AnimalSex.values, labelText: "Sex",
               controller: sexController,
-            )),
+            ),
           ],
         ),
         const SizedBox(height: 12),
         Row(
           children: [
-            Expanded(child: GenericDropdown(
+            GenericDropdown(
               initialValue: speciesController.selectedValue,
               options: AnimalSpecies.values, labelText: "Species",
               controller: speciesController,
-            )),
+            ),
           ],
         ),
         const SizedBox(height: 12),
         Row(
           children: [
-            Expanded(child: GenericDropdown(
+            GenericDropdown(
               initialValue: statusController.selectedValue,
               options: AnimalStatus.values, labelText: "Status",
               controller: statusController,
-            )),
+            ),
           ],
         ),
       ],

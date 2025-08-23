@@ -1,41 +1,63 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:mobile_app_template/core/dependency_injection/dependency_injection.dart';
 import 'package:mobile_app_template/core/enums/animal_species.dart';
 import 'package:mobile_app_template/core/constants/image_strings.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/enums/animal_sex.dart';
+import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
+import 'package:mobile_app_template/core/utils/helpers/ui_helpers.dart';
 import 'package:mobile_app_template/data/model/animal_profile_item.dart';
+import 'package:mobile_app_template/domain/services/animal%20database/animal_database_service.dart';
+import 'package:mobile_app_template/navigation/navigation_service.dart';
 
 class ViewAnimalProfileSliderItem extends StatelessWidget {
   final AnimalProfile animal;
 
   const ViewAnimalProfileSliderItem({super.key, required this.animal});
 
+  void _gotoDetails (BuildContext context) async{
+     showDialog(
+      context: context,
+      builder: (_) => const Center(child: CircularProgressIndicator()),
+      barrierDismissible: false,
+    );
+    final service = getIt<AnimalDatabaseService>();
+    final response = await service.getAnimalByBSONId(animal.id);
+    TNavigationService.back();
+    if(response.data != null){
+      TNavigationService.toNamed(TAppRoutes.viewAnimalDetails, arguments: response.data);
+    }else{
+      TUIHelpers.showStateSnackBar("Something went wrong, cannot go to animal details");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
-      child: SizedBox(
-        width: 180,
-        child: Padding(
-          padding: const EdgeInsets.all(TSizes.paddingmd),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildImage(),
-              const SizedBox(height: 8),
-              _buildNameAndSex(context),
-              const SizedBox(height: 6),
-              _buildLocation(),
-            ],
+    return GestureDetector(
+      onTap: () => _gotoDetails(context),
+      child: Card(
+        elevation: 4,
+        child: SizedBox(
+          width: 180,
+          child: Padding(
+            padding: const EdgeInsets.all(TSizes.paddingmd),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildImage(),
+                const SizedBox(height: 8),
+                _buildNameAndSex(context),
+                const SizedBox(height: 6),
+                _buildLocation(),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
-
-  // --- PRIVATE WIDGETS ---
 
   Widget _buildImage() {
     final imagePath = animal.animalProfileLink;
