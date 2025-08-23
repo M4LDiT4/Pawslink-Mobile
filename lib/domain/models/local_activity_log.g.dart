@@ -33,26 +33,27 @@ const LocalActivityLogSchema = CollectionSchema(
       name: r'description',
       type: IsarType.string,
     ),
-    r'targetCollection': PropertySchema(
+    r'syncStatus': PropertySchema(
       id: 3,
+      name: r'syncStatus',
+      type: IsarType.string,
+      enumMap: _LocalActivityLogsyncStatusEnumValueMap,
+    ),
+    r'targetCollection': PropertySchema(
+      id: 4,
       name: r'targetCollection',
       type: IsarType.string,
       enumMap: _LocalActivityLogtargetCollectionEnumValueMap,
     ),
-    r'targetId': PropertySchema(
-      id: 4,
-      name: r'targetId',
-      type: IsarType.long,
+    r'targetObjectId': PropertySchema(
+      id: 5,
+      name: r'targetObjectId',
+      type: IsarType.string,
     ),
     r'updatedAt': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'updatedAt',
       type: IsarType.dateTime,
-    ),
-    r'userId': PropertySchema(
-      id: 6,
-      name: r'userId',
-      type: IsarType.string,
     )
   },
   estimateSize: _localActivityLogEstimateSize,
@@ -104,8 +105,9 @@ int _localActivityLogEstimateSize(
   var bytesCount = offsets.last;
   bytesCount += 3 + object.action.name.length * 3;
   bytesCount += 3 + object.description.length * 3;
+  bytesCount += 3 + object.syncStatus.name.length * 3;
   bytesCount += 3 + object.targetCollection.name.length * 3;
-  bytesCount += 3 + object.userId.length * 3;
+  bytesCount += 3 + object.targetObjectId.length * 3;
   return bytesCount;
 }
 
@@ -118,10 +120,10 @@ void _localActivityLogSerialize(
   writer.writeString(offsets[0], object.action.name);
   writer.writeDateTime(offsets[1], object.createdAt);
   writer.writeString(offsets[2], object.description);
-  writer.writeString(offsets[3], object.targetCollection.name);
-  writer.writeLong(offsets[4], object.targetId);
-  writer.writeDateTime(offsets[5], object.updatedAt);
-  writer.writeString(offsets[6], object.userId);
+  writer.writeString(offsets[3], object.syncStatus.name);
+  writer.writeString(offsets[4], object.targetCollection.name);
+  writer.writeString(offsets[5], object.targetObjectId);
+  writer.writeDateTime(offsets[6], object.updatedAt);
 }
 
 LocalActivityLog _localActivityLogDeserialize(
@@ -137,12 +139,14 @@ LocalActivityLog _localActivityLogDeserialize(
   object.createdAt = reader.readDateTimeOrNull(offsets[1]);
   object.description = reader.readString(offsets[2]);
   object.id = id;
-  object.targetCollection = _LocalActivityLogtargetCollectionValueEnumMap[
+  object.syncStatus = _LocalActivityLogsyncStatusValueEnumMap[
           reader.readStringOrNull(offsets[3])] ??
+      SyncStatus.synced;
+  object.targetCollection = _LocalActivityLogtargetCollectionValueEnumMap[
+          reader.readStringOrNull(offsets[4])] ??
       DatabaseCollections.animal;
-  object.targetId = reader.readLongOrNull(offsets[4]);
-  object.updatedAt = reader.readDateTimeOrNull(offsets[5]);
-  object.userId = reader.readString(offsets[6]);
+  object.targetObjectId = reader.readString(offsets[5]);
+  object.updatedAt = reader.readDateTimeOrNull(offsets[6]);
   return object;
 }
 
@@ -162,15 +166,17 @@ P _localActivityLogDeserializeProp<P>(
     case 2:
       return (reader.readString(offset)) as P;
     case 3:
+      return (_LocalActivityLogsyncStatusValueEnumMap[
+              reader.readStringOrNull(offset)] ??
+          SyncStatus.synced) as P;
+    case 4:
       return (_LocalActivityLogtargetCollectionValueEnumMap[
               reader.readStringOrNull(offset)] ??
           DatabaseCollections.animal) as P;
-    case 4:
-      return (reader.readLongOrNull(offset)) as P;
     case 5:
-      return (reader.readDateTimeOrNull(offset)) as P;
-    case 6:
       return (reader.readString(offset)) as P;
+    case 6:
+      return (reader.readDateTimeOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -191,6 +197,16 @@ const _LocalActivityLogactionValueEnumMap = {
   r'delete': DatabaseAction.delete,
   r'upsert': DatabaseAction.upsert,
   r'sync': DatabaseAction.sync,
+};
+const _LocalActivityLogsyncStatusEnumValueMap = {
+  r'synced': r'synced',
+  r'notSynced': r'notSynced',
+  r'conflict': r'conflict',
+};
+const _LocalActivityLogsyncStatusValueEnumMap = {
+  r'synced': SyncStatus.synced,
+  r'notSynced': SyncStatus.notSynced,
+  r'conflict': SyncStatus.conflict,
 };
 const _LocalActivityLogtargetCollectionEnumValueMap = {
   r'animal': r'animal',
@@ -946,6 +962,142 @@ extension LocalActivityLogQueryFilter
   }
 
   QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
+      syncStatusEqualTo(
+    SyncStatus value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'syncStatus',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
+      syncStatusGreaterThan(
+    SyncStatus value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'syncStatus',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
+      syncStatusLessThan(
+    SyncStatus value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'syncStatus',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
+      syncStatusBetween(
+    SyncStatus lower,
+    SyncStatus upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'syncStatus',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
+      syncStatusStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'syncStatus',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
+      syncStatusEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'syncStatus',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
+      syncStatusContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'syncStatus',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
+      syncStatusMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'syncStatus',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
+      syncStatusIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'syncStatus',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
+      syncStatusIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'syncStatus',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
       targetCollectionEqualTo(
     DatabaseCollections value, {
     bool caseSensitive = true,
@@ -1082,75 +1234,137 @@ extension LocalActivityLogQueryFilter
   }
 
   QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
-      targetIdIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'targetId',
-      ));
-    });
-  }
-
-  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
-      targetIdIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'targetId',
-      ));
-    });
-  }
-
-  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
-      targetIdEqualTo(int? value) {
+      targetObjectIdEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'targetId',
+        property: r'targetObjectId',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
-      targetIdGreaterThan(
-    int? value, {
+      targetObjectIdGreaterThan(
+    String value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'targetId',
+        property: r'targetObjectId',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
-      targetIdLessThan(
-    int? value, {
+      targetObjectIdLessThan(
+    String value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'targetId',
+        property: r'targetObjectId',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
-      targetIdBetween(
-    int? lower,
-    int? upper, {
+      targetObjectIdBetween(
+    String lower,
+    String upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'targetId',
+        property: r'targetObjectId',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
+      targetObjectIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'targetObjectId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
+      targetObjectIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'targetObjectId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
+      targetObjectIdContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'targetObjectId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
+      targetObjectIdMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'targetObjectId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
+      targetObjectIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'targetObjectId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
+      targetObjectIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'targetObjectId',
+        value: '',
       ));
     });
   }
@@ -1228,142 +1442,6 @@ extension LocalActivityLogQueryFilter
       ));
     });
   }
-
-  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
-      userIdEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'userId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
-      userIdGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'userId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
-      userIdLessThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'userId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
-      userIdBetween(
-    String lower,
-    String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'userId',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
-      userIdStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'userId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
-      userIdEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'userId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
-      userIdContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'userId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
-      userIdMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'userId',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
-      userIdIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'userId',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterFilterCondition>
-      userIdIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'userId',
-        value: '',
-      ));
-    });
-  }
 }
 
 extension LocalActivityLogQueryObject
@@ -1417,6 +1495,20 @@ extension LocalActivityLogQuerySortBy
   }
 
   QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterSortBy>
+      sortBySyncStatus() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'syncStatus', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterSortBy>
+      sortBySyncStatusDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'syncStatus', Sort.desc);
+    });
+  }
+
+  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterSortBy>
       sortByTargetCollection() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'targetCollection', Sort.asc);
@@ -1431,16 +1523,16 @@ extension LocalActivityLogQuerySortBy
   }
 
   QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterSortBy>
-      sortByTargetId() {
+      sortByTargetObjectId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'targetId', Sort.asc);
+      return query.addSortBy(r'targetObjectId', Sort.asc);
     });
   }
 
   QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterSortBy>
-      sortByTargetIdDesc() {
+      sortByTargetObjectIdDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'targetId', Sort.desc);
+      return query.addSortBy(r'targetObjectId', Sort.desc);
     });
   }
 
@@ -1455,20 +1547,6 @@ extension LocalActivityLogQuerySortBy
       sortByUpdatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'updatedAt', Sort.desc);
-    });
-  }
-
-  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterSortBy>
-      sortByUserId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'userId', Sort.asc);
-    });
-  }
-
-  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterSortBy>
-      sortByUserIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'userId', Sort.desc);
     });
   }
 }
@@ -1531,6 +1609,20 @@ extension LocalActivityLogQuerySortThenBy
   }
 
   QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterSortBy>
+      thenBySyncStatus() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'syncStatus', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterSortBy>
+      thenBySyncStatusDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'syncStatus', Sort.desc);
+    });
+  }
+
+  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterSortBy>
       thenByTargetCollection() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'targetCollection', Sort.asc);
@@ -1545,16 +1637,16 @@ extension LocalActivityLogQuerySortThenBy
   }
 
   QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterSortBy>
-      thenByTargetId() {
+      thenByTargetObjectId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'targetId', Sort.asc);
+      return query.addSortBy(r'targetObjectId', Sort.asc);
     });
   }
 
   QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterSortBy>
-      thenByTargetIdDesc() {
+      thenByTargetObjectIdDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'targetId', Sort.desc);
+      return query.addSortBy(r'targetObjectId', Sort.desc);
     });
   }
 
@@ -1569,20 +1661,6 @@ extension LocalActivityLogQuerySortThenBy
       thenByUpdatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'updatedAt', Sort.desc);
-    });
-  }
-
-  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterSortBy>
-      thenByUserId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'userId', Sort.asc);
-    });
-  }
-
-  QueryBuilder<LocalActivityLog, LocalActivityLog, QAfterSortBy>
-      thenByUserIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'userId', Sort.desc);
     });
   }
 }
@@ -1611,6 +1689,13 @@ extension LocalActivityLogQueryWhereDistinct
   }
 
   QueryBuilder<LocalActivityLog, LocalActivityLog, QDistinct>
+      distinctBySyncStatus({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'syncStatus', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<LocalActivityLog, LocalActivityLog, QDistinct>
       distinctByTargetCollection({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'targetCollection',
@@ -1619,9 +1704,10 @@ extension LocalActivityLogQueryWhereDistinct
   }
 
   QueryBuilder<LocalActivityLog, LocalActivityLog, QDistinct>
-      distinctByTargetId() {
+      distinctByTargetObjectId({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'targetId');
+      return query.addDistinctBy(r'targetObjectId',
+          caseSensitive: caseSensitive);
     });
   }
 
@@ -1629,13 +1715,6 @@ extension LocalActivityLogQueryWhereDistinct
       distinctByUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'updatedAt');
-    });
-  }
-
-  QueryBuilder<LocalActivityLog, LocalActivityLog, QDistinct> distinctByUserId(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'userId', caseSensitive: caseSensitive);
     });
   }
 }
@@ -1669,6 +1748,13 @@ extension LocalActivityLogQueryProperty
     });
   }
 
+  QueryBuilder<LocalActivityLog, SyncStatus, QQueryOperations>
+      syncStatusProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'syncStatus');
+    });
+  }
+
   QueryBuilder<LocalActivityLog, DatabaseCollections, QQueryOperations>
       targetCollectionProperty() {
     return QueryBuilder.apply(this, (query) {
@@ -1676,9 +1762,10 @@ extension LocalActivityLogQueryProperty
     });
   }
 
-  QueryBuilder<LocalActivityLog, int?, QQueryOperations> targetIdProperty() {
+  QueryBuilder<LocalActivityLog, String, QQueryOperations>
+      targetObjectIdProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'targetId');
+      return query.addPropertyName(r'targetObjectId');
     });
   }
 
@@ -1686,12 +1773,6 @@ extension LocalActivityLogQueryProperty
       updatedAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'updatedAt');
-    });
-  }
-
-  QueryBuilder<LocalActivityLog, String, QQueryOperations> userIdProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'userId');
     });
   }
 }

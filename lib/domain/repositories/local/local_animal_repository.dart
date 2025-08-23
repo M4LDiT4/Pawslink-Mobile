@@ -5,10 +5,13 @@ import 'package:isar/isar.dart';
 import 'package:mobile_app_template/core/enums/animal_sex.dart';
 import 'package:mobile_app_template/core/enums/animal_species.dart';
 import 'package:mobile_app_template/core/enums/animal_status.dart';
+import 'package:mobile_app_template/core/enums/database_actions.dart';
+import 'package:mobile_app_template/core/enums/database_collections.dart';
+import 'package:mobile_app_template/core/enums/sync_status.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/data/local_storage/isar/helpers/filter_helper.dart';
-import 'package:mobile_app_template/data/local_storage/isar/model/animal_model.dart';
 import 'package:mobile_app_template/domain/entities/animal_dto.dart';
+import 'package:mobile_app_template/domain/models/local_activity_log.dart';
 import 'package:mobile_app_template/domain/models/local_animal_medication_record.dart';
 import 'package:mobile_app_template/domain/models/local_animal_model.dart';
 import 'package:mobile_app_template/domain/models/local_animal_vaccination_history.dart';
@@ -68,6 +71,15 @@ class LocalAnimalRepository {
         localAnimal.profileImagePath = imageFile!.path;
 
         await _db.localAnimalModels.put(localAnimal);
+
+        final actLog = LocalActivityLog()
+          ..action = DatabaseAction.create
+          ..targetCollection = DatabaseCollections.animal
+          ..syncStatus = SyncStatus.notSynced
+          ..targetObjectId = remoteId
+          ..description = "Created animal with name ${animalDto.name}";
+
+        await _db.localActivityLogs.put(actLog);
       });
 
       return OperationResponse<AnimalDTO>(
