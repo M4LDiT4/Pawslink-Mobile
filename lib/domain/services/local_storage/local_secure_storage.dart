@@ -15,6 +15,7 @@ class LocalSecureStorageService {
   //prevents typos and makes it easier to manage keys
   static const String accessToken = "access_token";
   static const String refreshToken = "refresh_token";
+  static const String lastUpdatedId ="last-updated-id";
 
   final List<String> _keyList = [accessToken, refreshToken];
 

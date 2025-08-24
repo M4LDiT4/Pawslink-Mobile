@@ -63,18 +63,23 @@ const LocalAnimalVaccinationRecordSchema = CollectionSchema(
       name: r'remoteAnimalId',
       type: IsarType.string,
     ),
-    r'route': PropertySchema(
+    r'remoteId': PropertySchema(
       id: 9,
+      name: r'remoteId',
+      type: IsarType.string,
+    ),
+    r'route': PropertySchema(
+      id: 10,
       name: r'route',
       type: IsarType.string,
     ),
     r'updatedAt': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'updatedAt',
       type: IsarType.dateTime,
     ),
     r'vaccineName': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'vaccineName',
       type: IsarType.string,
     )
@@ -140,6 +145,12 @@ int _localAnimalVaccinationRecordEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
+  {
+    final value = object.remoteId;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   bytesCount += 3 + object.route.length * 3;
   bytesCount += 3 + object.vaccineName.length * 3;
   return bytesCount;
@@ -160,9 +171,10 @@ void _localAnimalVaccinationRecordSerialize(
   writer.writeDateTime(offsets[6], object.nextDuedate);
   writer.writeStringList(offsets[7], object.notes);
   writer.writeString(offsets[8], object.remoteAnimalId);
-  writer.writeString(offsets[9], object.route);
-  writer.writeDateTime(offsets[10], object.updatedAt);
-  writer.writeString(offsets[11], object.vaccineName);
+  writer.writeString(offsets[9], object.remoteId);
+  writer.writeString(offsets[10], object.route);
+  writer.writeDateTime(offsets[11], object.updatedAt);
+  writer.writeString(offsets[12], object.vaccineName);
 }
 
 LocalAnimalVaccinationRecord _localAnimalVaccinationRecordDeserialize(
@@ -182,9 +194,10 @@ LocalAnimalVaccinationRecord _localAnimalVaccinationRecordDeserialize(
   object.nextDuedate = reader.readDateTimeOrNull(offsets[6]);
   object.notes = reader.readStringList(offsets[7]) ?? [];
   object.remoteAnimalId = reader.readStringOrNull(offsets[8]);
-  object.route = reader.readString(offsets[9]);
-  object.updatedAt = reader.readDateTimeOrNull(offsets[10]);
-  object.vaccineName = reader.readString(offsets[11]);
+  object.remoteId = reader.readStringOrNull(offsets[9]);
+  object.route = reader.readString(offsets[10]);
+  object.updatedAt = reader.readDateTimeOrNull(offsets[11]);
+  object.vaccineName = reader.readString(offsets[12]);
   return object;
 }
 
@@ -214,10 +227,12 @@ P _localAnimalVaccinationRecordDeserializeProp<P>(
     case 8:
       return (reader.readStringOrNull(offset)) as P;
     case 9:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 10:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 11:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 12:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1521,6 +1536,162 @@ extension LocalAnimalVaccinationRecordQueryFilter on QueryBuilder<
   }
 
   QueryBuilder<LocalAnimalVaccinationRecord, LocalAnimalVaccinationRecord,
+      QAfterFilterCondition> remoteIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'remoteId',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalVaccinationRecord, LocalAnimalVaccinationRecord,
+      QAfterFilterCondition> remoteIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'remoteId',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalVaccinationRecord, LocalAnimalVaccinationRecord,
+      QAfterFilterCondition> remoteIdEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'remoteId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalVaccinationRecord, LocalAnimalVaccinationRecord,
+      QAfterFilterCondition> remoteIdGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'remoteId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalVaccinationRecord, LocalAnimalVaccinationRecord,
+      QAfterFilterCondition> remoteIdLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'remoteId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalVaccinationRecord, LocalAnimalVaccinationRecord,
+      QAfterFilterCondition> remoteIdBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'remoteId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalVaccinationRecord, LocalAnimalVaccinationRecord,
+      QAfterFilterCondition> remoteIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'remoteId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalVaccinationRecord, LocalAnimalVaccinationRecord,
+      QAfterFilterCondition> remoteIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'remoteId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalVaccinationRecord, LocalAnimalVaccinationRecord,
+          QAfterFilterCondition>
+      remoteIdContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'remoteId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalVaccinationRecord, LocalAnimalVaccinationRecord,
+          QAfterFilterCondition>
+      remoteIdMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'remoteId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalVaccinationRecord, LocalAnimalVaccinationRecord,
+      QAfterFilterCondition> remoteIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'remoteId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalVaccinationRecord, LocalAnimalVaccinationRecord,
+      QAfterFilterCondition> remoteIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'remoteId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalVaccinationRecord, LocalAnimalVaccinationRecord,
       QAfterFilterCondition> routeEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -1996,6 +2167,20 @@ extension LocalAnimalVaccinationRecordQuerySortBy on QueryBuilder<
   }
 
   QueryBuilder<LocalAnimalVaccinationRecord, LocalAnimalVaccinationRecord,
+      QAfterSortBy> sortByRemoteId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'remoteId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LocalAnimalVaccinationRecord, LocalAnimalVaccinationRecord,
+      QAfterSortBy> sortByRemoteIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'remoteId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<LocalAnimalVaccinationRecord, LocalAnimalVaccinationRecord,
       QAfterSortBy> sortByRoute() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'route', Sort.asc);
@@ -2167,6 +2352,20 @@ extension LocalAnimalVaccinationRecordQuerySortThenBy on QueryBuilder<
   }
 
   QueryBuilder<LocalAnimalVaccinationRecord, LocalAnimalVaccinationRecord,
+      QAfterSortBy> thenByRemoteId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'remoteId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LocalAnimalVaccinationRecord, LocalAnimalVaccinationRecord,
+      QAfterSortBy> thenByRemoteIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'remoteId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<LocalAnimalVaccinationRecord, LocalAnimalVaccinationRecord,
       QAfterSortBy> thenByRoute() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'route', Sort.asc);
@@ -2277,6 +2476,13 @@ extension LocalAnimalVaccinationRecordQueryWhereDistinct on QueryBuilder<
   }
 
   QueryBuilder<LocalAnimalVaccinationRecord, LocalAnimalVaccinationRecord,
+      QDistinct> distinctByRemoteId({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'remoteId', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<LocalAnimalVaccinationRecord, LocalAnimalVaccinationRecord,
       QDistinct> distinctByRoute({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'route', caseSensitive: caseSensitive);
@@ -2369,6 +2575,13 @@ extension LocalAnimalVaccinationRecordQueryProperty on QueryBuilder<
       remoteAnimalIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'remoteAnimalId');
+    });
+  }
+
+  QueryBuilder<LocalAnimalVaccinationRecord, String?, QQueryOperations>
+      remoteIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'remoteId');
     });
   }
 

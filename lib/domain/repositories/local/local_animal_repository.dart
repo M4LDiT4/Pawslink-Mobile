@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bson/bson.dart';
+import 'package:http/http.dart' as http;
 import 'package:isar/isar.dart';
 import 'package:mobile_app_template/core/enums/animal_sex.dart';
 import 'package:mobile_app_template/core/enums/animal_species.dart';
@@ -10,7 +11,12 @@ import 'package:mobile_app_template/core/enums/database_collections.dart';
 import 'package:mobile_app_template/core/enums/sync_status.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/data/local_storage/isar/helpers/filter_helper.dart';
+import 'package:mobile_app_template/data/local_storage/isar/model/animal_med_history_model.dart';
+import 'package:mobile_app_template/data/local_storage/isar/model/animal_model.dart';
+import 'package:mobile_app_template/data/local_storage/isar/model/animal_vax_history_model.dart';
 import 'package:mobile_app_template/domain/entities/animal_dto.dart';
+import 'package:mobile_app_template/domain/entities/animal_medication_dto.dart';
+import 'package:mobile_app_template/domain/entities/animal_vaccination_dto.dart';
 import 'package:mobile_app_template/domain/models/local_activity_log.dart';
 import 'package:mobile_app_template/domain/models/local_animal_medication_record.dart';
 import 'package:mobile_app_template/domain/models/local_animal_model.dart';
@@ -23,7 +29,17 @@ import 'package:mobile_app_template/network/operation_response.dart';
 class LocalAnimalRepository {
   final Isar _db;
 
-  LocalAnimalRepository(this._db);
+    // private constructor
+  LocalAnimalRepository._internal(this._db);
+
+  // static instance
+  static LocalAnimalRepository? _instance;
+
+  // factory constructor for singleton
+  factory LocalAnimalRepository(Isar db) {
+    _instance ??= LocalAnimalRepository._internal(db);
+    return _instance!;
+  }
 
   Future<OperationResponse<AnimalDTO>> addAnimal(
     AnimalDTO animalDto,
@@ -203,7 +219,7 @@ class LocalAnimalRepository {
         .optional(species != null, (q) => q.speciesEqualTo(species!))
         .optional(status != null, (q) => q.statusEqualTo(status!))
         .optional(sex != null, (q) => q.sexEqualTo(sex!))
-        .optional(isSterilized != null, (q)=> isSterilized!? q.sterilizatonDateIsNotNull(): q.sterilizatonDateIsNull())
+        .optional(isSterilized != null, (q)=> isSterilized!? q.sterilizationDateIsNotNull(): q.sterilizationDateIsNull())
         ;
 
       final total = await filtered.count();
@@ -262,5 +278,132 @@ class LocalAnimalRepository {
         message: 'Failed to get animal associated with the BSON ID'
       );
     }
+  }
+  
+  // Future<LocalAnimalModel> upsertAnimal(
+  //   AnimalDTO remoteAnimal
+  // ) async {
+  //   final List<File> imageList = [];
+  //   try{
+  //     //get the local animal if it exist
+  //     LocalAnimalModel? localCopy;
+  //     if(remoteAnimal.remoteId != null){
+  //       final localAnimals = await _db.localAnimalModels.filter()
+  //         .remoteIdEqualTo(remoteAnimal.remoteId).findAll();
+  //       if(localAnimals.length > 1){
+  //         throw Exception("Animal with id ${remoteAnimal.remoteId} has duplicates");
+  //       }
+  //       if(localAnimals.isNotEmpty){
+  //         localCopy = localAnimals.first;
+  //       }
+  //     }
+  //     if(localCopy != null){
+  //       final medications = await batchMedicationUpsert(remoteAnimal.medicationHistory);
+  //       final vaccinations = await batchVaccinationUpsert(remoteAnimal.vaccinationHistory);
+
+  //       localCopy.medicationHistory
+  //         ..clear()
+  //         ..addAll(medications);
+  //       localCopy.vaccinationHistory
+  //         ..clear()
+  //         ..addAll(vaccinations);
+
+  //       localCopy.name = remoteAnimal.name;
+  //       localCopy.age = remoteAnimal.age;
+  //       localCopy.status = remoteAnimal.status;
+  //       localCopy.sex = remoteAnimal.sex;
+  //       localCopy.species = remoteAnimal.species;
+  //       localCopy.location = remoteAnimal.location;
+  //       localCopy.sterilizatonDate = remoteAnimal.sterilizationDate;
+  //       localCopy.coatColor = remoteAnimal.coatColor;
+  //       localCopy.traitsAndPersonality = remoteAnimal.traitsAndPersonality;
+  //       localCopy.notes = remoteAnimal.notes;
+
+  //       if(remoteAnimal.profileImageLink != null && remoteAnimal.profileImageLink != localCopy.profileImageLink){
+  //         final response = await http.get(Uri.parse(remoteAnimal.profileImageLink!));
+  //         final  imageFile = await LocalFileRepository.saveFile(
+  //           remoteAnimal.remoteId,
+  //           response.bodyBytes,
+  //           folders: [remoteAnimal.remoteId!],
+  //           isPublic: false
+  //         );
+  //         imageList.add(imageFile);
+  //         // if(localCopy.profileImagePath != null){
+  //         //   localCopy.imagePaths.add(localCopy.profileImagePath!);
+  //         // }
+  //       }
+  //       await _db.localAnimalModels.put(localCopy);
+  //     }else{
+
+  //     }
+  //   }catch(err){
+  //     TLogger.error("Local storage level upsert animal failed ${err.toString()}");
+  //     rethrow;
+  //   }
+  // }
+
+
+  Future<List<LocalAnimalMedicationRecord>> batchMedicationUpsert(List<AnimalMedicationDTO> medicationList) async{
+    try{
+      final List<LocalAnimalMedicationRecord> localMedRecords = [];
+      for(var i = 0; i < medicationList.length; i++){
+        final medRecord = medicationList[i];
+        final existing = await _db.localAnimalMedicationRecords.filter()
+          .remoteIdEqualTo(medRecord.remoteId)
+          .findFirst();
+        if(existing != null){
+          existing.medicationName = medRecord.medicationName;
+          existing.dosage = medRecord.dosage;
+          existing.route = medRecord.route;
+          existing.dateGiven = medRecord.dateGiven;
+          existing.durationInDays = medRecord.durationInDays;
+          existing.reason = medRecord.reason;
+          existing.prescribedBy = medRecord.prescribedBy;
+          existing.notes = medRecord.notes;
+
+          localMedRecords.add(existing);
+        }else{
+          localMedRecords.add(medRecord.toLocalModel());
+        }
+      }
+
+      await _db.localAnimalMedicationRecords.putAll(localMedRecords);
+      return localMedRecords;
+    }catch(err){
+      TLogger.info("Failed to upsert list of animal medications");
+      rethrow;
+    }
+  }
+
+  Future<List<LocalAnimalVaccinationRecord>> batchVaccinationUpsert(List<AnimalVaccinationDTO> vaxList) async{
+    try{
+      final List<LocalAnimalVaccinationRecord> localVaxRecords =[];
+      for(var i = 0; i < vaxList.length; i++){
+        final vaxRecord = vaxList[i];
+        final existing = await _db.localAnimalVaccinationRecords.filter()
+          .remoteIdEqualTo(vaxRecord.remoteId)
+          .findFirst();
+        if(existing != null){
+          existing.vaccineName = vaxRecord.vaccineName;
+          existing.dateGiven = vaxRecord.dateGiven;
+          existing.doseNumber = vaxRecord.doseNumber;
+          existing.nextDuedate = vaxRecord.nextDueDate;
+          existing.administeredBy = vaxRecord.administeredBy;
+          existing.batchNumber = vaxRecord.batchNumber;
+          existing.expiryDate = vaxRecord.expiryDate;
+          existing.route = vaxRecord.route;
+          existing.notes = vaxRecord.notes;
+          localVaxRecords.add(existing);
+        }else{
+          localVaxRecords.add(vaxRecord.toLocalModel());
+        }
+      }
+      await _db.localAnimalVaccinationRecords.putAll(localVaxRecords);
+      return localVaxRecords;
+    }catch(err){
+      TLogger.error("Failed to upsert list of animal vaccinations");
+      rethrow;
+    }
+
   }
 }

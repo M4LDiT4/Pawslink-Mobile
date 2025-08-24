@@ -63,13 +63,18 @@ const LocalAnimalMedicationRecordSchema = CollectionSchema(
       name: r'remoteAnimalId',
       type: IsarType.string,
     ),
-    r'route': PropertySchema(
+    r'remoteId': PropertySchema(
       id: 9,
+      name: r'remoteId',
+      type: IsarType.string,
+    ),
+    r'route': PropertySchema(
+      id: 10,
       name: r'route',
       type: IsarType.string,
     ),
     r'updatedAt': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'updatedAt',
       type: IsarType.dateTime,
     )
@@ -138,6 +143,12 @@ int _localAnimalMedicationRecordEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
+  {
+    final value = object.remoteId;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   bytesCount += 3 + object.route.length * 3;
   return bytesCount;
 }
@@ -157,8 +168,9 @@ void _localAnimalMedicationRecordSerialize(
   writer.writeString(offsets[6], object.prescribedBy);
   writer.writeString(offsets[7], object.reason);
   writer.writeString(offsets[8], object.remoteAnimalId);
-  writer.writeString(offsets[9], object.route);
-  writer.writeDateTime(offsets[10], object.updatedAt);
+  writer.writeString(offsets[9], object.remoteId);
+  writer.writeString(offsets[10], object.route);
+  writer.writeDateTime(offsets[11], object.updatedAt);
 }
 
 LocalAnimalMedicationRecord _localAnimalMedicationRecordDeserialize(
@@ -178,8 +190,9 @@ LocalAnimalMedicationRecord _localAnimalMedicationRecordDeserialize(
   object.prescribedBy = reader.readString(offsets[6]);
   object.reason = reader.readString(offsets[7]);
   object.remoteAnimalId = reader.readStringOrNull(offsets[8]);
-  object.route = reader.readString(offsets[9]);
-  object.updatedAt = reader.readDateTimeOrNull(offsets[10]);
+  object.remoteId = reader.readStringOrNull(offsets[9]);
+  object.route = reader.readString(offsets[10]);
+  object.updatedAt = reader.readDateTimeOrNull(offsets[11]);
   return object;
 }
 
@@ -209,8 +222,10 @@ P _localAnimalMedicationRecordDeserializeProp<P>(
     case 8:
       return (reader.readStringOrNull(offset)) as P;
     case 9:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 10:
+      return (reader.readString(offset)) as P;
+    case 11:
       return (reader.readDateTimeOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1742,6 +1757,162 @@ extension LocalAnimalMedicationRecordQueryFilter on QueryBuilder<
   }
 
   QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterFilterCondition> remoteIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'remoteId',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterFilterCondition> remoteIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'remoteId',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterFilterCondition> remoteIdEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'remoteId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterFilterCondition> remoteIdGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'remoteId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterFilterCondition> remoteIdLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'remoteId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterFilterCondition> remoteIdBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'remoteId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterFilterCondition> remoteIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'remoteId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterFilterCondition> remoteIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'remoteId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+          QAfterFilterCondition>
+      remoteIdContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'remoteId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+          QAfterFilterCondition>
+      remoteIdMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'remoteId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterFilterCondition> remoteIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'remoteId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterFilterCondition> remoteIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'remoteId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
       QAfterFilterCondition> routeEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -2079,6 +2250,20 @@ extension LocalAnimalMedicationRecordQuerySortBy on QueryBuilder<
   }
 
   QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterSortBy> sortByRemoteId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'remoteId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterSortBy> sortByRemoteIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'remoteId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
       QAfterSortBy> sortByRoute() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'route', Sort.asc);
@@ -2236,6 +2421,20 @@ extension LocalAnimalMedicationRecordQuerySortThenBy on QueryBuilder<
   }
 
   QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterSortBy> thenByRemoteId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'remoteId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QAfterSortBy> thenByRemoteIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'remoteId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
       QAfterSortBy> thenByRoute() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'route', Sort.asc);
@@ -2332,6 +2531,13 @@ extension LocalAnimalMedicationRecordQueryWhereDistinct on QueryBuilder<
   }
 
   QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
+      QDistinct> distinctByRemoteId({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'remoteId', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, LocalAnimalMedicationRecord,
       QDistinct> distinctByRoute({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'route', caseSensitive: caseSensitive);
@@ -2415,6 +2621,13 @@ extension LocalAnimalMedicationRecordQueryProperty on QueryBuilder<
       remoteAnimalIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'remoteAnimalId');
+    });
+  }
+
+  QueryBuilder<LocalAnimalMedicationRecord, String?, QQueryOperations>
+      remoteIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'remoteId');
     });
   }
 

@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:mobile_app_template/core/dependency_injection/dependency_injection.dart';
 import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
+import 'package:mobile_app_template/domain/services/animal%20database/animal_database_service.dart';
+import 'package:mobile_app_template/features/animal_database/controllers/view_animal_controller.dart';
 import 'package:mobile_app_template/features/animal_database/controllers/view_animal_list_controller.dart';
 import 'package:mobile_app_template/features/animal_database/screens/view_animal/animal_list.dart';
 import 'package:mobile_app_template/features/animal_database/screens/view_animal/view_animal_summary.dart';
@@ -33,6 +35,7 @@ class _ViewAnimalScreenState extends State<ViewAnimalScreen> with TickerProvider
     Get.put(ViewAnimalListController());
     final sliderController = ViewAnimalSliderController(parentTab: _tabController);
     getIt.registerSingleton<ViewAnimalSliderController>(sliderController);
+    Get.put(ViewAnimalController(getIt<AnimalDatabaseService>()));
   }
 
   @override
