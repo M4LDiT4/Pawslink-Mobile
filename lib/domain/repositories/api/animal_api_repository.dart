@@ -2,7 +2,6 @@
 import 'dart:io';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:mobile_app_template/core/enums/database_collections.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/domain/entities/animal_dto.dart';
 import 'package:mobile_app_template/domain/repositories/api/api_filter_config.dart';
@@ -17,8 +16,6 @@ class AnimalApiRepository {
   final String _basePath = "animal-database";
   final String _addAnimalPath = "animal";
   final String _getAnimalPath = 'animal';
-  final String _updates = "updates";
-  final String _animalCollection = 'animals';
 
   AnimalApiRepository._internal();
 
@@ -40,7 +37,6 @@ class AnimalApiRepository {
 
   Future<OperationResponse<AnimalDTO>> addAnimal(AnimalDTO animal, {File? profilePicture}) async{
     try{
-      _checkIfPreConditionValid();
       final base = _baseUrl!;
       final url = Uri(
         scheme: base.scheme,
@@ -48,7 +44,7 @@ class AnimalApiRepository {
         host: base.host,
         path: '${base.path}/$_addAnimalPath'
       );
-
+      _checkIfPreConditionValid();
       final savedAnimal = await _client!.post<AnimalDTO>(
         url.toString(), 
         dataParser: (item) => AnimalDTO.fromMap(item),
@@ -84,8 +80,6 @@ class AnimalApiRepository {
       queryParameters['filterValue'] = filterConfig?.condition.toString();
       queryParameters['page'] = page;
       queryParameters['limit'] = limit;
-
-      _checkIfPreConditionValid();
       
       final response = await _client!.get<List<AnimalDTO>>(
         "${_baseUrl.toString()}$_getAnimalPath", 
@@ -105,73 +99,7 @@ class AnimalApiRepository {
     }
   }
 
-  Future<OperationResponse<int>> checkUpdatesByCollection(DatabaseCollections collection, {String? objectId}) async{
-    try{
-      _checkIfPreConditionValid();
-
-      final base = _baseUrl!;
-      final url = Uri(
-        scheme: base.scheme,
-        port: base.port,
-        host: base.host,
-        path: objectId != null
-              ? "${base.path}/$_updates/$objectId"
-              : "${base.path}/$_updates",
-        queryParameters: {
-          'collection': collection.name
-        }
-      );
-
-      final response = await _client!.get<int>(
-        url.toString(),
-        dataParser: (data) {
-          if(data is Map<String, dynamic>){
-            return data['count'];
-          }else if(data is num){
-            return data as int;
-          }
-          throw Exception("Excepts a Map<String, dynamic> but received: ${data.runtimeType}");
-        }
-      );
-      if(!response.isSuccessful || response.data == null){
-        throw Exception("Operations Status: ${response.isSuccessful}, Data received: ${response.data}");
-      }
-      return response;
-    }catch(err){
-      TLogger.error("API level check for updates for ${collection.name} with latest update id $objectId failed: ${err.toString()}");
-      return OperationResponse.failedResponse();
-    }
-  }
-
-  Future<OperationResponse<Map<String,dynamic>>> getAnimalUpdates() async{
-    try{
-      _checkIfPreConditionValid();
-      final base = _baseUrl!;
-      final url = Uri(
-        scheme: base.scheme,
-        port: base.port,
-        host: base.host,
-        path: "${base.path}/$_updates/$_animalCollection"
-      );
-
-      final response = await _client!.get(
-        url.toString(), 
-        dataParser: (item) => {
-          "lastUpdateId": item["lastUpdateId"],
-          "data": item["data"]
-        } 
-      );
-      if(!response.isSuccessful || response.data == null){
-        throw Exception("Response status: ${response.isSuccessful}, received data: ${response.data}");
-      }
-      return response;
-    }catch(err){
-      TLogger.error("API level get animal updates failed: ${err.toString()}");
-      return OperationResponse.failedResponse(
-        message: "Failed to get animal updates"
-      );
-    }
-  }
+  
   /// Checks if the service is properly initialized
   /// ### Throws
   /// An [Exception] if service is not properly initialized

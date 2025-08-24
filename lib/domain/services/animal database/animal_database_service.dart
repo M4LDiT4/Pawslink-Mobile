@@ -1,18 +1,15 @@
 // initialize tlhis when you are in add animal section
-import 'dart:convert';
 import 'dart:io';
 import 'package:isar/isar.dart';
 import 'package:mobile_app_template/core/enums/animal_sex.dart';
 import 'package:mobile_app_template/core/enums/animal_species.dart';
 import 'package:mobile_app_template/core/enums/animal_status.dart';
-import 'package:mobile_app_template/core/enums/database_collections.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/data/local_storage/isar/helpers/filter_helper.dart';
 import 'package:mobile_app_template/domain/entities/animal_dto.dart';
 import 'package:mobile_app_template/domain/repositories/api/animal_api_repository.dart';
 import 'package:mobile_app_template/domain/repositories/local/local_animal_repository.dart';
 import 'package:mobile_app_template/domain/services/local/animal_repository.dart';
-import 'package:mobile_app_template/domain/services/local_storage/local_secure_storage.dart' show LocalSecureStorageService;
 import 'package:mobile_app_template/network/operation_response.dart';
 
 class AnimalDatabaseService {
@@ -271,68 +268,4 @@ class AnimalDatabaseService {
       );
     }
   }
-  Future<OperationResponse<bool>> checkUpdates() async{
-    try{
-      final securedStorage = LocalSecureStorageService();
-      final lastUpdatedId = await securedStorage.getData(LocalSecureStorageService.lastUpdatedId);
-
-      final response = await _cloudRepo.checkUpdatesByCollection(
-        DatabaseCollections.animal,
-        objectId: lastUpdatedId
-      );
-      if(!response.isSuccessful || response.data == null){
-        throw Exception("Response Status: ${response.isSuccessful}, received data: ${response.data}");
-      }
-      return OperationResponse(
-        isSuccessful: true,
-        statusCode: 200,
-        data: response.data!> 0
-      );
-    }catch(err){
-      TLogger.error("Service level check for updates failed: ${err.toString()}");
-      return OperationResponse.failedResponse(
-        message: "Unexpected error occured while checking for updates"
-      );
-    }
-  }
-  // Future<OperationResponse> syncAnimals() async {
-  //   try{
-  //     final response = await _cloudRepo.getAnimalUpdates();
-  //     if(!response.isSuccessful || response.data == null){
-  //       throw Exception("Failed to get updated animals from database, cannot proceed");
-  //     }
-  //     final data = response.data!;
-  //     if(data['data'] == null || data['lastUpdateId'] == null){
-  //       throw Exception("Cannot proceed to sync, missing data: \ndata: ${data['data']}\nlast update id: ${data['lastUpdateId']}");
-  //     }
-  //     List<AnimalDTO> animals;
-  //     if(data['data'] is List<Map<String, dynamic>>){
-  //       final List<Map<String, dynamic>> animalMapList = data['data'];
-  //       animals = OperationResponse.listParser<AnimalDTO>(
-  //         animalMapList, 
-  //         itemParser: (item) => AnimalDTO.fromMap(item)
-  //       );
-  //     }else if(data['data'] is String){
-  //       final decodedData = jsonDecode(data['data']);
-  //       if(decodedData is! List<Map<String, dynamic>>){
-  //         throw Exception("Decoded data is not a list\nData: ${decodedData.toString()}");
-  //       }
-  //       final List<Map<String, dynamic>> animalMapList = decodedData;
-  //       animals = OperationResponse.listParser<AnimalDTO>(
-  //         animalMapList, 
-  //         itemParser: (item) => AnimalDTO.fromMap(item)
-  //       );
-  //     }else{
-  //       throw Exception("Data field of response is not of type List<Map<String, dynamic>> or String\nData type: ${data['data'].runtimeType}");
-  //     }
-
-      
-  //     //save updates locally
-  //   }catch(err){
-  //     TLogger.error("Failed to sync animals ${err.toString()}");
-  //     return OperationResponse.failedResponse(
-  //       message: "Unexpected Error Occured while syncing animals"
-  //     );
-  //   }
-  // } 
 }

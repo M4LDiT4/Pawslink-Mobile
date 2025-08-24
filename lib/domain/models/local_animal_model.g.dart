@@ -32,25 +32,25 @@ const LocalAnimalModelSchema = CollectionSchema(
       name: r'createdAt',
       type: IsarType.dateTime,
     ),
-    r'location': PropertySchema(
+    r'imagePaths': PropertySchema(
       id: 3,
+      name: r'imagePaths',
+      type: IsarType.stringList,
+    ),
+    r'location': PropertySchema(
+      id: 4,
       name: r'location',
       type: IsarType.string,
     ),
     r'name': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'name',
       type: IsarType.string,
     ),
     r'notes': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'notes',
       type: IsarType.stringList,
-    ),
-    r'profileImageLink': PropertySchema(
-      id: 6,
-      name: r'profileImageLink',
-      type: IsarType.string,
     ),
     r'profileImagePath': PropertySchema(
       id: 7,
@@ -80,9 +80,9 @@ const LocalAnimalModelSchema = CollectionSchema(
       type: IsarType.string,
       enumMap: _LocalAnimalModelstatusEnumValueMap,
     ),
-    r'sterilizationDate': PropertySchema(
+    r'sterilizatonDate': PropertySchema(
       id: 12,
-      name: r'sterilizationDate',
+      name: r'sterilizatonDate',
       type: IsarType.dateTime,
     ),
     r'traitsAndPersonality': PropertySchema(
@@ -130,12 +130,6 @@ const LocalAnimalModelSchema = CollectionSchema(
     )
   },
   links: {
-    r'imageMaps': LinkSchema(
-      id: -7418511323307904397,
-      name: r'imageMaps',
-      target: r'ImageLink',
-      single: false,
-    ),
     r'vaccinationHistory': LinkSchema(
       id: -5238092616886229582,
       name: r'vaccinationHistory',
@@ -169,6 +163,13 @@ int _localAnimalModelEstimateSize(
       bytesCount += value.length * 3;
     }
   }
+  bytesCount += 3 + object.imagePaths.length * 3;
+  {
+    for (var i = 0; i < object.imagePaths.length; i++) {
+      final value = object.imagePaths[i];
+      bytesCount += value.length * 3;
+    }
+  }
   bytesCount += 3 + object.location.length * 3;
   bytesCount += 3 + object.name.length * 3;
   bytesCount += 3 + object.notes.length * 3;
@@ -179,18 +180,17 @@ int _localAnimalModelEstimateSize(
     }
   }
   {
-    final value = object.profileImageLink;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
     final value = object.profileImagePath;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
   }
-  bytesCount += 3 + object.remoteId.length * 3;
+  {
+    final value = object.remoteId;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   bytesCount += 3 + object.sex.name.length * 3;
   bytesCount += 3 + object.species.name.length * 3;
   bytesCount += 3 + object.status.name.length * 3;
@@ -213,16 +213,16 @@ void _localAnimalModelSerialize(
   writer.writeLong(offsets[0], object.age);
   writer.writeStringList(offsets[1], object.coatColor);
   writer.writeDateTime(offsets[2], object.createdAt);
-  writer.writeString(offsets[3], object.location);
-  writer.writeString(offsets[4], object.name);
-  writer.writeStringList(offsets[5], object.notes);
-  writer.writeString(offsets[6], object.profileImageLink);
+  writer.writeStringList(offsets[3], object.imagePaths);
+  writer.writeString(offsets[4], object.location);
+  writer.writeString(offsets[5], object.name);
+  writer.writeStringList(offsets[6], object.notes);
   writer.writeString(offsets[7], object.profileImagePath);
   writer.writeString(offsets[8], object.remoteId);
   writer.writeString(offsets[9], object.sex.name);
   writer.writeString(offsets[10], object.species.name);
   writer.writeString(offsets[11], object.status.name);
-  writer.writeDateTime(offsets[12], object.sterilizationDate);
+  writer.writeDateTime(offsets[12], object.sterilizatonDate);
   writer.writeStringList(offsets[13], object.traitsAndPersonality);
   writer.writeDateTime(offsets[14], object.updatedAt);
 }
@@ -238,12 +238,12 @@ LocalAnimalModel _localAnimalModelDeserialize(
   object.coatColor = reader.readStringList(offsets[1]) ?? [];
   object.createdAt = reader.readDateTimeOrNull(offsets[2]);
   object.id = id;
-  object.location = reader.readString(offsets[3]);
-  object.name = reader.readString(offsets[4]);
-  object.notes = reader.readStringList(offsets[5]) ?? [];
-  object.profileImageLink = reader.readStringOrNull(offsets[6]);
+  object.imagePaths = reader.readStringList(offsets[3]) ?? [];
+  object.location = reader.readString(offsets[4]);
+  object.name = reader.readString(offsets[5]);
+  object.notes = reader.readStringList(offsets[6]) ?? [];
   object.profileImagePath = reader.readStringOrNull(offsets[7]);
-  object.remoteId = reader.readString(offsets[8]);
+  object.remoteId = reader.readStringOrNull(offsets[8]);
   object.sex =
       _LocalAnimalModelsexValueEnumMap[reader.readStringOrNull(offsets[9])] ??
           AnimalSex.male;
@@ -253,7 +253,7 @@ LocalAnimalModel _localAnimalModelDeserialize(
   object.status = _LocalAnimalModelstatusValueEnumMap[
           reader.readStringOrNull(offsets[11])] ??
       AnimalStatus.transient;
-  object.sterilizationDate = reader.readDateTimeOrNull(offsets[12]);
+  object.sterilizatonDate = reader.readDateTimeOrNull(offsets[12]);
   object.traitsAndPersonality = reader.readStringList(offsets[13]) ?? [];
   object.updatedAt = reader.readDateTimeOrNull(offsets[14]);
   return object;
@@ -273,17 +273,17 @@ P _localAnimalModelDeserializeProp<P>(
     case 2:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 3:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringList(offset) ?? []) as P;
     case 4:
       return (reader.readString(offset)) as P;
     case 5:
-      return (reader.readStringList(offset) ?? []) as P;
+      return (reader.readString(offset)) as P;
     case 6:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readStringList(offset) ?? []) as P;
     case 7:
       return (reader.readStringOrNull(offset)) as P;
     case 8:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 9:
       return (_LocalAnimalModelsexValueEnumMap[
               reader.readStringOrNull(offset)] ??
@@ -349,18 +349,12 @@ Id _localAnimalModelGetId(LocalAnimalModel object) {
 }
 
 List<IsarLinkBase<dynamic>> _localAnimalModelGetLinks(LocalAnimalModel object) {
-  return [
-    object.imageMaps,
-    object.vaccinationHistory,
-    object.medicationHistory
-  ];
+  return [object.vaccinationHistory, object.medicationHistory];
 }
 
 void _localAnimalModelAttach(
     IsarCollection<dynamic> col, Id id, LocalAnimalModel object) {
   object.id = id;
-  object.imageMaps
-      .attach(col, col.isar.collection<ImageLink>(), r'imageMaps', id);
   object.vaccinationHistory.attach(
       col,
       col.isar.collection<LocalAnimalVaccinationRecord>(),
@@ -1130,6 +1124,231 @@ extension LocalAnimalModelQueryFilter
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      imagePathsElementEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'imagePaths',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      imagePathsElementGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'imagePaths',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      imagePathsElementLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'imagePaths',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      imagePathsElementBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'imagePaths',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      imagePathsElementStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'imagePaths',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      imagePathsElementEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'imagePaths',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      imagePathsElementContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'imagePaths',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      imagePathsElementMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'imagePaths',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      imagePathsElementIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'imagePaths',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      imagePathsElementIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'imagePaths',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      imagePathsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'imagePaths',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      imagePathsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'imagePaths',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      imagePathsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'imagePaths',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      imagePathsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'imagePaths',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      imagePathsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'imagePaths',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      imagePathsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'imagePaths',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
       locationEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -1627,160 +1846,6 @@ extension LocalAnimalModelQueryFilter
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      profileImageLinkIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'profileImageLink',
-      ));
-    });
-  }
-
-  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      profileImageLinkIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'profileImageLink',
-      ));
-    });
-  }
-
-  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      profileImageLinkEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'profileImageLink',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      profileImageLinkGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'profileImageLink',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      profileImageLinkLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'profileImageLink',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      profileImageLinkBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'profileImageLink',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      profileImageLinkStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'profileImageLink',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      profileImageLinkEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'profileImageLink',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      profileImageLinkContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'profileImageLink',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      profileImageLinkMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'profileImageLink',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      profileImageLinkIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'profileImageLink',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      profileImageLinkIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'profileImageLink',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
       profileImagePathIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1935,8 +2000,26 @@ extension LocalAnimalModelQueryFilter
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      remoteIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'remoteId',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
+      remoteIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'remoteId',
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
       remoteIdEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1950,7 +2033,7 @@ extension LocalAnimalModelQueryFilter
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
       remoteIdGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -1966,7 +2049,7 @@ extension LocalAnimalModelQueryFilter
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
       remoteIdLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -1982,8 +2065,8 @@ extension LocalAnimalModelQueryFilter
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
       remoteIdBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -2479,63 +2562,63 @@ extension LocalAnimalModelQueryFilter
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      sterilizationDateIsNull() {
+      sterilizatonDateIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'sterilizationDate',
+        property: r'sterilizatonDate',
       ));
     });
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      sterilizationDateIsNotNull() {
+      sterilizatonDateIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'sterilizationDate',
+        property: r'sterilizatonDate',
       ));
     });
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      sterilizationDateEqualTo(DateTime? value) {
+      sterilizatonDateEqualTo(DateTime? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'sterilizationDate',
+        property: r'sterilizatonDate',
         value: value,
       ));
     });
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      sterilizationDateGreaterThan(
+      sterilizatonDateGreaterThan(
     DateTime? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'sterilizationDate',
+        property: r'sterilizatonDate',
         value: value,
       ));
     });
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      sterilizationDateLessThan(
+      sterilizatonDateLessThan(
     DateTime? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'sterilizationDate',
+        property: r'sterilizatonDate',
         value: value,
       ));
     });
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      sterilizationDateBetween(
+      sterilizatonDateBetween(
     DateTime? lower,
     DateTime? upper, {
     bool includeLower = true,
@@ -2543,7 +2626,7 @@ extension LocalAnimalModelQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'sterilizationDate',
+        property: r'sterilizatonDate',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -2860,67 +2943,6 @@ extension LocalAnimalModelQueryObject
 extension LocalAnimalModelQueryLinks
     on QueryBuilder<LocalAnimalModel, LocalAnimalModel, QFilterCondition> {
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      imageMaps(FilterQuery<ImageLink> q) {
-    return QueryBuilder.apply(this, (query) {
-      return query.link(q, r'imageMaps');
-    });
-  }
-
-  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      imageMapsLengthEqualTo(int length) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'imageMaps', length, true, length, true);
-    });
-  }
-
-  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      imageMapsIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'imageMaps', 0, true, 0, true);
-    });
-  }
-
-  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      imageMapsIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'imageMaps', 0, false, 999999, true);
-    });
-  }
-
-  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      imageMapsLengthLessThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'imageMaps', 0, true, length, include);
-    });
-  }
-
-  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      imageMapsLengthGreaterThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'imageMaps', length, include, 999999, true);
-    });
-  }
-
-  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      imageMapsLengthBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(
-          r'imageMaps', lower, includeLower, upper, includeUpper);
-    });
-  }
-
-  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
       vaccinationHistory(FilterQuery<LocalAnimalVaccinationRecord> q) {
     return QueryBuilder.apply(this, (query) {
       return query.link(q, r'vaccinationHistory');
@@ -3103,20 +3125,6 @@ extension LocalAnimalModelQuerySortBy
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterSortBy>
-      sortByProfileImageLink() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'profileImageLink', Sort.asc);
-    });
-  }
-
-  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterSortBy>
-      sortByProfileImageLinkDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'profileImageLink', Sort.desc);
-    });
-  }
-
-  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterSortBy>
       sortByProfileImagePath() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'profileImagePath', Sort.asc);
@@ -3186,16 +3194,16 @@ extension LocalAnimalModelQuerySortBy
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterSortBy>
-      sortBySterilizationDate() {
+      sortBySterilizatonDate() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'sterilizationDate', Sort.asc);
+      return query.addSortBy(r'sterilizatonDate', Sort.asc);
     });
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterSortBy>
-      sortBySterilizationDateDesc() {
+      sortBySterilizatonDateDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'sterilizationDate', Sort.desc);
+      return query.addSortBy(r'sterilizatonDate', Sort.desc);
     });
   }
 
@@ -3284,20 +3292,6 @@ extension LocalAnimalModelQuerySortThenBy
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterSortBy>
-      thenByProfileImageLink() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'profileImageLink', Sort.asc);
-    });
-  }
-
-  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterSortBy>
-      thenByProfileImageLinkDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'profileImageLink', Sort.desc);
-    });
-  }
-
-  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterSortBy>
       thenByProfileImagePath() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'profileImagePath', Sort.asc);
@@ -3367,16 +3361,16 @@ extension LocalAnimalModelQuerySortThenBy
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterSortBy>
-      thenBySterilizationDate() {
+      thenBySterilizatonDate() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'sterilizationDate', Sort.asc);
+      return query.addSortBy(r'sterilizatonDate', Sort.asc);
     });
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterSortBy>
-      thenBySterilizationDateDesc() {
+      thenBySterilizatonDateDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'sterilizationDate', Sort.desc);
+      return query.addSortBy(r'sterilizatonDate', Sort.desc);
     });
   }
 
@@ -3418,6 +3412,13 @@ extension LocalAnimalModelQueryWhereDistinct
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QDistinct>
+      distinctByImagePaths() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'imagePaths');
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QDistinct>
       distinctByLocation({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'location', caseSensitive: caseSensitive);
@@ -3435,14 +3436,6 @@ extension LocalAnimalModelQueryWhereDistinct
       distinctByNotes() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'notes');
-    });
-  }
-
-  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QDistinct>
-      distinctByProfileImageLink({bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'profileImageLink',
-          caseSensitive: caseSensitive);
     });
   }
 
@@ -3483,9 +3476,9 @@ extension LocalAnimalModelQueryWhereDistinct
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QDistinct>
-      distinctBySterilizationDate() {
+      distinctBySterilizatonDate() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'sterilizationDate');
+      return query.addDistinctBy(r'sterilizatonDate');
     });
   }
 
@@ -3532,6 +3525,13 @@ extension LocalAnimalModelQueryProperty
     });
   }
 
+  QueryBuilder<LocalAnimalModel, List<String>, QQueryOperations>
+      imagePathsProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'imagePaths');
+    });
+  }
+
   QueryBuilder<LocalAnimalModel, String, QQueryOperations> locationProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'location');
@@ -3552,20 +3552,13 @@ extension LocalAnimalModelQueryProperty
   }
 
   QueryBuilder<LocalAnimalModel, String?, QQueryOperations>
-      profileImageLinkProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'profileImageLink');
-    });
-  }
-
-  QueryBuilder<LocalAnimalModel, String?, QQueryOperations>
       profileImagePathProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'profileImagePath');
     });
   }
 
-  QueryBuilder<LocalAnimalModel, String, QQueryOperations> remoteIdProperty() {
+  QueryBuilder<LocalAnimalModel, String?, QQueryOperations> remoteIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'remoteId');
     });
@@ -3592,9 +3585,9 @@ extension LocalAnimalModelQueryProperty
   }
 
   QueryBuilder<LocalAnimalModel, DateTime?, QQueryOperations>
-      sterilizationDateProperty() {
+      sterilizatonDateProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'sterilizationDate');
+      return query.addPropertyName(r'sterilizatonDate');
     });
   }
 

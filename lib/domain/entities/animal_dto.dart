@@ -7,7 +7,6 @@ import 'package:mobile_app_template/core/enums/animal_sex.dart';
 import 'package:mobile_app_template/core/enums/animal_species.dart';
 import 'package:mobile_app_template/core/enums/animal_status.dart';
 import 'package:mobile_app_template/core/utils/helpers/list_helpers.dart';
-import 'package:mobile_app_template/domain/models/animal_image_map.dart';
 import 'package:mobile_app_template/domain/models/local_animal_model.dart';
 
 /// ## AnimalAdapter
@@ -44,6 +43,7 @@ class AnimalDTO extends BaseDto{
   //links are remote
   List<String> imageUrls;
   String? profileImageLink;
+  List<String> imagePaths;
   String? profileImagePath;
 
   //health history
@@ -63,16 +63,13 @@ class AnimalDTO extends BaseDto{
     this.coatColor = const [],
     this.notes = const [],
     this.traitsAndPersonality = const [],
-    // if image link is replace,
-    // replace also image path
-    // push this to the image links 
-    this.profileImageLink,
-    this.profileImagePath,
     this.imageUrls = const [],
+    this.profileImageLink,
+    this.imagePaths = const [],
+    this.profileImagePath,
     this.medicationHistory = const [],
     this.vaccinationHistory = const []
   });
-
 
   /// removes the current value of the `vaccinationHistory` and replaces it with `vaxList`
   /// ### Parameters
@@ -118,7 +115,8 @@ class AnimalDTO extends BaseDto{
       location: localAnimal.location,
       coatColor: localAnimal.coatColor,
       traitsAndPersonality: localAnimal.traitsAndPersonality,
-      notes: localAnimal.notes,
+      notes: localAnimal.coatColor,
+      imagePaths: localAnimal.imagePaths,
       profileImagePath: localAnimal.profileImagePath,
       
       medicationHistory: localAnimal.medicationHistory.map(
@@ -126,29 +124,26 @@ class AnimalDTO extends BaseDto{
       ).toList(),
       vaccinationHistory: localAnimal.vaccinationHistory.map(
         (item)=> AnimalVaccinationDTO.fromLocalAnimalVaccinationRecord(item)
-      ).toList(),
-      imageUrls: localAnimal.imageMaps.map(
-        (item) => item.remotePath)
-        .whereType<String>()
-        .toList()
+      ).toList()
     );
   }
   /// Converts [AnimalAdapter] to [LocalAnimalModel]
   @override
   LocalAnimalModel toLocalModel(){
     final animal = LocalAnimalModel()
-      ..remoteId = remoteId!
+      ..remoteId = remoteId
       ..name = name
       ..sex = sex
       ..age = age
       ..status = status
       ..species = species
       ..location = location
-      ..sterilizationDate = sterilizationDate
+      ..sterilizatonDate = sterilizationDate
       ..coatColor = coatColor
       ..notes = notes
       ..traitsAndPersonality = traitsAndPersonality
-      ..profileImagePath = profileImagePath;
+      ..profileImagePath = profileImagePath
+      ..imagePaths = imagePaths;
 
     animal.medicationHistory.addAll(medicationHistory.map(
       (item) => item.toLocalModel()
@@ -157,11 +152,6 @@ class AnimalDTO extends BaseDto{
     animal.vaccinationHistory.addAll(vaccinationHistory.map(
         (item) => item.toLocalModel()
       ).toList()
-    );
-    animal.imageMaps.addAll(
-      imageUrls.map((element) => ImageLink()
-        ..animalRemoteId = remoteId!
-      )
     );
     return animal;
   }
@@ -199,7 +189,9 @@ class AnimalDTO extends BaseDto{
       animal['sterilizationDate'] = sterilizationDate!.toIso8601String();
     }
 
-    animal['_id'] = remoteId!;
+    if(remoteId != null){
+      animal['_id'] = remoteId!;
+    }
 
     return animal;
   }
@@ -216,11 +208,6 @@ class AnimalDTO extends BaseDto{
       .map(
         (item) => AnimalVaccinationDTO.fromMap(item)
       ).toList();
-    
-    final imgUrls = (jsonDecode(animalJSON['imgUrls'] ?? '[]') as List)
-      .map((item) => item  as String
-      ).toList();
-
 
     final animal = AnimalDTO(
       remoteId: animalJSON['_id'],
@@ -236,7 +223,6 @@ class AnimalDTO extends BaseDto{
       medicationHistory: medicationRecordList,
       vaccinationHistory: vaccinationRecordList,
       profileImageLink: animalJSON['profileImage'],
-      imageUrls: imgUrls
     );
 
     return animal;

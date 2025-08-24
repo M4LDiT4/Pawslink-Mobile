@@ -7,7 +7,6 @@ part 'local_animal_vaccination_history.g.dart';
 class LocalAnimalVaccinationRecord with Timestamped {
   Id id = Isar.autoIncrement;
 
-  String? remoteId;
   late String? remoteAnimalId; //if null then animal associated with this is saved locally. Can be used to reference cloud copy of animal
   late String vaccineName;
   late DateTime dateGiven;
