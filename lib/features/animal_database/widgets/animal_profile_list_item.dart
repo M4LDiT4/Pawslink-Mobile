@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:lottie/lottie.dart';
-import 'package:mobile_app_template/core/constants/lottie_strings.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/dependency_injection/dependency_injection.dart';
 import 'package:mobile_app_template/core/enums/animal_sex.dart';

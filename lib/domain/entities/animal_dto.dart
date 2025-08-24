@@ -7,6 +7,7 @@ import 'package:mobile_app_template/core/enums/animal_sex.dart';
 import 'package:mobile_app_template/core/enums/animal_species.dart';
 import 'package:mobile_app_template/core/enums/animal_status.dart';
 import 'package:mobile_app_template/core/utils/helpers/list_helpers.dart';
+import 'package:mobile_app_template/domain/models/image_file_mapping.dart';
 import 'package:mobile_app_template/domain/models/local_animal_model.dart';
 
 /// ## AnimalAdapter
@@ -43,7 +44,6 @@ class AnimalDTO extends BaseDto{
   //links are remote
   List<String> imageUrls;
   String? profileImageLink;
-  List<String> imagePaths;
   String? profileImagePath;
 
   //health history
@@ -65,7 +65,6 @@ class AnimalDTO extends BaseDto{
     this.traitsAndPersonality = const [],
     this.imageUrls = const [],
     this.profileImageLink,
-    this.imagePaths = const [],
     this.profileImagePath,
     this.medicationHistory = const [],
     this.vaccinationHistory = const []
@@ -116,7 +115,6 @@ class AnimalDTO extends BaseDto{
       coatColor: localAnimal.coatColor,
       traitsAndPersonality: localAnimal.traitsAndPersonality,
       notes: localAnimal.coatColor,
-      imagePaths: localAnimal.imagePaths,
       profileImagePath: localAnimal.profileImagePath,
       
       medicationHistory: localAnimal.medicationHistory.map(
@@ -143,7 +141,8 @@ class AnimalDTO extends BaseDto{
       ..notes = notes
       ..traitsAndPersonality = traitsAndPersonality
       ..profileImagePath = profileImagePath
-      ..imagePaths = imagePaths;
+      ..profileImageLink = profileImageLink;
+
 
     animal.medicationHistory.addAll(medicationHistory.map(
       (item) => item.toLocalModel()
@@ -152,6 +151,14 @@ class AnimalDTO extends BaseDto{
     animal.vaccinationHistory.addAll(vaccinationHistory.map(
         (item) => item.toLocalModel()
       ).toList()
+    );
+    animal.imagePaths.addAll(
+      imageUrls.map((item){
+        final pathMap = ImageFileMapping()
+          ..parentRemoteId = remoteId!
+          ..remoteLink = item;
+        return pathMap;
+      }).toList()
     );
     return animal;
   }
@@ -223,6 +230,7 @@ class AnimalDTO extends BaseDto{
       medicationHistory: medicationRecordList,
       vaccinationHistory: vaccinationRecordList,
       profileImageLink: animalJSON['profileImage'],
+      imageUrls: TListHelpers.parseStringList(animalJSON['imgUrls'] ?? '[]'),
     );
 
     return animal;
