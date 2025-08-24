@@ -10,6 +10,7 @@ import 'package:mobile_app_template/domain/entities/animal_dto.dart';
 import 'package:mobile_app_template/domain/repositories/api/animal_api_repository.dart';
 import 'package:mobile_app_template/domain/repositories/local/local_animal_repository.dart';
 import 'package:mobile_app_template/domain/services/local/animal_repository.dart';
+import 'package:mobile_app_template/domain/services/local_storage/local_secure_storage.dart';
 import 'package:mobile_app_template/network/operation_response.dart';
 
 class AnimalDatabaseService {
@@ -265,6 +266,30 @@ class AnimalDatabaseService {
       TLogger.error("Failed to get the animal with bson id $bsonId: ${err.toString()}");
       return OperationResponse.failedResponse(
         message: "An Error occured while retrieving animal data"
+      );
+    }
+  }
+  Future<OperationResponse> syncAnimals()async{
+    final securedStorage = LocalSecureStorageService();
+    try{
+      final lastUpdateDate = await securedStorage.getData(LocalSecureStorageService.lastUpdate);
+
+      final response = await _cloudRepo.getUpdates(lastUpdateDate != null? DateTime.tryParse(lastUpdateDate) : null);
+
+      await _localRepo.updateAnimals(response);
+
+      final lastAnimal = response.last;
+
+      await LocalSecureStorageService().saveData(LocalSecureStorageService.lastUpdate, lastAnimal.updatedAt?.toIso8601String());
+
+      return OperationResponse.successfulResponse(
+        message: "Updated animals"
+      );
+      // save the response to localdatabse
+    }catch(err){
+      TLogger.error("Failed to sync animals: ${err.toString()}");
+      return OperationResponse.failedResponse(
+        message: "Something went wrong while checking for updates"
       );
     }
   }

@@ -1,7 +1,9 @@
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:mobile_app_template/core/enums/database_collections.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/domain/entities/animal_dto.dart';
 import 'package:mobile_app_template/domain/repositories/api/api_filter_config.dart';
@@ -16,6 +18,7 @@ class AnimalApiRepository {
   final String _basePath = "animal-database";
   final String _addAnimalPath = "animal";
   final String _getAnimalPath = 'animal';
+  final String _updates = "updates";
 
   AnimalApiRepository._internal();
 
@@ -96,6 +99,35 @@ class AnimalApiRepository {
       return OperationResponse.failedResponse(
         message: "An Exception occured while getting animals"
       );
+    }
+  }
+
+  Future<List<AnimalDTO>>getUpdates(DateTime? time)async{
+    try{
+      _checkIfPreConditionValid();
+      final base = _baseUrl!;
+      final url = Uri(
+        host: base.host,
+        scheme: base.scheme,
+        port: base.port,
+        path: time != null 
+          ? "${base.path}$_basePath/${DatabaseCollections.animal.name}/${time.toIso8601String()}"
+          : "${base.path}$_basePath/$_updates/${DatabaseCollections.animal.name}/"
+      );
+      final response = await _client!.get<List<AnimalDTO>>(
+        url.toString(),
+        dataParser: (items) => OperationResponse.listParser(
+          items,
+          itemParser: (el) => AnimalDTO.fromMap(el)
+        )
+      );
+      if(!response.isSuccessful || response.data == null){
+        throw Exception("Getting updates for animals, status: ${response.isSuccessful}, data: ${response.data}");
+      }
+      return response.data!;
+    }catch(err){
+      TLogger.error("Failed to get the updates for animals ${err.toString()}");
+      return [];
     }
   }
 

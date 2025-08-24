@@ -50,6 +50,9 @@ class AnimalDTO extends BaseDto{
   List<AnimalMedicationDTO> medicationHistory;
   List<AnimalVaccinationDTO> vaccinationHistory;
 
+  //creational
+  DateTime? updatedAt;
+
   AnimalDTO({
     super.remoteId,
     super.localId,
@@ -67,7 +70,8 @@ class AnimalDTO extends BaseDto{
     this.profileImageLink,
     this.profileImagePath,
     this.medicationHistory = const [],
-    this.vaccinationHistory = const []
+    this.vaccinationHistory = const [],
+    this.updatedAt
   });
 
   /// removes the current value of the `vaccinationHistory` and replaces it with `vaxList`
@@ -128,8 +132,11 @@ class AnimalDTO extends BaseDto{
   /// Converts [AnimalAdapter] to [LocalAnimalModel]
   @override
   LocalAnimalModel toLocalModel(){
+    if(remoteId == null){
+      throw Exception("Cannot convert to localmodel as remote id is null");
+    }
     final animal = LocalAnimalModel()
-      ..remoteId = remoteId
+      ..remoteId = remoteId!
       ..name = name
       ..sex = sex
       ..age = age
@@ -231,6 +238,7 @@ class AnimalDTO extends BaseDto{
       vaccinationHistory: vaccinationRecordList,
       profileImageLink: animalJSON['profileImage'],
       imageUrls: TListHelpers.parseStringList(animalJSON['imgUrls'] ?? '[]'),
+      updatedAt: animalJSON['updatedAt'] 
     );
 
     return animal;

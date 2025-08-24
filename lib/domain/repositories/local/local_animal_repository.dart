@@ -11,6 +11,7 @@ import 'package:mobile_app_template/core/enums/sync_status.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/data/local_storage/isar/helpers/filter_helper.dart';
 import 'package:mobile_app_template/domain/entities/animal_dto.dart';
+import 'package:mobile_app_template/domain/models/image_file_mapping.dart';
 import 'package:mobile_app_template/domain/models/local_activity_log.dart';
 import 'package:mobile_app_template/domain/models/local_animal_medication_record.dart';
 import 'package:mobile_app_template/domain/models/local_animal_model.dart';
@@ -19,6 +20,7 @@ import 'package:mobile_app_template/domain/models/time_stamp.dart';
 import 'package:mobile_app_template/domain/repositories/local/file_repository.dart';
 import 'package:mobile_app_template/domain/services/local/animal_repository.dart';
 import 'package:mobile_app_template/network/operation_response.dart';
+import 'package:http/http.dart' as http;
 
 class LocalAnimalRepository {
   final Isar _db;
@@ -31,6 +33,8 @@ class LocalAnimalRepository {
   )async {
     File? imageFile;
     try{
+      final remoteId = ObjectId().oid;
+      animalDto.remoteId = remoteId; // set the remote id here
       final localAnimal = animalDto.toLocalModel();
 
       final vaccinations = animalDto.vaccinationHistory
@@ -51,8 +55,6 @@ class LocalAnimalRepository {
 
         await localAnimal.medicationHistory.save();
         await localAnimal.vaccinationHistory.save();
-
-        final remoteId = ObjectId().oid;
 
         localAnimal.remoteId = remoteId;
         await _db.localAnimalModels.putWithTimestamps(localAnimal);
@@ -261,6 +263,72 @@ class LocalAnimalRepository {
       return OperationResponse.failedResponse(
         message: 'Failed to get animal associated with the BSON ID'
       );
+    }
+  }
+
+  Future<void> updateAnimals(List<AnimalDTO> animals) async{
+    if(animals.isEmpty){
+        return;
+    }
+    final List<File> downloadedFiles = [];
+    try{
+      final localAnimals = animals.map((item) => item.toLocalModel()).toList();
+      await _db.writeTxn(() async {
+        await _db.localAnimalModels.putAllByRemoteId(
+          localAnimals
+        );
+
+        for (final animal in localAnimals){
+          final serverImageLink = animal.profileImageLink;
+          
+          if(serverImageLink != null){
+            final hasChanged = animal.imagePaths.where((e) => e.remoteLink == serverImageLink).isEmpty &&
+              animal.profileImagePath == null ||
+              animal.profileImageLink != serverImageLink;
+
+            if(hasChanged){
+              if(animal.profileImageLink != null && animal.profileImagePath != null){
+                final history = ImageFileMapping()
+                  ..remoteLink = animal.profileImageLink!
+                  ..localPath = animal.profileImagePath!;
+                animal.imagePaths.add(history);
+              }
+              final response = await http.get(Uri.parse(serverImageLink));
+              final file = await LocalFileRepository.saveFile(
+                  animal.remoteId,
+                  response.bodyBytes,
+                  folders: [animal.remoteId],
+                  isPublic: false
+                );
+              downloadedFiles.add(file);
+              animal.profileImageLink = serverImageLink;
+              animal.profileImagePath = file.path;
+            }
+          }
+
+          if(animal.imagePaths.isNotEmpty){
+            await animal.imagePaths.save();
+          }
+
+          if(animal.vaccinationHistory.isNotEmpty){
+            await animal.vaccinationHistory.save();
+          }
+
+          if(animal.medicationHistory.isNotEmpty){
+            await animal.medicationHistory.save();
+          }
+        }
+      });
+    }catch(err){
+      for (final file in downloadedFiles) {
+        try {
+          if (file.existsSync()) file.deleteSync();
+        } catch (_) {
+          // ignore delete errors
+        }
+      }
+      TLogger.error('failed ');
+      rethrow;
     }
   }
 }

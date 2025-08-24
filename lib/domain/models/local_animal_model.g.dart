@@ -102,6 +102,19 @@ const LocalAnimalModelSchema = CollectionSchema(
   deserializeProp: _localAnimalModelDeserializeProp,
   idName: r'id',
   indexes: {
+    r'remoteId': IndexSchema(
+      id: 6301175856541681032,
+      name: r'remoteId',
+      unique: true,
+      replace: true,
+      properties: [
+        IndexPropertySchema(
+          name: r'remoteId',
+          type: IndexType.hash,
+          caseSensitive: true,
+        )
+      ],
+    ),
     r'createdAt': IndexSchema(
       id: -3433535483987302584,
       name: r'createdAt',
@@ -190,12 +203,7 @@ int _localAnimalModelEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
-  {
-    final value = object.remoteId;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
+  bytesCount += 3 + object.remoteId.length * 3;
   bytesCount += 3 + object.sex.name.length * 3;
   bytesCount += 3 + object.species.name.length * 3;
   bytesCount += 3 + object.status.name.length * 3;
@@ -248,7 +256,7 @@ LocalAnimalModel _localAnimalModelDeserialize(
   object.notes = reader.readStringList(offsets[5]) ?? [];
   object.profileImageLink = reader.readStringOrNull(offsets[6]);
   object.profileImagePath = reader.readStringOrNull(offsets[7]);
-  object.remoteId = reader.readStringOrNull(offsets[8]);
+  object.remoteId = reader.readString(offsets[8]);
   object.sex =
       _LocalAnimalModelsexValueEnumMap[reader.readStringOrNull(offsets[9])] ??
           AnimalSex.male;
@@ -288,7 +296,7 @@ P _localAnimalModelDeserializeProp<P>(
     case 7:
       return (reader.readStringOrNull(offset)) as P;
     case 8:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 9:
       return (_LocalAnimalModelsexValueEnumMap[
               reader.readStringOrNull(offset)] ??
@@ -376,6 +384,62 @@ void _localAnimalModelAttach(
       col.isar.collection<LocalAnimalMedicationRecord>(),
       r'medicationHistory',
       id);
+}
+
+extension LocalAnimalModelByIndex on IsarCollection<LocalAnimalModel> {
+  Future<LocalAnimalModel?> getByRemoteId(String remoteId) {
+    return getByIndex(r'remoteId', [remoteId]);
+  }
+
+  LocalAnimalModel? getByRemoteIdSync(String remoteId) {
+    return getByIndexSync(r'remoteId', [remoteId]);
+  }
+
+  Future<bool> deleteByRemoteId(String remoteId) {
+    return deleteByIndex(r'remoteId', [remoteId]);
+  }
+
+  bool deleteByRemoteIdSync(String remoteId) {
+    return deleteByIndexSync(r'remoteId', [remoteId]);
+  }
+
+  Future<List<LocalAnimalModel?>> getAllByRemoteId(
+      List<String> remoteIdValues) {
+    final values = remoteIdValues.map((e) => [e]).toList();
+    return getAllByIndex(r'remoteId', values);
+  }
+
+  List<LocalAnimalModel?> getAllByRemoteIdSync(List<String> remoteIdValues) {
+    final values = remoteIdValues.map((e) => [e]).toList();
+    return getAllByIndexSync(r'remoteId', values);
+  }
+
+  Future<int> deleteAllByRemoteId(List<String> remoteIdValues) {
+    final values = remoteIdValues.map((e) => [e]).toList();
+    return deleteAllByIndex(r'remoteId', values);
+  }
+
+  int deleteAllByRemoteIdSync(List<String> remoteIdValues) {
+    final values = remoteIdValues.map((e) => [e]).toList();
+    return deleteAllByIndexSync(r'remoteId', values);
+  }
+
+  Future<Id> putByRemoteId(LocalAnimalModel object) {
+    return putByIndex(r'remoteId', object);
+  }
+
+  Id putByRemoteIdSync(LocalAnimalModel object, {bool saveLinks = true}) {
+    return putByIndexSync(r'remoteId', object, saveLinks: saveLinks);
+  }
+
+  Future<List<Id>> putAllByRemoteId(List<LocalAnimalModel> objects) {
+    return putAllByIndex(r'remoteId', objects);
+  }
+
+  List<Id> putAllByRemoteIdSync(List<LocalAnimalModel> objects,
+      {bool saveLinks = true}) {
+    return putAllByIndexSync(r'remoteId', objects, saveLinks: saveLinks);
+  }
 }
 
 extension LocalAnimalModelQueryWhereSort
@@ -469,6 +533,51 @@ extension LocalAnimalModelQueryWhere
         upper: upperId,
         includeUpper: includeUpper,
       ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterWhereClause>
+      remoteIdEqualTo(String remoteId) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'remoteId',
+        value: [remoteId],
+      ));
+    });
+  }
+
+  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterWhereClause>
+      remoteIdNotEqualTo(String remoteId) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'remoteId',
+              lower: [],
+              upper: [remoteId],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'remoteId',
+              lower: [remoteId],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'remoteId',
+              lower: [remoteId],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'remoteId',
+              lower: [],
+              upper: [remoteId],
+              includeUpper: false,
+            ));
+      }
     });
   }
 
@@ -1940,26 +2049,8 @@ extension LocalAnimalModelQueryFilter
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      remoteIdIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'remoteId',
-      ));
-    });
-  }
-
-  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      remoteIdIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'remoteId',
-      ));
-    });
-  }
-
-  QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
       remoteIdEqualTo(
-    String? value, {
+    String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1973,7 +2064,7 @@ extension LocalAnimalModelQueryFilter
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
       remoteIdGreaterThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -1989,7 +2080,7 @@ extension LocalAnimalModelQueryFilter
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
       remoteIdLessThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -2005,8 +2096,8 @@ extension LocalAnimalModelQueryFilter
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
       remoteIdBetween(
-    String? lower,
-    String? upper, {
+    String lower,
+    String upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -3588,7 +3679,7 @@ extension LocalAnimalModelQueryProperty
     });
   }
 
-  QueryBuilder<LocalAnimalModel, String?, QQueryOperations> remoteIdProperty() {
+  QueryBuilder<LocalAnimalModel, String, QQueryOperations> remoteIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'remoteId');
     });

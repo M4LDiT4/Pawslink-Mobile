@@ -13,7 +13,8 @@ part 'local_animal_model.g.dart';
 @collection 
 class LocalAnimalModel with Timestamped {
   Id id = Isar.autoIncrement;
-  String? remoteId; 
+  @Index(unique: true, replace: true)
+  late String remoteId; 
   late String name;
   int? age;
   @Enumerated(EnumType.name)
