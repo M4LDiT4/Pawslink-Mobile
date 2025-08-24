@@ -16,6 +16,7 @@ import 'package:mobile_app_template/network/operation_response.dart';
 class AnimalDatabaseService {
   final AnimalApiRepository _cloudRepo;
   final LocalAnimalRepository _localRepo;
+  final LocalSecureStorageService _localStore = LocalSecureStorageService();
 
   AnimalDatabaseService({
     required AnimalApiRepository animalApiService,
@@ -270,9 +271,8 @@ class AnimalDatabaseService {
     }
   }
   Future<OperationResponse> syncAnimals()async{
-    final securedStorage = LocalSecureStorageService();
     try{
-      final lastUpdateDate = await securedStorage.getData(LocalSecureStorageService.lastUpdate);
+      final lastUpdateDate = await _localStore.getData(LocalSecureStorageService.lastUpdate);
 
       final response = await _cloudRepo.getUpdates(lastUpdateDate != null? DateTime.tryParse(lastUpdateDate) : null);
 
@@ -280,7 +280,7 @@ class AnimalDatabaseService {
 
       final lastAnimal = response.last;
 
-      await LocalSecureStorageService().saveData(LocalSecureStorageService.lastUpdate, lastAnimal.updatedAt?.toIso8601String());
+      await _localStore.saveData(LocalSecureStorageService.lastUpdate, lastAnimal.updatedAt?.toIso8601String());
 
       return OperationResponse.successfulResponse(
         message: "Updated animals"
@@ -290,6 +290,24 @@ class AnimalDatabaseService {
       TLogger.error("Failed to sync animals: ${err.toString()}");
       return OperationResponse.failedResponse(
         message: "Something went wrong while checking for updates"
+      );
+    }
+  }
+
+  Future<OperationResponse<bool>> checkIfUpdatesAvailable()  async{
+    try{
+      final time = await _localStore.getData(LocalSecureStorageService.lastUpdate);
+      final response = await _cloudRepo.checkIfUpdatesAvailable(time != null ? DateTime.tryParse(time) : null);
+
+      return OperationResponse(
+        isSuccessful: true, 
+        statusCode: 200,
+        data: response > 0
+      );
+    }catch(err){
+      TLogger.error("Service level failed to check if updates available ${err.toString()}");
+      return OperationResponse.failedResponse(
+        message: "Unexpected error occured while getting updates for animals availability"
       );
     }
   }

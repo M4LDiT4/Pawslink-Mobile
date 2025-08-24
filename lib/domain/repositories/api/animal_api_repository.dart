@@ -19,6 +19,7 @@ class AnimalApiRepository {
   final String _addAnimalPath = "animal";
   final String _getAnimalPath = 'animal';
   final String _updates = "updates";
+  final String _checkUpdates = "check-updates";
 
   AnimalApiRepository._internal();
 
@@ -111,8 +112,8 @@ class AnimalApiRepository {
         scheme: base.scheme,
         port: base.port,
         path: time != null 
-          ? "${base.path}$_basePath/${DatabaseCollections.animal.name}/${time.toIso8601String()}"
-          : "${base.path}$_basePath/$_updates/${DatabaseCollections.animal.name}/"
+          ? "${base.path}$_basePath/$_updates/${time.toIso8601String()}"
+          : "${base.path}$_basePath/$_updates/"
       );
       final response = await _client!.get<List<AnimalDTO>>(
         url.toString(),
@@ -128,6 +129,33 @@ class AnimalApiRepository {
     }catch(err){
       TLogger.error("Failed to get the updates for animals ${err.toString()}");
       return [];
+    }
+  }
+
+  Future<int> checkIfUpdatesAvailable(DateTime? time) async {
+    try{
+      _checkIfPreConditionValid();
+      final base = _baseUrl!;
+      final url = Uri(
+        host: base.host,
+        scheme: base.scheme,
+        port: base.port,
+        path: time != null 
+          ? "${base.path}$_basePath/$_checkUpdates`/${time.toIso8601String()}"
+          : "${base.path}$_basePath/$_checkUpdates/"
+      );
+      final response = await _client!.get(
+        url.toString(), 
+        dataParser: (item) => item as int
+      );
+
+      if(response.data == null){
+        throw Exception("Failed to check for updates");
+      }
+      return response.data!;
+    }catch(err){
+      TLogger.error("API level failed to check for updates: ${err.toString()}");
+      return 0;
     }
   }
 
