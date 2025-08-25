@@ -11,7 +11,6 @@ import 'package:mobile_app_template/core/enums/sync_status.dart';
 import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/data/local_storage/isar/helpers/filter_helper.dart';
 import 'package:mobile_app_template/domain/entities/animal_dto.dart';
-import 'package:mobile_app_template/domain/models/image_file_mapping.dart';
 import 'package:mobile_app_template/domain/models/local_activity_log.dart';
 import 'package:mobile_app_template/domain/models/local_animal_medication_record.dart';
 import 'package:mobile_app_template/domain/models/local_animal_model.dart';
@@ -29,51 +28,63 @@ class LocalAnimalRepository {
 
   Future<OperationResponse<AnimalDTO>> addAnimal(
     AnimalDTO animalDto,
-    File profilePicture
-  )async {
+    File profilePicture,
+  ) async {
     File? imageFile;
-    try{
+
+    try {
       final remoteId = ObjectId().oid;
-      animalDto.remoteId = remoteId; // set the remote id here
+      animalDto.remoteId = remoteId;
+
       final localAnimal = animalDto.toLocalModel();
 
-      final vaccinations = animalDto.vaccinationHistory
-        .map((item) => item.toLocalModel())
-        .toList();
-      final medications = animalDto.medicationHistory
-        .map((item) => item.toLocalModel())
-        .toList();
-      
-      localAnimal.medicationHistory.addAll(medications);
-      localAnimal.vaccinationHistory.addAll(vaccinations);
+      // Convert child DTOs to local models
+      final vaccinations = animalDto.vaccinationHistory.map((item) {
+        final vax = item.toLocalModel();
+        vax.remoteAnimalId = remoteId;
+        return vax;
+      }).toList();
 
+      final medications = animalDto.medicationHistory.map((item) {
+        final med = item.toLocalModel();
+        med.remoteAnimalId = remoteId;
+        return med;
+      }).toList();
+
+      // Read profile picture bytes
       final pictureInBytes = await profilePicture.readAsBytes();
 
       await _db.writeTxn(() async {
+        // 1️⃣ Save the parent first
+        await _db.localAnimalModels.putWithTimestamps(localAnimal);
+
+        // 2️⃣ Save child objects to their collections (assigns IDs)
         await _db.localAnimalMedicationRecords.putAll(medications);
         await _db.localAnimalVaccinationRecords.putAll(vaccinations);
 
+        // 3️⃣ Attach children to links now that all have IDs
+        localAnimal.medicationHistory.addAll(medications);
+        localAnimal.vaccinationHistory.addAll(vaccinations);
+
+        // 4️⃣ Save the links
         await localAnimal.medicationHistory.save();
         await localAnimal.vaccinationHistory.save();
 
-        localAnimal.remoteId = remoteId;
-        await _db.localAnimalModels.putWithTimestamps(localAnimal);
-
+        // 5️⃣ Save profile image
         imageFile = await LocalFileRepository.saveFile(
           remoteId,
-          pictureInBytes ,
+          pictureInBytes,
           folders: [remoteId],
-          isPublic: false
+          isPublic: false,
         );
 
-        if(imageFile == null){
-          throw Exception('Failed to save the animal profile picture');
-        }
+        if (imageFile == null) throw Exception('Failed to save profile picture');
 
+        // 6️⃣ Update parent with image path
         localAnimal.profileImagePath = imageFile!.path;
-
         await _db.localAnimalModels.put(localAnimal);
 
+        // 7️⃣ Log activity
         final actLog = LocalActivityLog()
           ..action = DatabaseAction.create
           ..targetCollection = DatabaseCollections.animal
@@ -85,21 +96,22 @@ class LocalAnimalRepository {
       });
 
       return OperationResponse<AnimalDTO>(
-        isSuccessful: true, 
+        isSuccessful: true,
         statusCode: 200,
         message: 'Animal saved to local database successfully',
-        data: AnimalDTO.fromLocalAnimalModel(localAnimal)
+        data: AnimalDTO.fromLocalAnimalModel(localAnimal),
       );
-
-    }catch(err){
-      TLogger.error("Failed to save the data locally ${err.toString()}");
+    } catch (err) {
+      TLogger.error("Failed to save the data locally: $err");
       return OperationResponse.failedResponse(
-        message: 'Failed to save the animal to local database'
+        message: 'Failed to save the animal to local database',
       );
     }
   }
 
- Future<OperationResponse<List<LocalAnimalModel>>> getAnimals({
+
+
+  Future<OperationResponse<List<LocalAnimalModel>>> getAnimals({
     DynamicIsarFilter? name,
     DynamicIsarFilter? species,
     DynamicIsarFilter? status,
@@ -112,7 +124,6 @@ class LocalAnimalRepository {
     int? itemsPerPage,
   }) async {
     try {
-      // provide defaults if null
       final effectiveSortBy = sortBy ?? AnimalSortBy.updatedAt;
       final effectiveSortOrder = sortOrder ?? Sort.asc;
       final effectivePageNum = pageNum ?? 1;
@@ -169,7 +180,14 @@ class LocalAnimalRepository {
 
       final offset = (effectivePageNum - 1) * effectiveItemsPerPage;
 
+      // Fetch the animals
       final result = await sorted.offset(offset).limit(effectiveItemsPerPage).findAll();
+
+      // Load links for each animal in parallel
+      await Future.wait(result.map((animal) => Future.wait([
+            animal.medicationHistory.load(),
+            animal.vaccinationHistory.load(),
+          ])));
 
       return OperationResponse<List<LocalAnimalModel>>(
         isSuccessful: true,
@@ -205,7 +223,7 @@ class LocalAnimalRepository {
         .optional(species != null, (q) => q.speciesEqualTo(species!))
         .optional(status != null, (q) => q.statusEqualTo(status!))
         .optional(sex != null, (q) => q.sexEqualTo(sex!))
-        .optional(isSterilized != null, (q)=> isSterilized!? q.sterilizatonDateIsNotNull(): q.sterilizatonDateIsNull())
+        .optional(isSterilized != null, (q)=> isSterilized!? q.sterilizationDateIsNotNull(): q.sterilizationDateIsNull())
         ;
 
       final total = await filtered.count();
@@ -247,24 +265,43 @@ class LocalAnimalRepository {
     }
   }
 
-  Future<OperationResponse<List<LocalAnimalModel>>> getAnimalsByBSONId(String bsonId)async{
-    try{
+  Future<OperationResponse<List<LocalAnimalModel>>> getAnimalsByBSONId(String bsonId) async {
+    try {
       final animals = await _db.localAnimalModels
-        .filter()
-        .remoteIdEqualTo(bsonId)
-        .findAll();
+          .filter()
+          .remoteIdEqualTo(bsonId)
+          .findAll();
+
+      await Future.wait(animals.map((a) => Future.wait([
+        a.medicationHistory.load(),
+        a.vaccinationHistory.load(),
+      ])));
+
+      if (animals.isNotEmpty) {
+        TLogger.info('Animal: ${animals.first.name}');
+        for (var vac in animals.first.vaccinationHistory) {
+          TLogger.info('  Vaccination: ${vac.vaccineName}, date: ${vac.dateGiven}');
+        }
+        for (var med in animals.first.medicationHistory) {
+          TLogger.info('  Medication: ${med.medicationName}, dose: ${med.dosage}, date: ${med.dateGiven}');
+        }
+      } else {
+        TLogger.info('No animals found with BSON ID $bsonId');
+      }
+
       return OperationResponse(
         isSuccessful: true,
         statusCode: 200,
-        data: animals
+        data: animals,
       );
-    }catch(err){
-      TLogger.error("Error occured while getting animal with BSON Id $bsonId");
+    } catch (err) {
+      TLogger.error("Error occurred while getting animal with BSON Id $bsonId: $err");
       return OperationResponse.failedResponse(
-        message: 'Failed to get animal associated with the BSON ID'
+        message: 'Failed to get animal associated with the BSON ID',
       );
     }
   }
+
 
   Future<void> updateAnimals(List<AnimalDTO> animals) async {
     if (animals.isEmpty) return;

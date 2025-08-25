@@ -12,7 +12,6 @@ import 'package:mobile_app_template/core/enums/animal_status.dart';
 import 'package:mobile_app_template/core/navigation/routes/app_routes.dart';
 import 'package:mobile_app_template/core/utils/formatters/formatter.dart';
 import 'package:mobile_app_template/core/utils/helpers/ui_helpers.dart';
-import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_app_template/core/widgets/composite/record_list_field/record_list_field_controller.dart';
 import 'package:mobile_app_template/core/widgets/composite/record_list_field/record_list_item.dart';
 import 'package:mobile_app_template/core/widgets/dialogs/async_generic_loader/async_generic_loader.dart';
@@ -196,6 +195,7 @@ class AddAnimalController extends GetxController {
       notes: notesController.items,
       medicationHistory: medicationController.getValues().map((el) => el as AnimalMedicationDTO).toList(),
       vaccinationHistory: vaccinationController.getValues().map((el) => el as AnimalVaccinationDTO).toList(),
+      sterilizationDate: sterilizationDateController.selectedDate
     );
 
     OperationResponse<AnimalDTO>? result;
@@ -228,7 +228,6 @@ class AddAnimalController extends GetxController {
     }else{
       TNavigationService.until(TAppRoutes.home);
       if(result.data != null){
-        TLogger.info(jsonEncode(result.data!.toMap()));
         TNavigationService.toNamed(TAppRoutes.viewAnimalDetails, arguments: result.data);
       }
     }

@@ -80,9 +80,9 @@ const LocalAnimalModelSchema = CollectionSchema(
       type: IsarType.string,
       enumMap: _LocalAnimalModelstatusEnumValueMap,
     ),
-    r'sterilizatonDate': PropertySchema(
+    r'sterilizationDate': PropertySchema(
       id: 12,
-      name: r'sterilizatonDate',
+      name: r'sterilizationDate',
       type: IsarType.dateTime,
     ),
     r'traitsAndPersonality': PropertySchema(
@@ -235,7 +235,7 @@ void _localAnimalModelSerialize(
   writer.writeString(offsets[9], object.sex.name);
   writer.writeString(offsets[10], object.species.name);
   writer.writeString(offsets[11], object.status.name);
-  writer.writeDateTime(offsets[12], object.sterilizatonDate);
+  writer.writeDateTime(offsets[12], object.sterilizationDate);
   writer.writeStringList(offsets[13], object.traitsAndPersonality);
   writer.writeDateTime(offsets[14], object.updatedAt);
 }
@@ -266,7 +266,7 @@ LocalAnimalModel _localAnimalModelDeserialize(
   object.status = _LocalAnimalModelstatusValueEnumMap[
           reader.readStringOrNull(offsets[11])] ??
       AnimalStatus.transient;
-  object.sterilizatonDate = reader.readDateTimeOrNull(offsets[12]);
+  object.sterilizationDate = reader.readDateTimeOrNull(offsets[12]);
   object.traitsAndPersonality = reader.readStringList(offsets[13]) ?? [];
   object.updatedAt = reader.readDateTimeOrNull(offsets[14]);
   return object;
@@ -2593,63 +2593,63 @@ extension LocalAnimalModelQueryFilter
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      sterilizatonDateIsNull() {
+      sterilizationDateIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'sterilizatonDate',
+        property: r'sterilizationDate',
       ));
     });
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      sterilizatonDateIsNotNull() {
+      sterilizationDateIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'sterilizatonDate',
+        property: r'sterilizationDate',
       ));
     });
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      sterilizatonDateEqualTo(DateTime? value) {
+      sterilizationDateEqualTo(DateTime? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'sterilizatonDate',
+        property: r'sterilizationDate',
         value: value,
       ));
     });
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      sterilizatonDateGreaterThan(
+      sterilizationDateGreaterThan(
     DateTime? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'sterilizatonDate',
+        property: r'sterilizationDate',
         value: value,
       ));
     });
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      sterilizatonDateLessThan(
+      sterilizationDateLessThan(
     DateTime? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'sterilizatonDate',
+        property: r'sterilizationDate',
         value: value,
       ));
     });
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterFilterCondition>
-      sterilizatonDateBetween(
+      sterilizationDateBetween(
     DateTime? lower,
     DateTime? upper, {
     bool includeLower = true,
@@ -2657,7 +2657,7 @@ extension LocalAnimalModelQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'sterilizatonDate',
+        property: r'sterilizationDate',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -3300,16 +3300,16 @@ extension LocalAnimalModelQuerySortBy
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterSortBy>
-      sortBySterilizatonDate() {
+      sortBySterilizationDate() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'sterilizatonDate', Sort.asc);
+      return query.addSortBy(r'sterilizationDate', Sort.asc);
     });
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterSortBy>
-      sortBySterilizatonDateDesc() {
+      sortBySterilizationDateDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'sterilizatonDate', Sort.desc);
+      return query.addSortBy(r'sterilizationDate', Sort.desc);
     });
   }
 
@@ -3481,16 +3481,16 @@ extension LocalAnimalModelQuerySortThenBy
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterSortBy>
-      thenBySterilizatonDate() {
+      thenBySterilizationDate() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'sterilizatonDate', Sort.asc);
+      return query.addSortBy(r'sterilizationDate', Sort.asc);
     });
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QAfterSortBy>
-      thenBySterilizatonDateDesc() {
+      thenBySterilizationDateDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'sterilizatonDate', Sort.desc);
+      return query.addSortBy(r'sterilizationDate', Sort.desc);
     });
   }
 
@@ -3597,9 +3597,9 @@ extension LocalAnimalModelQueryWhereDistinct
   }
 
   QueryBuilder<LocalAnimalModel, LocalAnimalModel, QDistinct>
-      distinctBySterilizatonDate() {
+      distinctBySterilizationDate() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'sterilizatonDate');
+      return query.addDistinctBy(r'sterilizationDate');
     });
   }
 
@@ -3706,9 +3706,9 @@ extension LocalAnimalModelQueryProperty
   }
 
   QueryBuilder<LocalAnimalModel, DateTime?, QQueryOperations>
-      sterilizatonDateProperty() {
+      sterilizationDateProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'sterilizatonDate');
+      return query.addPropertyName(r'sterilizationDate');
     });
   }
 

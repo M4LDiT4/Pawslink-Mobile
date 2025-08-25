@@ -46,6 +46,7 @@ class AnimalDatabaseService {
       // update the local data with the data from the cloud
       if(response.isSuccessful && response.data != null){
         await _localRepo.updateAnimals([response.data!]);
+        final localAnimal = await _localRepo.getAnimalsByBSONId(response.data!.remoteId!);
       }
       return response;
     }catch(err, stack){

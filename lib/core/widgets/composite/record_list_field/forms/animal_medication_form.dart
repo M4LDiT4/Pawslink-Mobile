@@ -34,7 +34,7 @@ class _AnimalMedicationFormState extends State<AnimalMedicationForm> {
   late GenericDatepickerController dateGivenController;
   late TextEditingController routeController;
   late TextEditingController dosageController;
-  late TextEditingController prescribedByController;
+  late TextEditingController administeredByController;
   late TagInputController notesController;
 
   @override
@@ -61,7 +61,7 @@ class _AnimalMedicationFormState extends State<AnimalMedicationForm> {
     dateGivenController = GenericDatepickerController();
     routeController = TextEditingController();
     dosageController = TextEditingController();
-    prescribedByController = TextEditingController();
+    administeredByController = TextEditingController();
     notesController = TagInputController();
   }
 
@@ -89,7 +89,7 @@ class _AnimalMedicationFormState extends State<AnimalMedicationForm> {
         dateGiven: dateGivenController.selectedDate!, 
         durationInDays: int.parse(durationController.text), 
         reason: reasonController.text, 
-        prescribedBy: prescribedByController.text,
+        prescribedBy: administeredByController.text,
         notes: notesController.items
       );
       TNavigationService.back(result: RecordListItem(
@@ -139,6 +139,7 @@ class _AnimalMedicationFormState extends State<AnimalMedicationForm> {
             children: [
               GenericTextfieldBuilder
                 .formField(label: "Medication Name")
+                .controller(medicationNameController)
                 .required()
                 .build(),
             ],
@@ -147,6 +148,7 @@ class _AnimalMedicationFormState extends State<AnimalMedicationForm> {
             children: [
               GenericTextfieldBuilder
                 .formField(label: "Reason")
+                .controller(reasonController)
                 .required()
                 .build(),
             ],
@@ -157,9 +159,12 @@ class _AnimalMedicationFormState extends State<AnimalMedicationForm> {
                 .formField(label: "Duration")
                 .suffixString('days')
                 .required()
+                .keyboardType(TextInputType.number)
+                .controller(durationController)
                 .build(),
-              const GenericDatePickerButton(
+              GenericDatePickerButton(
                   labelText: "Date Given",
+                  controller: dateGivenController,
               ),
             ],
           ),
@@ -168,9 +173,11 @@ class _AnimalMedicationFormState extends State<AnimalMedicationForm> {
              GenericTextfieldBuilder
                 .formField(label: "Route")
                 .required()
+                .controller(routeController)
                 .build(),
               GenericTextfieldBuilder
                 .formField(label: "Dosage")
+                .controller(dosageController)
                 .required()
                 .build(),
             ],
@@ -178,7 +185,8 @@ class _AnimalMedicationFormState extends State<AnimalMedicationForm> {
           Row(
             children: [
               GenericTextfieldBuilder
-                .formField(label: "Administered by")
+                .formField(label: "Prescribed by")
+                .controller(administeredByController)
                 .required()
                 .build(),
             ],

@@ -120,6 +120,7 @@ class AnimalDTO extends BaseDto{
       traitsAndPersonality: localAnimal.traitsAndPersonality,
       notes: localAnimal.coatColor,
       profileImagePath: localAnimal.profileImagePath,
+      sterilizationDate: localAnimal.sterilizationDate,
       
       medicationHistory: localAnimal.medicationHistory.map(
         (item)=> AnimalMedicationDTO.fromLocalMedicationHistory(item)
@@ -143,22 +144,12 @@ class AnimalDTO extends BaseDto{
       ..status = status
       ..species = species
       ..location = location
-      ..sterilizatonDate = sterilizationDate
+      ..sterilizationDate = sterilizationDate
       ..coatColor = coatColor
       ..notes = notes
       ..traitsAndPersonality = traitsAndPersonality
       ..profileImagePath = profileImagePath
       ..profileImageLink = profileImageLink;
-
-
-    animal.medicationHistory.addAll(medicationHistory.map(
-      (item) => item.toLocalModel()
-    ).toList());
-
-    animal.vaccinationHistory.addAll(vaccinationHistory.map(
-        (item) => item.toLocalModel()
-      ).toList()
-    );
     animal.imagePaths.addAll(
       imageUrls.map((item){
         final pathMap = ImageFileMapping()

@@ -167,15 +167,17 @@ class AddAnimalScreeen extends StatelessWidget {
   }
 
   Widget _buildRecordsSection() {
-    return const Column(
+    return Column(
       children:  [
         RecordListField(
-          form: AnimalVaccinationForm(title: "Vaccination Details"),
+          controller: controller.vaccinationController,
+          form: const  AnimalVaccinationForm(title: "Vaccination Details"),
           title: "Vaccination History",
         ),
-        FixedSeparator(space: TSizes.spaceBetweenSections),
+        const FixedSeparator(space: TSizes.spaceBetweenSections),
         RecordListField(
-          form: AnimalMedicationForm(title: "Medication Details"),
+          form: const AnimalMedicationForm(title: "Medication Details"),
+          controller: controller.medicationController,
           title: "Medication History",
         ),
       ],

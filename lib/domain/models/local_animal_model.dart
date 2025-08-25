@@ -24,7 +24,7 @@ class LocalAnimalModel with Timestamped {
   @Enumerated(EnumType.name)
   late AnimalSpecies species;
   late String location;
-  DateTime? sterilizatonDate;
+  DateTime? sterilizationDate;
   
   late List<String> coatColor;
   late List<String> traitsAndPersonality;
