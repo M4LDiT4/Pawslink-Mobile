@@ -44,8 +44,7 @@ class _GenericDropdownState<T extends Enum> extends State<GenericDropdown<T>> {
   void initState() {
     super.initState();
     _focusNode = FocusNode();
-    _controller = (widget.controller ?? GenericDropdownController<T>())
-      ..initialValue(widget.initialValue);
+    _controller = (widget.controller ?? GenericDropdownController<T>());
   }
 
   @override

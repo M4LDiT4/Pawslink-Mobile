@@ -1,6 +1,5 @@
 
 
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -60,6 +59,8 @@ class AddAnimalController extends GetxController {
 
   late final AnimalDatabaseService _repo;
   late final ConnectionController _connectionController;
+
+  final saveToLocal = RxBool(false);
 
   AddAnimalController({
     this.prevAnimal,
@@ -199,15 +200,7 @@ class AddAnimalController extends GetxController {
     );
 
     OperationResponse<AnimalDTO>? result;
-    if(_connectionController.isConnected){
-      result = await TUIHelpers.showResponsiveModal(
-        child:AsyncGenericLoader(
-          asyncFunction: () async {
-            return _repo.saveAnimalToCloud(animal, File(imgPickerController.selectedImage!.path));
-          }
-        ) 
-      );
-    }else{
+    if(! _connectionController.isConnected || saveToLocal.value){
       final saveToLocal = await TUIHelpers.showResponsiveModal<bool>(child: const SaveToDraftsDialog());
       if(saveToLocal != null && saveToLocal){
         result = await TUIHelpers.showResponsiveModal<OperationResponse<AnimalDTO>>(
@@ -216,6 +209,14 @@ class AddAnimalController extends GetxController {
           })
         );
       }
+    }else{
+      result = await TUIHelpers.showResponsiveModal(
+        child:AsyncGenericLoader(
+          asyncFunction: () async {
+            return _repo.saveAnimalToCloud(animal, File(imgPickerController.selectedImage!.path));
+          }
+        ) 
+      );
     }
 
     if( result == null || !result.isSuccessful){
@@ -249,5 +250,11 @@ class AddAnimalController extends GetxController {
   void setIsSterilized(bool? value){
     if(value == null) return;
     _isSterilized.value = value;
+  }
+
+  void setSavetoLocal(bool flag){
+    if(saveToLocal.value != flag){
+      saveToLocal.value = false;
+    }
   }
 }

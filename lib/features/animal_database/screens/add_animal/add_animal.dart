@@ -10,7 +10,6 @@ import 'package:mobile_app_template/core/widgets/composite/record_list_field/for
 import 'package:mobile_app_template/core/widgets/composite/record_list_field/forms/animal_vaccination_form.dart';
 import 'package:mobile_app_template/core/widgets/composite/record_list_field/record_list_field.dart';
 import 'package:mobile_app_template/core/widgets/dropdowns/generic_dropdown.dart';
-import 'package:mobile_app_template/core/widgets/navigation/generic_appbar.dart';
 import 'package:mobile_app_template/core/widgets/pickers/date_pickers/generic_date_picker.dart';
 import 'package:mobile_app_template/core/widgets/pickers/img_pickers/generic_img_picker.dart';
 import 'package:mobile_app_template/core/widgets/text_fields/generic_text_field/generic_textfield_builder.dart';
@@ -35,35 +34,76 @@ class AddAnimalScreeen extends StatelessWidget {
     controller.handleSubmit();
   }
 
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const GenericAppbar(),
+      appBar:AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Text(controller.prevAnimal == null? 'Add Animal': 'Edit Animal'),
+        centerTitle: true,
+        actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert),
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              PopupMenuItem<String>(
+                value: 'save-locally',
+                 child: Obx(() {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Switch(
+                          value: controller.saveToLocal.value,
+                          onChanged: (val) {
+                            controller.saveToLocal(val);
+                          },
+                        ),
+                        const Text('Save to Local'),
+                      ],
+                    );
+                  }),
+              ),
+            ],
+          ),
+        ],
+        backgroundColor: const Color(0xFFDB7093), // PaleVioletRed
+        elevation: 4,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.only(
           left: TSizes.defaultScreenPadding,
           right: TSizes.defaultScreenPadding,
           bottom: 40,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            GenericImagePicker(
-              key: controller.imgPickerKey,
-              controller: controller.imgPickerController,
-              isRequired: true,
-            ),
-            const FixedSeparator(space: TSizes.spaceBetweenSections),
-            _buildSection(TText.basicInformation, [_buildBasicInfoForm()]),
-            const FixedSeparator(space: TSizes.spaceBetweenSections),
-            _buildSterilizationSection(),
-            const FixedSeparator(space: TSizes.spaceBetweenSections),
-            _buildTagsSection(),
-            const FixedSeparator(space: TSizes.spaceBetweenSections),
-            _buildRecordsSection(),
-            const FixedSeparator(space: TSizes.spaceBetweenSections),
-            _buildActionButtons(),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.only(top: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              GenericImagePicker(
+                key: controller.imgPickerKey,
+                controller: controller.imgPickerController,
+                isRequired: true,
+              ),
+              const FixedSeparator(space: TSizes.spaceBetweenSections),
+              _buildSection(TText.basicInformation, [_buildBasicInfoForm()]),
+              const FixedSeparator(space: TSizes.spaceBetweenSections),
+              _buildSterilizationSection(),
+              const FixedSeparator(space: TSizes.spaceBetweenSections),
+              _buildTagsSection(),
+              const FixedSeparator(space: TSizes.spaceBetweenSections),
+              _buildRecordsSection(),
+              const FixedSeparator(space: TSizes.spaceBetweenSections),
+              _buildActionButtons(),
+            ],
+          ),
         ),
       ),
     );
@@ -188,6 +228,16 @@ class AddAnimalScreeen extends StatelessWidget {
     return Column(
       children: [
         const FixedSeparator(space: TSizes.spaceBetweenSections),
+        Obx(
+          () => Text(
+            style:const TextStyle(
+              fontWeight: FontWeight.bold
+            ),
+            "**${controller.saveToLocal.value
+                ? "Animal will be saved as a draft"
+                : "Animal will be saved to the cloud"}**",
+          ),
+        ),
         Row(
           children: [
             Expanded(
