@@ -1,12 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mobile_app_template/core/utils/helpers/ui_helpers.dart';
+import 'package:mobile_app_template/core/utils/logger/logger.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 /// Button widget for analyze image function
 class AnalyzeImageButton extends StatefulWidget {
+  final Future<void> Function(List<Barcode>) onQRCodeDetected;
   /// Construct a new [AnalyzeImageButton] instance.
-  const AnalyzeImageButton({required this.controller, super.key});
+  const AnalyzeImageButton({required this.controller, required this.onQRCodeDetected, super.key});
 
   /// Controller which is used to call analyzeImage
   final MobileScannerController controller;
@@ -44,23 +47,16 @@ class _AnalyzeImageButtonState extends State<AnalyzeImageButton> {
 
       if (!context.mounted) return;
 
-      final hasBarcode = barcodes != null && barcodes.barcodes.isNotEmpty;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(hasBarcode
-              ? '✅ Barcode found!'
-              : '❌ No barcode found.'),
-          backgroundColor: hasBarcode ? Colors.green : Colors.red,
-        ),
-      );
+      if (barcodes != null && barcodes.barcodes.isNotEmpty) {
+        await widget.onQRCodeDetected(barcodes.barcodes);
+      } else {
+        TUIHelpers.showStateSnackBar("No QR Codes detected on the image");
+      }
     } catch (e) {
-      debugPrint("Analyze image error: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error: ${e.toString()}'),
-          backgroundColor: Colors.red,
-        ),
+      TLogger.error("Analyze image error: $e");
+      TUIHelpers.showStateSnackBar(
+        "Error occured while analyzing image",
+        state: SnackBarState.error
       );
     } finally {
       if (mounted) setState(() => _isPicking = false);
