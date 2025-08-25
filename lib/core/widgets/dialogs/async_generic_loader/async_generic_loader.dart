@@ -131,7 +131,7 @@ class _AsyncGenericLoaderState<T> extends State<AsyncGenericLoader<T>> with Sing
         if (snapshot.connectionState == ConnectionState.waiting) {
           _updateStatusSafely(WidgetStatus.loading);
           return Lottie.asset(
-            TLottie.walkingDog,
+            TLottie.brownCat,
             width: 160,
             key: const ValueKey("loading"),
           );

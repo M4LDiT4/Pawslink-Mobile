@@ -101,7 +101,7 @@ class _GeneralSummaryCardState extends State<GeneralSummaryCard> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Lottie.asset(
-          TLottie.rotatingCat,
+          TLottie.confusedCat,
           width: 80,
         ),
       ],

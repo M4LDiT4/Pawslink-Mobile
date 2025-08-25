@@ -294,7 +294,7 @@ class AnimalDatabaseService {
     }
   }
 
-  Future<OperationResponse<bool>> checkIfUpdatesAvailable()  async{
+  Future<OperationResponse<int>> checkIfUpdatesAvailable()  async{
     try{
       final time = await _localStore.getData(LocalSecureStorageService.lastUpdate);
       final response = await _cloudRepo.checkIfUpdatesAvailable(time != null ? DateTime.tryParse(time) : null);
@@ -302,7 +302,7 @@ class AnimalDatabaseService {
       return OperationResponse(
         isSuccessful: true, 
         statusCode: 200,
-        data: response > 0
+        data: response
       );
     }catch(err){
       TLogger.error("Service level failed to check if updates available ${err.toString()}");

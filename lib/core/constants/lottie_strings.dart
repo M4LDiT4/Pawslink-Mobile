@@ -11,4 +11,8 @@ class TLottie {
   static String dogBegging = "assets/lottie/dog_begging.json";
   static String walkingDog = "assets/lottie/walking_dog.json";
   static String errorCat = "assets/lottie/error_cat.json";
+  static String brownCat = "assets/lottie/brown_cat_yarn.json";
+  static String confusedCat = "assets/lottie/cat_confused.json";
+  static String dogWaiting = "assets/lottie/dog_waiting.json";
+  static String update = "assets/lottie/update.json";
 }

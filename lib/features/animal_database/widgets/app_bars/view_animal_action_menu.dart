@@ -30,11 +30,9 @@ class _AnimalSummaryActionsMenuState extends State<AnimalSummaryActionsMenu>
     super.dispose();
   }
 
-  void _onTap() async {
-    // Start rotation
+  Future<void> _onTap() async {
     _rotationController.repeat();
     await controller.checkIfUpdatesAvailable();
-    // Stop rotation
     _rotationController.stop();
     _rotationController.reset();
   }
@@ -42,24 +40,73 @@ class _AnimalSummaryActionsMenuState extends State<AnimalSummaryActionsMenu>
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      if (controller.updatesAvailable.value) {
-        return IconButton(
-          onPressed: () {
-            // Handle update action
-          },
-          icon: const Icon(Iconsax.refresh_circle),
-          tooltip: "Update available",
-        );
-      } else {
-        return RotationTransition(
-          turns: _rotationController,
-          child: IconButton(
-            onPressed: _onTap,
-            icon: const Icon(Iconsax.refresh),
-            tooltip: "Check for updates",
-          ),
-        );
+      final updates = controller.updatesAvailable.value;
+
+      if (updates != null) {
+        return _buildUpdateButton(updates);
       }
+
+      return RotationTransition(
+        turns: _rotationController,
+        child: IconButton(
+          onPressed: _onTap,
+          icon: const Icon(Iconsax.refresh_circle, size: 28),
+          tooltip: "Check for updates",
+        ),
+      );
     });
   }
+
+  /// Builds the badge with the update count
+  Widget _buildBadge(int count) {
+    if (count <= 0) return const SizedBox.shrink();
+
+    return Positioned(
+      left: 2,
+      bottom: 2,
+      child: Container(
+        padding: const EdgeInsets.all(2),
+        decoration: BoxDecoration(
+          color: Colors.red,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        constraints: const BoxConstraints(
+          minWidth: 18,
+          minHeight: 18,
+        ),
+        child: Center(
+          child: Text(
+            count.toString(),
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Builds the button when updates are available / checked
+  Widget _buildUpdateButton(int count) {
+    final icon = count == 0
+        ? const Icon(Iconsax.check, size: 28) // No updates
+        : const Icon(Icons.download, size: 28); // Updates available
+
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        IconButton(
+          onPressed: count == 0 
+            ? null 
+            :controller.updateAnimals, 
+          icon: icon,
+          tooltip: count == 0 ? "Up to date" : "Updates available",
+        ),
+        _buildBadge(count),
+      ],
+    );
+  }
+
 }

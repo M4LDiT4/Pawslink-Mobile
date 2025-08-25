@@ -121,7 +121,7 @@ class _AnimalSummaryCardState extends State<AnimalSpeciesSummaryCard> {
       children: [
         Lottie.asset(
           width: 80,
-          TLottie.rotatingCat,
+          TLottie.confusedCat,
         )
       ],
     );

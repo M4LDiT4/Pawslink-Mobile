@@ -177,7 +177,7 @@ class TUIHelpers {
   }) {
     return Get.defaultDialog<T>(
       title: title ?? "",
-      titlePadding: const EdgeInsets.only(top: 16),
+      titlePadding: const EdgeInsets.only(top: 16, left:  16, right:  16),
       content: PopScope(
         canPop: isDismissible,
         child: child,

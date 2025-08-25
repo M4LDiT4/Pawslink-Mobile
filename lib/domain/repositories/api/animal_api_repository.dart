@@ -16,7 +16,7 @@ class AnimalApiRepository {
   final String _addAnimalPath = "animal";
   final String _getAnimalPath = 'animal';
   final String _updates = "updates";
-  final String _checkUpdates = "check-updates";
+  final String _checkUpdates = "check-update";
 
   AnimalApiRepository._internal();
 
@@ -109,8 +109,8 @@ class AnimalApiRepository {
         scheme: base.scheme,
         port: base.port,
         path: time != null 
-          ? "${base.path}$_basePath/$_updates/${time.toIso8601String()}"
-          : "${base.path}$_basePath/$_updates/"
+          ? "${base.path}/$_basePath/$_updates/${time.toIso8601String()}"
+          : "${base.path}/$_basePath/$_updates/"
       );
       final response = await _client!.get<List<AnimalDTO>>(
         url.toString(),
@@ -138,8 +138,8 @@ class AnimalApiRepository {
         scheme: base.scheme,
         port: base.port,
         path: time != null 
-          ? "${base.path}$_basePath/$_checkUpdates`/${time.toIso8601String()}"
-          : "${base.path}$_basePath/$_checkUpdates/"
+          ? "${base.path}/$_checkUpdates`/${time.toIso8601String()}"
+          : "${base.path}/$_checkUpdates/"
       );
       final response = await _client!.get(
         url.toString(), 
