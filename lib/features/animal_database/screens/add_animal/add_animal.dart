@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:mobile_app_template/core/constants/sizes.dart';
 import 'package:mobile_app_template/core/constants/text_strings.dart';
 import 'package:mobile_app_template/core/enums/animal_sex.dart';
@@ -19,181 +20,193 @@ import 'package:mobile_app_template/core/widgets/ui_utils/fixed_seperator.dart';
 import 'package:mobile_app_template/features/animal_database/controllers/add_animal_controller.dart';
 import 'package:mobile_app_template/navigation/navigation_service.dart';
 
-class AddAnimalScreeen extends StatelessWidget {
+class AddAnimalScreen extends StatelessWidget {
   final controller = Get.find<AddAnimalController>();
 
-  AddAnimalScreeen({super.key});
+  AddAnimalScreen({super.key});
 
-  // Helpers for dropdowns
-  List<AnimalSpecies> _speciesList() => AnimalSpecies.values.map((e) => e).toList();
-  List<AnimalStatus> _statusList() => AnimalStatus.values.map((e) => e).toList();
-  List<AnimalSex> _sexList() => AnimalSex.values.map((e) => e).toList();
+  // -----------------------------
+  // Dropdown options
+  // -----------------------------
+  List<AnimalSpecies> get _speciesList => AnimalSpecies.values;
+  List<AnimalStatus> get _statusList => AnimalStatus.values;
+  List<AnimalSex> get _sexList => AnimalSex.values;
 
+  // -----------------------------
+  // Handlers
+  // -----------------------------
   void _handleCancel() => TNavigationService.back();
-  void _handleSave() async{
-    controller.handleSubmit();
-  }
-
-
-
+  void _handleSave() => controller.handleSubmit();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: Text(controller.prevAnimal == null? 'Add Animal': 'Edit Animal'),
-        centerTitle: true,
-        actions: [
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert),
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-              PopupMenuItem<String>(
-                value: 'save-locally',
-                 child: Obx(() {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Switch(
-                          value: controller.saveToLocal.value,
-                          onChanged: (val) {
-                            controller.saveToLocal(val);
-                          },
-                        ),
-                        const Text('Save to Local'),
-                      ],
-                    );
-                  }),
-              ),
-            ],
-          ),
-        ],
-        backgroundColor: const Color(0xFFDB7093), // PaleVioletRed
-        elevation: 4,
-      ),
+      appBar: _buildAppBar(),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.only(
-          left: TSizes.defaultScreenPadding,
-          right: TSizes.defaultScreenPadding,
-          bottom: 40,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.only(top: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              GenericImagePicker(
-                key: controller.imgPickerKey,
-                controller: controller.imgPickerController,
-                isRequired: true,
-              ),
-              const FixedSeparator(space: TSizes.spaceBetweenSections),
-              _buildSection(TText.basicInformation, [_buildBasicInfoForm()]),
-              const FixedSeparator(space: TSizes.spaceBetweenSections),
-              _buildSterilizationSection(),
-              const FixedSeparator(space: TSizes.spaceBetweenSections),
-              _buildTagsSection(),
-              const FixedSeparator(space: TSizes.spaceBetweenSections),
-              _buildRecordsSection(),
-              const FixedSeparator(space: TSizes.spaceBetweenSections),
-              _buildActionButtons(),
-            ],
-          ),
+        padding: const EdgeInsets.symmetric(horizontal: TSizes.defaultScreenPadding)
+            .copyWith(bottom: 40, top: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _buildImagePicker(),
+            const FixedSeparator(space: TSizes.spaceBetweenSections),
+            _buildSection(TText.basicInformation, [_buildBasicInfoForm()]),
+            const FixedSeparator(space: TSizes.spaceBetweenSections),
+            _buildSterilizationSection(),
+            const FixedSeparator(space: TSizes.spaceBetweenSections),
+            _buildTagsSection(),
+            const FixedSeparator(space: TSizes.spaceBetweenSections),
+            _buildRecordsSection(),
+            const FixedSeparator(space: TSizes.spaceBetweenSections),
+            _buildActionButtons(),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildSection(String title, List<Widget> children) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SectionTitle(title: title),
-        ...children,
+  // -----------------------------
+  // AppBar
+  // -----------------------------
+  AppBar _buildAppBar() {
+    return AppBar(
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: _handleCancel,
+      ),
+      title: Text(controller.prevAnimal == null ? 'Add Animal' : 'Edit Animal'),
+      centerTitle: true,
+      actions: [_buildSaveToLocalMenu()],
+      backgroundColor: const Color(0xFFDB7093),
+      elevation: 4,
+    );
+  }
+
+  Widget _buildSaveToLocalMenu() {
+    if(controller.prevAnimal != null){
+      return IconButton(onPressed: (){}, icon: const Icon(Iconsax.trash));
+    }
+
+    return PopupMenuButton<String>(
+      icon: const Icon(Icons.more_vert),
+      itemBuilder: (_) => [
+        PopupMenuItem<String>(
+          value: 'save-locally',
+          child: Obx(() => Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Switch(
+                    value: controller.saveToLocal.value,
+                    onChanged: controller.saveToLocal,
+                  ),
+                  const Text('Save to Local'),
+                ],
+              )),
+        ),
       ],
     );
   }
 
+  // -----------------------------
+  // Image Picker
+  // -----------------------------
+  Widget _buildImagePicker() {
+    return GenericImagePicker(
+      key: controller.imgPickerKey,
+      controller: controller.imgPickerController,
+      isRequired: true,
+    );
+  }
+
+  // -----------------------------
+  // Basic Info Form
+  // -----------------------------
   Widget _buildBasicInfoForm() {
     return Form(
       key: controller.formKey,
       child: Column(
         children: [
-          Row(
-            children: [
-              GenericTextfieldBuilder.formField(label: TText.name)
-                  .controller(controller.nameController)
-                  .required()
-                  .build(),
-              GenericTextfieldBuilder.formField(label: TText.location)
-                  .controller(controller.locationController)
-                  .required()
-                  .build(),
-            ],
-          ),
-          Row(
-            children: [
-              GenericTextfieldBuilder.formField(label: TText.age)
-                  .controller(controller.ageController)
-                  .suffixString(TText.month)
-                  .required()
-                  .keyboardType(const TextInputType.numberWithOptions())
-                  .build(),
-              GenericDropdown<AnimalSex>(
-                options: _sexList(),
-                controller: controller.sexController,
-                labelText: TText.sex,
-                isRequired: true,
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              GenericDropdown<AnimalSpecies>(
-                options: _speciesList(),
-                controller: controller.speciesController,
-                labelText: TText.species,
-                isRequired: true,
-              ),
-              GenericDropdown<AnimalStatus>(
-                options: _statusList(),
-                controller: controller.statusController,
-                labelText: TText.status,
-                isRequired: true,
-              ),
-            ],
-          ),
+          _buildTextFieldRow([
+            GenericTextfieldBuilder.formField(label: TText.name)
+                .controller(controller.nameController)
+                .required()
+                .build(),
+            GenericTextfieldBuilder.formField(label: TText.location)
+                .controller(controller.locationController)
+                .required()
+                .build(),
+          ]),
+          _buildTextFieldRow([
+            GenericTextfieldBuilder.formField(label: TText.age)
+                .controller(controller.ageController)
+                .suffixString(TText.month)
+                .required()
+                .keyboardType(const TextInputType.numberWithOptions())
+                .build(),
+            GenericDropdown<AnimalSex>(
+              options: _sexList,
+              controller: controller.sexController,
+              labelText: TText.sex,
+              isRequired: true,
+            ),
+          ]),
+          _buildTextFieldRow([
+            GenericDropdown<AnimalSpecies>(
+              options: _speciesList,
+              controller: controller.speciesController,
+              labelText: TText.species,
+              isRequired: true,
+            ),
+            GenericDropdown<AnimalStatus>(
+              options: _statusList,
+              controller: controller.statusController,
+              labelText: TText.status,
+              isRequired: true,
+            ),
+          ]),
         ],
       ),
     );
   }
 
+  Widget _buildTextFieldRow(List<Widget> fields) {
+    return Row(
+      children: fields
+          .map((f) => Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: TSizes.spaceBetweenItems),
+                  child: f,
+                ),
+              ))
+          .toList(),
+    );
+  }
+
+  // -----------------------------
+  // Sterilization
+  // -----------------------------
   Widget _buildSterilizationSection() {
-    return Obx(
-      () => Row(
-        children: [
-          const Text("Neutered/Spayed?"),
-          Checkbox(
-            value: controller.isSterilized,
-            onChanged: controller.setIsSterilized,
-          ),
-          GenericDatePickerButton(
-            key: controller.sterilizationKey,
-            labelText: "Pick Date",
-            enabled: controller.isSterilized,
-            controller: controller.sterilizationDateController,
-            isRequired: controller.isSterilized,
-          ),
-        ],
-      ),
-    );
+    return Obx(() => Row(
+          children: [
+            const Text("Neutered/Spayed?"),
+            Checkbox(
+              value: controller.isSterilized,
+              onChanged: controller.setIsSterilized,
+            ),
+            GenericDatePickerButton(
+              key: controller.sterilizationKey,
+              labelText: "Pick Date",
+              enabled: controller.isSterilized,
+              controller: controller.sterilizationDateController,
+              isRequired: controller.isSterilized,
+            ),
+          ],
+        ));
   }
 
+  // -----------------------------
+  // Tags Section
+  // -----------------------------
   Widget _buildTagsSection() {
     return Column(
       children: [
@@ -206,60 +219,69 @@ class AddAnimalScreeen extends StatelessWidget {
     );
   }
 
+  // -----------------------------
+  // Records Section
+  // -----------------------------
   Widget _buildRecordsSection() {
     return Column(
-      children:  [
+      children: [
         RecordListField(
           controller: controller.vaccinationController,
-          form: const  AnimalVaccinationForm(title: "Vaccination Details"),
+          form: const AnimalVaccinationForm(title: "Vaccination Details"),
           title: "Vaccination History",
         ),
         const FixedSeparator(space: TSizes.spaceBetweenSections),
         RecordListField(
-          form: const AnimalMedicationForm(title: "Medication Details"),
           controller: controller.medicationController,
+          form: const AnimalMedicationForm(title: "Medication Details"),
           title: "Medication History",
         ),
       ],
     );
   }
 
+  // -----------------------------
+  // Action Buttons
+  // -----------------------------
   Widget _buildActionButtons() {
     return Column(
       children: [
-        const FixedSeparator(space: TSizes.spaceBetweenSections),
-        Obx(
-          () => Text(
-            style:const TextStyle(
-              fontWeight: FontWeight.bold
-            ),
-            "**${controller.saveToLocal.value
-                ? "Animal will be saved as a draft"
-                : "Animal will be saved to the cloud"}**",
-          ),
-        ),
-        Row(
-          children: [
-            Expanded(
-              child: SecondaryElevatedButton(
-                onPressed: _handleCancel, 
-                child: const Text("Cancel")
-              )
-            ),
-          ],
-        ),
+        Obx(() => Text(
+              "**${controller.saveToLocal.value ? "Animal will be saved as a draft" : "Animal will be saved to the cloud"}**",
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            )),
         const FixedSeparator(space: TSizes.spaceBetweenItems),
         Row(
           children: [
             Expanded(
-              child:ElevatedButton(
-                onPressed: _handleSave, 
-                child: const Text('Save')
-              )
-            )
-        ],)
+              child: SecondaryElevatedButton(
+                onPressed: _handleCancel,
+                child: const Text("Cancel"),
+              ),
+            ),
+            const SizedBox(width: TSizes.spaceBetweenItems),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: _handleSave,
+                child: const Text("Save"),
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }
 
+  // -----------------------------
+  // Generic Section Builder
+  // -----------------------------
+  Widget _buildSection(String title, List<Widget> children) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SectionTitle(title: title),
+        ...children,
+      ],
+    );
+  }
 }
