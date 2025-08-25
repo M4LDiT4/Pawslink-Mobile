@@ -73,11 +73,12 @@ class AnimalVaccinationDTO extends BaseDto<LocalAnimalVaccinationRecord> {
       "administeredBy": administeredBy,
       "batchNumber": batchNumber,
       "expiryDate": expiryDate.toIso8601String(),
+      "route": route,
       "notes": jsonEncode(notes)
     };
 
     if(nextDueDate != null){
-      animalVaxRecord['nextDueDate'] = nextDueDate;
+      animalVaxRecord['nextDueDate'] = nextDueDate?.toIso8601String();
     }
 
     return animalVaxRecord;
