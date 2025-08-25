@@ -111,11 +111,16 @@ class OperationResponse<T> {
 
   /// Check if response is successful or not by using statusCode
   static bool? _reqSuccessByStatuscode(int? statusCode){
-    if(statusCode == null){
-      return null;
-    }
-    return statusCode >= 200 && statusCode < 300;
-  }
+  if (statusCode == null) return null;
+
+  // 2xx range = success
+  if (statusCode >= 200 && statusCode < 300) return true;
+
+  // Explicitly allow 304 (Not Modified) as success
+  if (statusCode == 304) return true;
+
+  return false;
+}
 
   ///Utility function for parsing json lists. 
   /// ### Parameters

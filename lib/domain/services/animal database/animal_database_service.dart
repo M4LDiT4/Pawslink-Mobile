@@ -270,29 +270,50 @@ class AnimalDatabaseService {
       );
     }
   }
-  Future<OperationResponse> syncAnimals()async{
-    try{
-      final lastUpdateDate = await _localStore.getData(LocalSecureStorageService.lastUpdate);
+  Future<OperationResponse> syncAnimals() async {
+    try {
+      // 1. Get the last update date stored locally
+      final lastUpdateDateString = await _localStore.getData(LocalSecureStorageService.lastUpdate);
+      DateTime? lastUpdateDate;
+      if (lastUpdateDateString != null) {
+        lastUpdateDate = DateTime.tryParse(lastUpdateDateString);
+      }
 
-      final response = await _cloudRepo.getUpdates(lastUpdateDate != null? DateTime.tryParse(lastUpdateDate) : null);
+      // 2. Get updates from server
+      final response = await _cloudRepo.getUpdates(lastUpdateDate);
 
+      if (response.isEmpty) {
+        return OperationResponse.successfulResponse(
+          message: "No new updates available"
+        );
+      }
+
+      TLogger.debug("Response: ${response.toString()}");
+
+      // 3. Save to local database
       await _localRepo.updateAnimals(response);
 
+      // 4. Get the last updated animal safely
       final lastAnimal = response.last;
 
-      await _localStore.saveData(LocalSecureStorageService.lastUpdate, lastAnimal.updatedAt?.toIso8601String());
+      if (lastAnimal.updatedAt != null) {
+        await _localStore.saveData(
+          LocalSecureStorageService.lastUpdate,
+          lastAnimal.updatedAt!.toIso8601String(),
+        );
+      }
 
       return OperationResponse.successfulResponse(
-        message: "Updated animals"
+        message: "Updated ${response.length} animals"
       );
-      // save the response to localdatabse
-    }catch(err){
+    } catch (err) {
       TLogger.error("Failed to sync animals: ${err.toString()}");
       return OperationResponse.failedResponse(
         message: "Something went wrong while checking for updates"
       );
     }
   }
+
 
   Future<OperationResponse<int>> checkIfUpdatesAvailable()  async{
     try{

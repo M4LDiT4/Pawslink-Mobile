@@ -213,15 +213,24 @@ class AnimalDTO extends BaseDto{
   /// Converts [Map] of key type [String] and value type [dynamic] to [AnimalDTO]
   factory AnimalDTO.fromMap(Map<String, dynamic> animalJSON){
 
-    final medicationRecordList = (jsonDecode(animalJSON['medicationRecords'] ?? "[]") as List)
-      .map(
-        (item) => AnimalMedicationDTO.fromMap(item)
-      ).toList();
-    
-    final vaccinationRecordList = (jsonDecode(animalJSON['vaccinationRecords']?? '[]') as List)
-      .map(
-        (item) => AnimalVaccinationDTO.fromMap(item)
-      ).toList();
+    final medicationRaw = animalJSON['medicationRecords'];
+    final vaccinationRaw = animalJSON['vaccinationRecords'];
+
+    final medicationRecordList = (medicationRaw is String
+            ? jsonDecode(medicationRaw)
+            : (medicationRaw ?? [])) as List
+        ;
+    final List<AnimalMedicationDTO> medicationDtos = medicationRecordList
+        .map((item) => AnimalMedicationDTO.fromMap(item as Map<String, dynamic>))
+        .toList();
+
+    final vaccinationRecordList = (vaccinationRaw is String
+            ? jsonDecode(vaccinationRaw)
+            : (vaccinationRaw ?? [])) as List
+        ;
+    final List<AnimalVaccinationDTO> vaccinationDtos = vaccinationRecordList
+        .map((item) => AnimalVaccinationDTO.fromMap(item as Map<String, dynamic>))
+        .toList();
 
     final animal = AnimalDTO(
       remoteId: animalJSON['_id'],
@@ -234,12 +243,14 @@ class AnimalDTO extends BaseDto{
       coatColor: TListHelpers.parseStringList(animalJSON['coatColor'] ?? '[]'),
       notes: TListHelpers.parseStringList(animalJSON['notes']?? '[]'),
       traitsAndPersonality: TListHelpers.parseStringList(animalJSON['traitsAndPersonality'] ?? '[]'),
-      medicationHistory: medicationRecordList,
-      vaccinationHistory: vaccinationRecordList,
+      medicationHistory: medicationDtos,
+      vaccinationHistory: vaccinationDtos,
       profileImageLink: animalJSON['profileImage'],
       imageUrls: TListHelpers.parseStringList(animalJSON['imgUrls'] ?? '[]'),
-      updatedAt: animalJSON['updatedAt'] 
-    );
+      updatedAt: animalJSON ['updatedAt'] != null
+        ? DateTime.parse(animalJSON['updatedAt'] as String)
+        : null,
+        );
 
     return animal;
   }

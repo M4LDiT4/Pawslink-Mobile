@@ -12,6 +12,7 @@ class AsyncGenericLoader<T> extends StatefulWidget {
   final String _successMessage;
   final String _loadingMessage;
   final String _title;
+  final String _lottieString;
 
   const AsyncGenericLoader({
     super.key,
@@ -19,11 +20,13 @@ class AsyncGenericLoader<T> extends StatefulWidget {
     String? errorMessage,
     String? successMessage,
     String? loadingMessage,
-    String? title
+    String? title,
+    String? lottieString,
   }): _errorMessage = errorMessage ?? "Something went wrong",
       _successMessage = successMessage ?? "Operation Successful!",
       _loadingMessage = loadingMessage ?? "Please wait...",
-      _title = title?? 'Processing';
+      _title = title?? 'Processing',
+      _lottieString = lottieString ?? TLottie.brownCat;
 
   @override
   State<AsyncGenericLoader<T>> createState() => _AsyncGenericLoaderState<T>();
@@ -131,7 +134,7 @@ class _AsyncGenericLoaderState<T> extends State<AsyncGenericLoader<T>> with Sing
         if (snapshot.connectionState == ConnectionState.waiting) {
           _updateStatusSafely(WidgetStatus.loading);
           return Lottie.asset(
-            TLottie.brownCat,
+            widget._lottieString,
             width: 160,
             key: const ValueKey("loading"),
           );

@@ -266,69 +266,54 @@ class LocalAnimalRepository {
     }
   }
 
-  Future<void> updateAnimals(List<AnimalDTO> animals) async{
-    if(animals.isEmpty){
-        return;
-    }
-    final List<File> downloadedFiles = [];
-    try{
-      final localAnimals = animals.map((item) => item.toLocalModel()).toList();
-      await _db.writeTxn(() async {
-        await _db.localAnimalModels.putAllByRemoteId(
-          localAnimals
-        );
+  Future<void> updateAnimals(List<AnimalDTO> animals) async {
+    if (animals.isEmpty) return;
 
-        for (final animal in localAnimals){
-          final serverImageLink = animal.profileImageLink;
-          
-          if(serverImageLink != null){
-            final hasChanged = animal.imagePaths.where((e) => e.remoteLink == serverImageLink).isEmpty &&
-              animal.profileImagePath == null ||
-              animal.profileImageLink != serverImageLink;
+    final downloadedFiles = <String, File>{}; // remoteLink -> local file
 
-            if(hasChanged){
-              if(animal.profileImageLink != null && animal.profileImagePath != null){
-                final history = ImageFileMapping()
-                  ..remoteLink = animal.profileImageLink!
-                  ..localPath = animal.profileImagePath!;
-                animal.imagePaths.add(history);
-              }
-              final response = await http.get(Uri.parse(serverImageLink));
-              final file = await LocalFileRepository.saveFile(
-                  animal.remoteId,
-                  response.bodyBytes,
-                  folders: [animal.remoteId],
-                  isPublic: false
-                );
-              downloadedFiles.add(file);
-              animal.profileImageLink = serverImageLink;
-              animal.profileImagePath = file.path;
-            }
-          }
-
-          if(animal.imagePaths.isNotEmpty){
-            await animal.imagePaths.save();
-          }
-
-          if(animal.vaccinationHistory.isNotEmpty){
-            await animal.vaccinationHistory.save();
-          }
-
-          if(animal.medicationHistory.isNotEmpty){
-            await animal.medicationHistory.save();
-          }
-        }
-      });
-    }catch(err){
-      for (final file in downloadedFiles) {
-        try {
-          if (file.existsSync()) file.deleteSync();
-        } catch (_) {
-          // ignore delete errors
+    try {
+      // 1. Pre-download files OUTSIDE Isar txn
+      for (final dto in animals) {
+        if (dto.profileImageLink != null) {
+          final response = await http.get(Uri.parse(dto.profileImageLink!));
+          final file = await LocalFileRepository.saveFile(
+            dto.remoteId!,
+            response.bodyBytes,
+            folders: [dto.remoteId!],
+            isPublic: false,
+          );
+          downloadedFiles[dto.profileImageLink!] = file;
         }
       }
-      TLogger.error('failed ');
+
+      // 2. Write to DB in a single txn (no network or file I/O here)
+      await _db.writeTxn(() async {
+        final localAnimals = animals.map((item) {
+          final model = item.toLocalModel();
+          if (model.profileImageLink != null &&
+              downloadedFiles.containsKey(model.profileImageLink)) {
+            final file = downloadedFiles[model.profileImageLink]!;
+            model.profileImagePath = file.path;
+          }
+          return model;
+        }).toList();
+
+        await _db.localAnimalModels.putAllByRemoteId(localAnimals);
+
+        for (final animal in localAnimals) {
+          if (animal.imagePaths.isNotEmpty) await animal.imagePaths.save();
+          if (animal.vaccinationHistory.isNotEmpty) await animal.vaccinationHistory.save();
+          if (animal.medicationHistory.isNotEmpty) await animal.medicationHistory.save();
+        }
+      });
+    } catch (err) {
+      TLogger.error("Failed to update animals: $err");
+      // cleanup files on failure
+      for (final file in downloadedFiles.values) {
+        if (file.existsSync()) file.deleteSync();
+      }
       rethrow;
     }
   }
+
 }
