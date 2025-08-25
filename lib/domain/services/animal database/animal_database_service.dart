@@ -43,6 +43,10 @@ class AnimalDatabaseService {
         animalDto,
         profilePicture: profilePicture
       );
+      // update the local data with the data from the cloud
+      if(response.isSuccessful && response.data != null){
+        await _localRepo.updateAnimals([response.data!]);
+      }
       return response;
     }catch(err, stack){
       TLogger.error("Failed to save animal to cloud: ${err.toString()}");

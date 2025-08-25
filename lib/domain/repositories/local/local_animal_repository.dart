@@ -272,45 +272,65 @@ class LocalAnimalRepository {
     final downloadedFiles = <String, File>{}; // remoteLink -> local file
 
     try {
-      // 1. Pre-download files OUTSIDE Isar txn
+      // -------------------------------
+      // 1. Pre-download files
+      // -------------------------------
       for (final dto in animals) {
         if (dto.profileImageLink != null) {
-          final response = await http.get(Uri.parse(dto.profileImageLink!));
-          final file = await LocalFileRepository.saveFile(
-            dto.remoteId!,
-            response.bodyBytes,
-            folders: [dto.remoteId!],
-            isPublic: false,
-          );
-          downloadedFiles[dto.profileImageLink!] = file;
+          try {
+            final response = await http.get(Uri.parse(dto.profileImageLink!));
+            if (response.statusCode == 200) {
+              final file = await LocalFileRepository.saveFile(
+                dto.remoteId!,
+                response.bodyBytes,
+                folders: [dto.remoteId!],
+                isPublic: false,
+              );
+              downloadedFiles[dto.profileImageLink!] = file;
+            }
+          } catch (e) {
+            TLogger.warning("Failed to download image for ${dto.remoteId}: $e");
+          }
         }
       }
 
-      // 2. Write to DB in a single txn (no network or file I/O here)
+      // -------------------------------
+      // 2. Write core animals (no link access)
+      // -------------------------------
+      final localAnimals = animals.map((item) {
+        final model = item.toLocalModel();
+        if (model.profileImageLink != null &&
+            downloadedFiles.containsKey(model.profileImageLink)) {
+          final file = downloadedFiles[model.profileImageLink]!;
+          model.profileImagePath = file.path;
+        }
+        return model;
+      }).toList();
+
       await _db.writeTxn(() async {
-        final localAnimals = animals.map((item) {
-          final model = item.toLocalModel();
-          if (model.profileImageLink != null &&
-              downloadedFiles.containsKey(model.profileImageLink)) {
-            final file = downloadedFiles[model.profileImageLink]!;
-            model.profileImagePath = file.path;
-          }
-          return model;
-        }).toList();
-
         await _db.localAnimalModels.putAllByRemoteId(localAnimals);
+      });
 
+      // -------------------------------
+      // 3. Save link collections separately
+      // -------------------------------
+      await _db.writeTxn(() async {
         for (final animal in localAnimals) {
-          if (animal.imagePaths.isNotEmpty) await animal.imagePaths.save();
-          if (animal.vaccinationHistory.isNotEmpty) await animal.vaccinationHistory.save();
-          if (animal.medicationHistory.isNotEmpty) await animal.medicationHistory.save();
+          // only save, don't check .isNotEmpty first
+          await animal.imagePaths.save();
+          await animal.vaccinationHistory.save();
+          await animal.medicationHistory.save();
         }
       });
-    } catch (err) {
-      TLogger.error("Failed to update animals: $err");
-      // cleanup files on failure
+    } catch (err, stack) {
+      TLogger.error("Failed to update animals: $err\n$stack");
+
       for (final file in downloadedFiles.values) {
-        if (file.existsSync()) file.deleteSync();
+        if (file.existsSync()) {
+          try {
+            file.deleteSync();
+          } catch (_) {}
+        }
       }
       rethrow;
     }
