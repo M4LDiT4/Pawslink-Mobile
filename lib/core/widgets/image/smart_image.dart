@@ -24,29 +24,29 @@ class SmartImage extends StatelessWidget {
 
     if (path != null && path!.isNotEmpty) {
       if (_isUrl(path!)) {
-        // Network image
+        // Network image with loading + error handling
         imageWidget = Image.network(
           path!,
           fit: fit,
-          width: double.infinity,
-          height: double.infinity,
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) return child; // Loaded
+            return const Center(child: CircularProgressIndicator()); // Loading
+          },
           errorBuilder: (_, __, ___) {
             return Image.asset(fallbackAsset, fit: fit);
           },
         );
       } else if (File(path!).existsSync()) {
-        // Local file
+        // Local file with error fallback
         imageWidget = Image.file(
           File(path!),
           fit: fit,
-          width: double.infinity,
-          height: double.infinity,
           errorBuilder: (_, __, ___) {
             return Image.asset(fallbackAsset, fit: fit);
           },
         );
       } else {
-        // Not URL, not a valid file → fallback
+        // Invalid file path → fallback
         imageWidget = Image.asset(fallbackAsset, fit: fit);
       }
     } else {
@@ -54,6 +54,7 @@ class SmartImage extends StatelessWidget {
       imageWidget = Image.asset(fallbackAsset, fit: fit);
     }
 
+    // Always fill parent
     return SizedBox.expand(child: imageWidget);
   }
 }

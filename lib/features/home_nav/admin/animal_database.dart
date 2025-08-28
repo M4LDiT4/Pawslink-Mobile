@@ -56,6 +56,10 @@ class _AnimalDatabaseScreenState extends State<AnimalDatabaseScreen> {
     TNavigationService.toNamed(TAppRoutes.qrCodeScanner);
   }
 
+  void _navigateToViewDrafts(){
+    TNavigationService.toNamed(TAppRoutes.viewDrafts);
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = TDeviceUtils.getScreenBodyHeight();
@@ -95,7 +99,7 @@ class _AnimalDatabaseScreenState extends State<AnimalDatabaseScreen> {
                 ),
                 AdminHomeActionButtons(
                   label: "View Drafts",
-                  onPress: () {},
+                  onPress: _navigateToViewDrafts,
                 ),
                 AdminHomeActionButtons(
                   onPress: _navigateToScanQrCode,

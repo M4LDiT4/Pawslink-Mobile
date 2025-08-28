@@ -172,13 +172,6 @@ class AddAnimalScreen extends StatelessWidget {
   Widget _buildTextFieldRow(List<Widget> fields) {
     return Row(
       children: fields
-          .map((f) => Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(right: TSizes.spaceBetweenItems),
-                  child: f,
-                ),
-              ))
-          .toList(),
     );
   }
 

@@ -16,5 +16,6 @@ abstract class TAppRoutes {
   static const qrCodeGenerator ="/animal-database/generate-qr-code";
   static const addEvent = "/event/add";
   static const viewEvents = "/event/";
+  static const viewDrafts = "/animal-database/drafts/";
   // Add more routes as needed
 }

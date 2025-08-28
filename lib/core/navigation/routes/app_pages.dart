@@ -8,6 +8,7 @@ import 'package:mobile_app_template/core/bindings/controllers/add_event.dart';
 import 'package:mobile_app_template/core/bindings/controllers/view_animal.dart';
 import 'package:mobile_app_template/core/bindings/controllers/view_event.dart';
 import 'package:mobile_app_template/features/animal_database/screens/add_animal/add_animal.dart';
+import 'package:mobile_app_template/features/animal_database/screens/drafts/view_drafts.dart';
 import 'package:mobile_app_template/features/animal_database/screens/qr_code/generate_qr_code.dart';
 import 'package:mobile_app_template/features/animal_database/screens/qr_code/qr_code_scanner.dart';
 import 'package:mobile_app_template/features/animal_database/screens/view_animal/view_animal.dart';
@@ -95,6 +96,11 @@ class TAppPages {
       page: ()=>  const ViewEventsScreen(),
       transition: Transition.leftToRightWithFade,
       binding: ViewEventControllerAdminBinding()
+    ),
+    GetPage(
+      name: TAppRoutes.viewDrafts, 
+      page: ()=> const ViewDraftsScreen(),
+      transition: Transition.size
     )
   ];
 }
