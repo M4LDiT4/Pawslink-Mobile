@@ -99,7 +99,7 @@ class TAppPages {
     ),
     GetPage(
       name: TAppRoutes.viewDrafts, 
-      page: ()=> const ViewDraftsScreen(),
+      page: ()=>  ViewDraftsScreen(),
       transition: Transition.size
     )
   ];
