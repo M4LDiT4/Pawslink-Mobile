@@ -373,4 +373,41 @@ class LocalAnimalRepository {
     }
   }
 
+  Future<OperationResponse<List<LocalAnimalModel>>> getAnimalDrafts({
+    int page = 1,
+    int itemsPerPage = 10
+  }) async{
+    try{
+      final animalDraftRecords = await _db.localActivityLogs
+        .filter()
+        .syncStatusEqualTo(SyncStatus.notSynced)
+        .targetCollectionEqualTo(DatabaseCollections.animal)
+        .offset((page -1) * itemsPerPage)
+        .limit(itemsPerPage)
+        .findAll();
+      
+      final animalRecords = <LocalAnimalModel>[];
+
+      for(var draft in animalDraftRecords){
+        final animalData = await _db.localAnimalModels.filter()
+          .remoteIdEqualTo(draft.targetObjectId)
+          .findFirst();
+        if(animalData != null){
+          animalRecords.add(animalData);
+        }
+      }
+
+      return OperationResponse(
+        isSuccessful: true, 
+        statusCode: 200,
+        data: animalRecords
+      );
+
+    }catch(err){
+      TLogger.error("Unexpected error occured while fetching animal drafts${err.toString()}");
+      return OperationResponse.failedResponse(
+        message: "Failed to load animal drafts"
+      );
+    }
+  }
 }

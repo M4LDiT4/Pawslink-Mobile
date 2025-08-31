@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:mobile_app_template/core/enums/animal_sex.dart';
 import 'package:mobile_app_template/core/enums/animal_species.dart';
 import 'package:mobile_app_template/core/enums/animal_status.dart';
 import 'package:mobile_app_template/features/animal_database/controllers/view_drafts_controller.dart';
 import 'package:mobile_app_template/features/animal_database/widgets/view_drafts/view_drafts_list_item.dart';
-import 'package:path/path.dart';
 
 class ViewDraftsScreen extends StatelessWidget {
   ViewDraftsScreen({super.key});
