@@ -92,7 +92,7 @@ class LocalAnimalRepository {
           ..targetObjectId = remoteId
           ..description = "Created animal with name ${animalDto.name}";
 
-        await _db.localActivityLogs.put(actLog);
+        await _db.localActivityLogs.putWithTimestamps(actLog);
       });
 
       return OperationResponse<AnimalDTO>(
@@ -375,15 +375,12 @@ class LocalAnimalRepository {
 
   Future<OperationResponse<List<LocalAnimalModel>>> getAnimalDrafts({
     int page = 1,
-    int itemsPerPage = 10
   }) async{
     try{
       final animalDraftRecords = await _db.localActivityLogs
         .filter()
         .syncStatusEqualTo(SyncStatus.notSynced)
         .targetCollectionEqualTo(DatabaseCollections.animal)
-        .offset((page -1) * itemsPerPage)
-        .limit(itemsPerPage)
         .findAll();
       
       final animalRecords = <LocalAnimalModel>[];

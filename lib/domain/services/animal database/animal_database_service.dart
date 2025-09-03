@@ -337,4 +337,26 @@ class AnimalDatabaseService {
       );
     }
   }
+
+  Future<OperationResponse<List<AnimalDTO>>> getAnimalDrafts() async {
+    try{
+      final response = await _localRepo.getAnimalDrafts();
+      if(response.data == null){
+        return OperationResponse.successfulResponse(
+          message: "No drafts found"
+        );
+      }
+      final drafts = response.data!.map((draft) => AnimalDTO.fromLocalAnimalModel(draft)).toList();
+      return OperationResponse(
+        isSuccessful: true, 
+        statusCode: 200,
+        data: drafts
+      );
+    }catch(err){
+      TLogger.error("Failed to get animal drafts: ${err.toString()}");
+      return OperationResponse.failedResponse(
+        message: "Failed to get animal drafts"
+      );
+    }
+  }
 }

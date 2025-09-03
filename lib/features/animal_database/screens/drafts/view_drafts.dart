@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mobile_app_template/core/enums/animal_sex.dart';
-import 'package:mobile_app_template/core/enums/animal_species.dart';
-import 'package:mobile_app_template/core/enums/animal_status.dart';
+import 'package:lottie/lottie.dart';
+import 'package:mobile_app_template/core/constants/lottie_strings.dart';
+import 'package:mobile_app_template/core/enums/widget_status.dart';
 import 'package:mobile_app_template/features/animal_database/controllers/view_drafts_controller.dart';
 import 'package:mobile_app_template/features/animal_database/widgets/view_drafts/view_drafts_list_item.dart';
 
@@ -17,20 +17,37 @@ class ViewDraftsScreen extends StatelessWidget {
         : const EdgeInsets.all(16);
   }
 
-  void _handleSelectNormalMenu(BuildContext context, String value){
-    if(value == "multiselect"){
+  void _handleSelectNormalMenu(BuildContext context, String value) {
+    if (value == "multiselect") {
       _controller.multiSelect.value = true;
     }
   }
 
-    /// ---------------- BUILD ----------------
+  /// ---------------- BUILD ----------------
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _buildAppBar(context),
-      body: _buildBody(),
-      bottomNavigationBar: _buildBottomBar(),
-    );
+    return Obx(() {
+      return PopScope(
+        canPop: !_controller.multiSelect.value,
+        onPopInvokedWithResult: (didPop, result) {
+          if (!didPop && _controller.multiSelect.value) {
+            _controller.multiSelect.value = false;
+            _controller.selectedIdList.clear();
+            Get.snackbar(
+              "Selection",
+              "Selection canceled",
+              snackPosition: SnackPosition.BOTTOM,
+              duration: const Duration(seconds: 2),
+            );
+          }
+        },
+        child: Scaffold(
+          appBar: _buildAppBar(context),
+          body: _buildBody(),
+          bottomNavigationBar: _buildBottomBar(),
+        ),
+      );
+    });
   }
 
   /// ---------------- APP BAR ----------------
@@ -40,6 +57,7 @@ class ViewDraftsScreen extends StatelessWidget {
         icon: const Icon(Icons.arrow_back),
         onPressed: () {
           if (_controller.multiSelect.value) {
+            // cancel multiselect instead of navigating back
             _controller.multiSelect.value = false;
             _controller.selectedIdList.clear();
           } else {
@@ -65,23 +83,17 @@ class ViewDraftsScreen extends StatelessWidget {
                     icon: const Icon(Icons.select_all),
                     tooltip: "Select All",
                     onPressed: () {
-                      // Select all logic
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    tooltip: "Cancel Selection",
-                    onPressed: () {
-                      _controller.multiSelect.value = false;
-                      _controller.selectedIdList.clear();
+                      _controller.selectedIdList.assignAll(
+                        _controller.animalDrafts.map((e) => e.remoteId ?? ""),
+                      );
                     },
                   ),
                   PopupMenuButton<String>(
                     onSelected: (value) {
                       if (value == "delete") {
                         // delete logic
-                      } else if (value == "export") {
-                        // export logic
+                      } else if (value == "upload") {
+                        // upload logic
                       }
                     },
                     itemBuilder: (context) => const [
@@ -90,23 +102,22 @@ class ViewDraftsScreen extends StatelessWidget {
                         child: Text("Delete"),
                       ),
                       PopupMenuItem(
-                        value: "export",
-                        child: Text("Export"),
+                        value: "upload",
+                        child: Text("Upload to Cloud"),
                       ),
                     ],
                   ),
                 ],
               )
             : PopupMenuButton(
-              onSelected: (value) => _handleSelectNormalMenu(context, value),
-              itemBuilder: (context) => const [
-                  PopupMenuItem(
-                    value: "multiselect",
-                    child: Text("Multiselect")
-                  )
-                ]
-              )
-        )
+                onSelected: (value) =>
+                    _handleSelectNormalMenu(context, value),
+                itemBuilder: (context) => const [
+                      PopupMenuItem(
+                        value: "multiselect",
+                        child: Text("Multiselect"),
+                      )
+                    ]))
       ],
     );
   }
@@ -127,17 +138,10 @@ class ViewDraftsScreen extends StatelessWidget {
                   },
                 ),
                 IconButton(
-                  icon: const Icon(Icons.archive),
-                  tooltip: "Archive",
+                  icon: const Icon(Icons.cloud_upload),
+                  tooltip: "Upload to Cloud",
                   onPressed: () {
-                    // Archive selected items
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.share),
-                  tooltip: "Share",
-                  onPressed: () {
-                    // Share selected items
+                    // Upload selected items
                   },
                 ),
               ],
@@ -148,23 +152,69 @@ class ViewDraftsScreen extends StatelessWidget {
 
   /// ---------------- BODY ----------------
   Widget _buildBody() {
-    return Obx(
-      () => SingleChildScrollView(
-        padding: _buildPadding(),
-        child: Column(
-          children: [
-            AnimalDraftListItem(
-              name: "Sample animal",
-              timeCreated: DateTime.now(),
-              remoteId: "",
-              species: AnimalSpecies.dog,
-              status: AnimalStatus.owned,
-              sex: AnimalSex.female,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+    return Obx(() {
+      Widget child;
 
+      switch (_controller.status.value) {
+        case WidgetStatus.loading:
+          child = Center(
+              child: Lottie.asset(
+                TLottie.confusedCat,
+                key: const ValueKey("loading"),
+                width: 200
+              )
+            );
+          break;
+        case WidgetStatus.idle:
+          if (_controller.animalDrafts.isEmpty) {
+            child = const Center(
+              key: ValueKey("empty"),
+              child: Text("No drafts found"),
+            );
+          } else {
+            child = ListView.builder(
+              key: const ValueKey("list"),
+              padding: _buildPadding(),
+              itemCount: _controller.animalDrafts.length,
+              itemBuilder: (context, index) {
+                final draft = _controller.animalDrafts[index];
+                return AnimalDraftListItem(
+                  name: draft.name,
+                  timeCreated: draft.updatedAt ?? DateTime.now(),
+                  remoteId: draft.remoteId ?? "",
+                  species: draft.species,
+                  status: draft.status,
+                  sex: draft.sex,
+                );
+              },
+            );
+          }
+          break;
+        default:
+          child = Center(
+            key: const ValueKey("error"),
+            child: Text(_controller.errMessage),
+          );
+      }
+
+      return AnimatedSwitcher(
+        duration: const Duration(milliseconds: 500),
+        switchInCurve: Curves.easeIn,
+        switchOutCurve: Curves.easeOut,
+        transitionBuilder: (Widget child, Animation<double> animation) {
+          // Example: Fade + Slide from bottom
+          final fade = FadeTransition(opacity: animation, child: child);
+          final slide = SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(0.0, 0.1), // small vertical slide
+              end: Offset.zero,
+            ).animate(animation),
+            child: fade,
+          );
+          return slide;
+        },
+        child: child,
+      );
+    });
+  }
 }
